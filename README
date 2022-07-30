@@ -1,9 +1,9 @@
-# YobbinCallouts
+#YobbinCallouts
 
 YobbinCallouts by YobB1n copyright (c) 2020-2022 YobB1n.
 This project in its entirety is open-source. Please provide appropriate credit when portions of this code are used as reference or in verbatim.
 
-## Introduction
+##Introduction
 
 YobbinCallouts is a project I started in summer of 2020 to provide a wide range of unique callouts all around the map, that have never been done before. The project started with just two callouts with extremely poor code efficiency and style, to now including over a dozen callouts that have improved greatly as my coding skills have improved. Of course, it is well known that I am a pretty bad programmer (lmao), so please excuse poor style or code efficiency.
 
@@ -14,13 +14,13 @@ Download the callouts: https://www.lcpdfr.com/downloads/gta5mods/scripts/29467-y
 Join my Discord: https://discord.com/invite/Wj522qa5mT
 Website: https://www.yobbinmods.com/ (callout coding tutorials are also on my website!)
 
-## Quick guide around the project
+##Quick guide around the project
 
-### Main.cs
+###Main.cs
 
 This is the EntryPoint for the LSPDFR plugin. Not very interesting, there is an update checker (thanks albo!) that still works even though I haven't changed it in years xD.
 
-### CallHandler
+###CallHandler
 
 This class is probably the most interesting if you're looking through my code to use for your own. The class contains a variety of
 useful helper functions that you can easily incorporate into your own LSPDFR/RPH plugins by simply copy/pasting. Functions include:
