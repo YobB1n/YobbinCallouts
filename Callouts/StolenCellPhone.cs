@@ -113,7 +113,7 @@ namespace YobbinCallouts.Callouts
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).GameName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
 
-            MainSpawnPoint = CallHandler.GetHouse();
+            MainSpawnPoint = CallHandler.nearestLocationChooser(CallHandler.getHouseList, maxdistance: 600, mindistance: 100);
             if (!CallHandler.isHouse) { Game.LogTrivial("YOBBINCALLOUTS: Could not find suitable house for callout location. Aborting Callout."); return false; }
 
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 75f);    //Callout Blip Circle with radius 50m
@@ -141,6 +141,12 @@ namespace YobbinCallouts.Callouts
             House.Alpha = 0.67f;
             House.Name = "Caller";
 
+            Victim = new Ped(MainSpawnPoint, 69);
+            Victim.IsPersistent = true;
+            Victim.BlockPermanentEvents = true;
+            Victim.IsInvincible = true;
+            VictimModel = Victim.Model;
+
             if (Config.DisplayHelp)
             {
                 if (CallHandler.isHouse) Game.DisplayHelp("Go to the ~y~Property~w~ Shown on The Map to Investigate.");
@@ -166,15 +172,12 @@ namespace YobbinCallouts.Callouts
                         while (player.DistanceTo(Victim) >= 35 && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
                         if (Game.IsKeyDown(Config.CalloutEndKey)) { EndCalloutHandler.CalloutForcedEnd = true; break; }
                         House.Delete();
-                        House = new Blip(MainSpawnPoint, 5f);
-                        House.Alpha = 0.69f;
-                        House.Color = Color.Yellow;
+                        VictimBlip = Victim.AttachBlip();
+                        VictimBlip.IsFriendly = true;
+                        VictimBlip.Scale = 0.75f;
                         Game.DisplayHelp("Talk to the ~b~Caller.");
-                        while (player.DistanceTo(MainSpawnPoint) >= 3.5f) GameFiber.Wait(0);
-
-                        CallHandler.OpenDoor(MainSpawnPoint, Victim); //test this
-                        CallHandler.AssignBlip(Victim, Color.Blue, 0.69f); //test this also
-
+                        NativeFunction.Natives.TASK_TURN_PED_TO_FACE_ENTITY(Victim, player, -1);
+                        while (player.DistanceTo(Victim) >= 5) GameFiber.Wait(0);
                         if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to talk to the ~b~Caller.");
                         CallHandler.Dialogue(OpeningDialogue1, Victim);
                         GameFiber.Wait(1500);

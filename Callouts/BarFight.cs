@@ -53,7 +53,6 @@ namespace YobbinCallouts.Callouts
                 Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
                 if (Zone == "Davis" || Zone == "Stad" || Zone == "STRAW" || Zone == "ChamH")
                 {
-                    //MainSpawnPoint = StripClub;
                     MainSpawnPoint = StripClub;
                 }
                 else if (Zone == "PBOX" || Zone == "LegSqu" || Zone == "SKID" || Zone == "TEXTI")
@@ -68,7 +67,7 @@ namespace YobbinCallouts.Callouts
                 {
                     MainSpawnPoint = EastVinewoodBar;
                 }
-                else if(Zone == "Cypre" || Zone == "Murri" || Zone == "EBuro" || Zone == "LMesa")
+                else if (Zone == "Cypre" || Zone == "Murri" || Zone == "EBuro" || Zone == "LMesa")
                 {
                     MainSpawnPoint = new Vector3(1213.211f, -419.58f, 67.65f); //Mirror
                 }

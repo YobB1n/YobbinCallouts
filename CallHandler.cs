@@ -72,74 +72,10 @@ namespace YobbinCallouts
         {
 
         };
+        public static ArrayList getHospitalList { get { return HospitalList; } }
+        public static ArrayList getHouseList { get { return HouseList; } }
 
-        //Gets a random house within mindistance and maxdistance, or a random spawnpoint on a street at maxdistance if no house is found.
-        public static Vector3 GetHouse(float maxdistance = 600, float mindistance = 100)
-        {
-            ArrayList CloseHouses = new ArrayList();
 
-            String Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).RealAreaName;
-            Game.LogTrivial("YOBBINCALLOUTS: HOUSEHANDLER: Attempting to Locate a House in: " + Zone);
-
-            for (int i = 0; i < HouseList.Count; i++)
-            {
-                GameFiber.Yield();
-                if (Game.LocalPlayer.Character.DistanceTo((Vector3)HouseList[i]) <= maxdistance && Game.LocalPlayer.Character.DistanceTo ((Vector3)HouseList[i]) >= mindistance)
-                {
-                    CloseHouses.Add(HouseList[i]);
-                }
-            }
-            if (CloseHouses.Count > 0)
-            {
-                Game.LogTrivial("YOBBINCALLOUTS: HOUSEHANDLER: House location found within range.");
-                System.Random monke = new System.Random();
-                int house = monke.Next(0, CloseHouses.Count);
-                HousePoint = (Vector3)CloseHouses[house];
-                isHouse = true;
-            }
-            else
-            {
-                Game.LogTrivial("No house location found within range. Choosing random street point.");
-                HousePoint = World.GetNextPositionOnStreet(Game.LocalPlayer.Character.Position.Around(maxdistance));
-                isHouse = false;
-            }
-            Game.LogTrivial("YOBBINCALLOUTS: HOUSEHANDLER: Choosing House at " + HousePoint + " in " + Zone);
-            return HousePoint;
-        }
-
-        //Gets a random hospital within mindistance and maxdistance, or a Vector.Zero if no hospital is found.
-        public static Vector3 GetHospital(float maxdistance = 1000, float mindistance = 25)
-        {
-            ArrayList CloseHospitals = new ArrayList();
-
-            String Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).RealAreaName;
-            Game.LogTrivial("YOBBINCALLOUTS: HOSPITALHANDLER: Attempting to Locate a Hospital in: " + Zone);
-
-            for (int i = 0; i < HospitalList.Count; i++)
-            {
-                GameFiber.Yield();
-                if (Game.LocalPlayer.Character.DistanceTo((Vector3)HospitalList[i]) <= maxdistance && Game.LocalPlayer.Character.DistanceTo((Vector3)HospitalList[i]) >= mindistance)
-                {
-                    CloseHospitals.Add(HospitalList[i]);
-                }
-            }
-            if (CloseHospitals.Count > 0)
-            {
-                Game.LogTrivial("YOBBINCALLOUTS: HOSPITALHANDLER: Hospital location found within range.");
-                System.Random monke = new System.Random();
-                int house = monke.Next(0, CloseHospitals.Count);
-                HousePoint = (Vector3)CloseHospitals[house];
-                isHouse = true;
-            }
-            else
-            {
-                Game.LogTrivial("No Hospital location found within range. Aborting.");
-                HousePoint = Vector3.Zero;
-                isHouse = false;
-            }
-            Game.LogTrivial("YOBBINCALLOUTS: HOSPITALHANDLER: Choosing Hospital at " + HousePoint + " in " + Zone);
-            return HousePoint;
-        }
 
         //old and needs to be replaced.
         public static Vector3 GetStore()
@@ -304,7 +240,7 @@ namespace YobbinCallouts
             Game.FadeScreenOut(1500, true);
             if (resident != null) //if you want to spawn a resident
             {
-                if(residentmodel != "") resident = new Ped(residentmodel, doorlocation, Game.LocalPlayer.Character.Heading - 180);
+                if (residentmodel != "") resident = new Ped(residentmodel, doorlocation, Game.LocalPlayer.Character.Heading - 180);
                 else resident = new Ped(doorlocation, Game.LocalPlayer.Character.Heading - 180);
                 resident.Heading = Game.LocalPlayer.Character.Heading - 180; //might not be needed
                 IdleAction(resident, false);
@@ -415,11 +351,29 @@ namespace YobbinCallouts
                 blip.Alpha = intensity;
                 return blip;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                Game.LogTrivial("YOBBINCALLOUTS: Error assigning blip. Error: "+e);
+                Game.LogTrivial("YOBBINCALLOUTS: Error assigning blip. Error: " + e);
                 return null;
             }
+        }
+        public static Vector3 nearestLocationChooser(ArrayList list, float maxdistance = 1000, float mindistance = 25)
+        {
+            Vector3 closestLocation = (Vector3)list[0];
+            float closestDistance = Vector3.Distance(Game.LocalPlayer.Character.Position, (Vector3)list[0]);
+            for (int i = 1; i < list.Count; i++)
+            {
+                float distance = Vector3.Distance(Game.LocalPlayer.Character.Position, (Vector3)list[i]);
+                if (distance <= maxdistance && distance >= mindistance)
+                {
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = Vector3.Distance(Game.LocalPlayer.Character.Position, (Vector3)list[i]);
+                        closestLocation = (Vector3)list[i];
+                    }
+                }
+            }
+            return closestLocation;
         }
     }
 }

@@ -264,7 +264,7 @@ namespace YobbinCallouts.Callouts
                 {
                     while (CalloutRunning)
                     {
-                        if(MainScenario <= 1) while (player.DistanceTo(Witness) >= 25 && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
+                        if (MainScenario <= 1) while (player.DistanceTo(Witness) >= 25 && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
                         else while (player.DistanceTo(Victim) >= 35 && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
                         if (Game.IsKeyDown(Config.CalloutEndKey)) { EndCalloutHandler.CalloutForcedEnd = true; break; }
                         Game.LogTrivial("YOBBINCALLOUTS: Player Arrived on Scene.");
@@ -522,7 +522,7 @@ namespace YobbinCallouts.Callouts
                     Victim.Tasks.EnterVehicle(Game.LocalPlayer.Character.CurrentVehicle, SeatIndex, EnterVehicleFlags.None).WaitForCompletion();
                 }
                 if (VictimBlip.Exists()) { VictimBlip.Delete(); }
-                Vector3 DriverDestination = CallHandler.GetHouse();    //catYes
+                Vector3 DriverDestination = CallHandler.nearestLocationChooser(CallHandler.getHouseList, maxdistance: 600, mindistance: 100);   //catYes
                 VictimBlip = new Blip(DriverDestination);
                 VictimBlip.Color = System.Drawing.Color.Green;
                 VictimBlip.IsRouteEnabled = true;

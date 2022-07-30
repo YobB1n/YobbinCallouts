@@ -259,7 +259,7 @@ namespace YobbinCallouts.Callouts
             //HOUSE CHOOSER FOR 1ST SCENARIO
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).GameName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
-            MainSpawnPoint = CallHandler.GetHouse();
+            MainSpawnPoint = CallHandler.nearestLocationChooser(CallHandler.getHouseList, maxdistance: 600, mindistance: 100);
             if (!CallHandler.isHouse)
             {
                 MainScenario = 1;
@@ -657,4 +657,3 @@ namespace YobbinCallouts.Callouts
         }
     }
 }
-
