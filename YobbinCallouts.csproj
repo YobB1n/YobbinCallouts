@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E0A00A46-1259-4C5C-BAB1-B70B6BC86375}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>YobbinCallouts</RootNamespace>
+    <AssemblyName>YobbinCallouts</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CalloutInterface">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Grand Theft Auto V\plugins\LSPDFR\CalloutInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="LSPD First Response, Version=0.4.7800.3124, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Grand Theft Auto V\plugins\LSPD First Response.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\CODES\Every Day Callouts\LSPDFR-EveryDay-Callouts-master\EveryDayCallouts\EveryDayCallouts\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="RAGENativeUI">
+      <HintPath>..\..\..\..\..\..\..\..\Steam\steamapps\common\Grand Theft Auto V\RAGENativeUI.dll</HintPath>
+    </Reference>
+    <Reference Include="RagePluginHookSDK, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SDK_2\SDK\RagePluginHookSDK.dll</HintPath>
+    </Reference>
+    <Reference Include="StopThePed, Version=4.9.4.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Grand Theft Auto V\plugins\LSPDFR\StopThePed.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CalloutInterfaceHandler.cs" />
+    <Compile Include="Callouts\ActiveShooter.cs" />
+    <Compile Include="Callouts\Arson.cs" />
+    <Compile Include="Callouts\BaitCar.cs" />
+    <Compile Include="Callouts\BarFight.cs" />
+    <Compile Include="Callouts\BrokenDownVehicle.cs" />
+    <Compile Include="Callouts\AssaultOnBus.cs" />
+    <Compile Include="Callouts\CitizenArrest.cs" />
+    <Compile Include="Callouts\DUIReported.cs" />
+    <Compile Include="Callouts\Explosion.cs" />
+    <Compile Include="Callouts\HospitalEmergency.cs" />
+    <Compile Include="Callouts\HumanTrafficking.cs" />
+    <Compile Include="Callouts\Sovereign Citizen.cs" />
+    <Compile Include="Callouts\StolenCellPhone.cs" />
+    <Compile Include="Callouts\PropertyCheck.cs" />
+    <Compile Include="Callouts\PhotographyOfPrivateProperty.cs" />
+    <Compile Include="Callouts\RoadRage.cs" />
+    <Compile Include="Callouts\StolenPoliceHardware.cs" />
+    <Compile Include="Callouts\TrafficBreak.cs" />
+    <Compile Include="Callouts\WeaponFound.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="EndCalloutHandler.cs" />
+    <Compile Include="CallHandler.cs" />
+    <Compile Include="EUP Config Helper.cs" />
+    <Compile Include="EUPHelper.cs" />
+    <Compile Include="InvestigationHandler.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
