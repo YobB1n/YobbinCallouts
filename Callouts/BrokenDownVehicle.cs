@@ -575,7 +575,7 @@ namespace YobbinCallouts.Callouts
                         Driver.Tasks.EnterVehicle(Game.LocalPlayer.Character.CurrentVehicle, SeatIndex, EnterVehicleFlags.None).WaitForCompletion();
                     }
                     if (DriverBlip.Exists()) { DriverBlip.Delete(); }
-                    CallHandler.locationChooser(CallHandler.getHouseList);
+                    CallHandler.locationChooser(CallHandler.HouseList);
                     if (CallHandler.locationReturned) { DriverDestination = CallHandler.SpawnPoint; }  //boom
                     else
                     {

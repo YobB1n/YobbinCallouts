@@ -52,7 +52,7 @@ namespace YobbinCallouts
         };
 
         //ArrayList of houses all around the map
-        private static ArrayList HouseList = new ArrayList() { new Vector3(240.7677f, -1687.701f, 29.6996f), new Vector3(100.6926f, -1914.058f, 21.03957f), new Vector3(288.6435f, -1792.515f, 28.08904f),
+        public static ArrayList HouseList = new ArrayList() { new Vector3(240.7677f, -1687.701f, 29.6996f), new Vector3(100.6926f, -1914.058f, 21.03957f), new Vector3(288.6435f, -1792.515f, 28.08904f),
         new Vector3(1250.818f, -1734.568f, 52.03207f), new Vector3(1354.907f, -1694.046f, 60.49123f), new Vector3(1362.024f, -1568.026f, 56.34648f), new Vector3(1221.362f, -668.7222f, 63.49313f),
         new Vector3(1010.55f, -418.9665f, 64.95395f), new Vector3(-1101.879f, -1536.912f, 4.579572f), new Vector3(-977.2473f, -1091.995f, 4.222562f), new Vector3(-1064.605f, -1057.521f, 6.411661f),
         new Vector3(-1031.352f, -903.0417f, 3.691091f), new Vector3(-1950.582f, -544.11022f, 14.7255f), new Vector3(-1901.605f, -585.9387f, 11.86937f), new Vector3(-1777.128f, -701.4404f, 10.52536f),
@@ -63,12 +63,12 @@ namespace YobbinCallouts
         new Vector3(-365.8479f, 6341.065f, 29.84357f), new Vector3(-374.104f, 6190.625f, 31.72954f)};
 
         //Arraylist of all the hospitals all around the map
-        private static ArrayList HospitalList = new ArrayList() { new Vector3(361.0359f, -585.4946f, 28.8267f), new Vector3(356.689f, -597.6279f, 28.78184f), new Vector3(-449.401f, -347.7617f, 34.50174f),
+        public static ArrayList HospitalList = new ArrayList() { new Vector3(361.0359f, -585.4946f, 28.8267f), new Vector3(356.689f, -597.6279f, 28.78184f), new Vector3(-449.401f, -347.7617f, 34.50174f),
         new Vector3(-447.8303f, -334.3066f, 34.50184f), new Vector3(295.7652f, -1447.524f, 29.966f), new Vector3(341.2158f, -1398.245f, 32.50923f), new Vector3(1838.992f, 3673.217f, 34.27671f),
         new Vector3(1815.018f, 3679.552f, 34.27674f), new Vector3(-247.249f, 6330.457f, 32.42619f), new Vector3(1152.5f, -1526.501f, 34.84344f), new Vector3(1161.176f, -1536.283f, 39.39494f)};
 
         //Arraylist of stores/gas stations all around the map
-        private static ArrayList StoreList = new ArrayList()
+        public static ArrayList StoreList = new ArrayList()
         {
             new Vector3(-47.29313f, -1758.671f, 29.42101f),
             new Vector3(289f, -1267f, 29.44f),
@@ -91,10 +91,7 @@ namespace YobbinCallouts
 
     };
 
-        public static ArrayList getHospitalList { get { return HospitalList; } }
-        public static ArrayList getHouseList { get { return HouseList; } }
 
-        public static ArrayList getStoreList { get { return StoreList; } }
 
         //plays a dialgoue in a List<string> format. Optionally, specify a ped and animation to use while the dialogue is playing.
         public static void Dialogue(List<string> dialogue, Ped animped = null, String animdict = "missfbi3_party_d", String animname = "stand_talk_loop_a_male1", float animspeed = -1, AnimationFlags animflag = AnimationFlags.Loop)

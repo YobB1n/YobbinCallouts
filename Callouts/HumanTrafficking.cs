@@ -142,7 +142,7 @@ namespace YobbinCallouts.Callouts
 
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).RealAreaName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
-            CallHandler.locationChooser(CallHandler.getStoreList);
+            CallHandler.locationChooser(CallHandler.StoreList);
             if (CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; } 
             else { Game.LogTrivial("YOBBINCALLOUTS: Not near store. Aborting callout."); return false; }
 
@@ -523,7 +523,7 @@ namespace YobbinCallouts.Callouts
                     Victim.Tasks.EnterVehicle(Game.LocalPlayer.Character.CurrentVehicle, SeatIndex, EnterVehicleFlags.None).WaitForCompletion();
                 }
                 if (VictimBlip.Exists()) { VictimBlip.Delete(); }
-                CallHandler.locationChooser(CallHandler.getHouseList);
+                CallHandler.locationChooser(CallHandler.HouseList);
                 Vector3 DriverDestination = CallHandler.SpawnPoint;  //catYes
                 VictimBlip = new Blip(DriverDestination);
                 VictimBlip.Color = System.Drawing.Color.Green;
