@@ -142,7 +142,7 @@ namespace YobbinCallouts.Callouts
 
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).RealAreaName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
-            MainSpawnPoint = CallHandler.GetStore();
+            MainSpawnPoint = CallHandler.nearestLocationChooser(CallHandler.getStoreList, maxdistance: 650, mindistance: 50);
             if (CallHandler.isHouse == false) { Game.LogTrivial("YOBBINCALLOUTS: Not near store. Aborting callout."); return false; }
 
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 75f);    //Callout Blip Circle with radius 50m

@@ -70,85 +70,31 @@ namespace YobbinCallouts
         //Arraylist of stores/gas stations all around the map
         private static ArrayList StoreList = new ArrayList()
         {
+            new Vector3(-47.29313f, -1758.671f, 29.42101f),
+            new Vector3(289f, -1267f, 29.44f),
+            new Vector3(818f, -1039f, 26.75f),
+            new Vector3(289f, -1267f, 29.44f),
+            new Vector3(1211.76f, -1390f, 35.37f),
+            new Vector3(1164.94f, -324.3139f, 69.22092f),
+            new Vector3(-530f, -1220f, 18.45f),
+            new Vector3(-711f, -917f, 19.21f),
+            new Vector3(-2073f, -327f, 13.32f),
+            new Vector3(527f, -151f, 57.46f),
+            new Vector3(643f, 264.4f, 103.3f),
+            new Vector3(1959.956f, 3740.31f, 32.34f),
+            new Vector3(-1442f, -1993f, 13.164f),
+            new Vector3(-93f, 6410.87f, 31.65f),
+            new Vector3(1696.867f, 4923.803f, 42.06f),
+            new Vector3(2557.269f, 380.7113f, 108.6229f),
+            new Vector3(-3038f, 483.778f, 7.91f),
+            new Vector3(-2545.63f, 2316.986f, 33.21579f),
 
-        };
+    };
+
         public static ArrayList getHospitalList { get { return HospitalList; } }
         public static ArrayList getHouseList { get { return HouseList; } }
 
-
-
-        //old and needs to be replaced.
-        public static Vector3 GetStore()
-        {
-            isHouse = true;
-            String Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).GameName;
-            Game.LogTrivial("YOBBINCALLOUTS: STOREHANDLER: Attempting to Locate a Store in: " + Zone);
-            if (Zone == "Davis" || Zone == "Stad" || Zone == "STRAW" || Zone == "Banning" || Zone == "RANCHO" || Zone == "ChamH" || Zone == "PBOX" || Zone == "LegSqu" || Zone == "SKID" || Zone == "TEXTI")
-            {
-                System.Random r3 = new System.Random(); //LSPD
-                int House = r3.Next(1, 3);
-                if (House == 1) { HousePoint = new Vector3(-47.29313f, -1758.671f, 29.42101f); Game.LogTrivial("YOBBINCALLOUTS: Found Store for Callout."); }   //Davis
-                if (House == 2) { HousePoint = new Vector3(289f, -1267f, 29.44f); Game.LogTrivial("YOBBINCALLOUTS: Found Store for Callout."); }    //Straw
-            }
-            else if (Zone == "Cypre" || Zone == "Murri" || Zone == "EBuro" || Zone == "LMesa" || Zone == "Mirr" || Zone == "East_V")
-            {
-                System.Random r3 = new System.Random(); //La Mesa PD
-                int House = r3.Next(1, 4);
-                if (House == 1) { HousePoint = new Vector3(818f, -1039f, 26.75f); Game.LogTrivial("YOBBINCALLOUTS: Found Store for Callout."); }    //LaMesa
-                if (House == 2) { HousePoint = new Vector3(1211.76f, -1390f, 35.37f); Game.LogTrivial("YOBBINCALLOUTS: Found Store for Callout."); }    //El Burro
-                if (House == 3) { HousePoint = new Vector3(1164.94f, -324.3139f, 69.22092f); Game.LogTrivial("YOBBINCALLOUTS: Found Store for Callout."); }    //Mirror Park
-
-            }
-            else if (Zone == "Vesp" || Zone == "VCana" || Zone == "Beach" || Zone == "DelSol" || Zone == "Koreat")
-            {
-                System.Random r3 = new System.Random(); //Vesupicci Beach PD
-                int House = r3.Next(1, 3);
-                if (House == 1) { HousePoint = new Vector3(-530f, -1220f, 18.45f); Game.LogTrivial("YOBBINCALLOUTS: Found Store for Callout."); }   //both Koreat
-                if (House == 2) { HousePoint = new Vector3(-711f, -917f, 19.21f); Game.LogTrivial("YOBBINCALLOUTS: Found Store for Callout."); }
-            }
-            else if (Zone == "DeLBe" || Zone == "DelPe" || Zone == "Morn" || Zone == "PBluff" || Zone == "Movie")
-            {
-                HousePoint = new Vector3(-2073f, -327f, 13.32f);    //Pbluff gas
-            }
-            else if (Zone == "Rockf" || Zone == "Burton" || Zone == "Richm" || Zone == "Golf")
-            {
-                isHouse = false;
-            }
-            else if (Zone == "CHIL" || Zone == "Vine" || Zone == "DTVine" || Zone == "WVine" || Zone == "Alta" || Zone == "Hawick")
-            {
-                System.Random r3 = new System.Random(); //Vinewood PD
-                int House = r3.Next(1, 3);
-                if (House == 1) { HousePoint = new Vector3(527f, -151f, 57.46f); Game.LogTrivial("YOBBINCALLOUTS: Found Store for Callout."); } //Hawick
-                if (House == 2) { HousePoint = new Vector3(643f, 264.4f, 103.3f); Game.LogTrivial("YOBBINCALLOUTS: Found Store for Callout."); }    //DT Vine
-            }
-            else if (Zone == "AirP") HousePoint = new Vector3(-1442f, -1993f, 13.164f); //airport LS customs
-            else if (Zone == "Sandy" || Zone == "Alamo")
-            {
-                HousePoint = new Vector3(1959.956f, 3740.31f, 32.34f); Game.LogTrivial("YOBBINCALLOUTS: Found Store for Callout.");  //Sandy
-            }
-            else if (Zone == "GrapeS")
-            {
-                HousePoint = new Vector3(1696.867f, 4923.803f, 42.06f); Game.LogTrivial("YOBBINCALLOUTS: Found Store for Callout.");  //Grapessed
-
-            }
-            else if (Zone == "Harmo" || Zone == "Desrt")
-            {
-                HousePoint = new Vector3(); //Desert off Highway
-            }
-            else if (Zone == "Tatamo") HousePoint = new Vector3(2557.269f, 380.7113f, 108.6229f);
-            else if (Zone == "ProcoB" || Zone == "PalFor" || Zone == "Paleto") HousePoint = new Vector3(-93f, 6410.87f, 31.65f);
-            else if (Zone == "MTChil") HousePoint = new Vector3(1727.931f, 6415.5f, 35.037f);
-            else if (Zone == "BhamCa" || Zone == "TongVaH" || Zone == "TongvaV" || Zone == "CHU") HousePoint = new Vector3(-3038f, 483.778f, 7.91f);   //banham
-            else if (Zone == "NCHU" || Zone == "ArmyB" || Zone == "Lago") HousePoint = new Vector3(-2545.63f, 2316.986f, 33.21579f);   //Lago Zancudo
-            else
-            {
-                HousePoint = World.GetNextPositionOnStreet(Game.LocalPlayer.Character.Position.Around(500f));
-                Game.LogTrivial("YOBBINCALLOUTS: STOREHANDLER: Player not near any Store.");
-                isHouse = false;
-            }
-            Game.LogTrivial("YOBBINCALLOUTS: HOUSEHANDLER: Choosing Store at " + HousePoint + " in " + Zone);
-            return HousePoint;
-        }
+        public static ArrayList getStoreList { get { return StoreList; } }
 
         //plays a dialgoue in a List<string> format. Optionally, specify a ped and animation to use while the dialogue is playing.
         public static void Dialogue(List<string> dialogue, Ped animped = null, String animdict = "missfbi3_party_d", String animname = "stand_talk_loop_a_male1", float animspeed = -1, AnimationFlags animflag = AnimationFlags.Loop)
