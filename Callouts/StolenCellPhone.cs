@@ -112,10 +112,9 @@ namespace YobbinCallouts.Callouts
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is Value is " + MainScenario);
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).GameName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
-
-            MainSpawnPoint = CallHandler.nearestLocationChooser(CallHandler.getHouseList, maxdistance: 600, mindistance: 100);
-            if (!CallHandler.isHouse) { Game.LogTrivial("YOBBINCALLOUTS: Could not find suitable house for callout location. Aborting Callout."); return false; }
-
+            CallHandler.nearestLocationChooser(CallHandler.getHouseList);
+            if (CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; }
+            else { Game.LogTrivial("YOBBINCALLOUTS: Could not find suitable house for callout location. Aborting Callout."); return false; }
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 75f);    //Callout Blip Circle with radius 50m
             AddMinimumDistanceCheck(50f, MainSpawnPoint);   //Player must be 50m or further away
             Functions.PlayScannerAudio("CITIZENS_REPORT YC_STOLEN_PROPERTY");  //change this
@@ -149,7 +148,7 @@ namespace YobbinCallouts.Callouts
 
             if (Config.DisplayHelp)
             {
-                if (CallHandler.isHouse) Game.DisplayHelp("Go to the ~y~Property~w~ Shown on The Map to Investigate.");
+                if (CallHandler.locationReturned) Game.DisplayHelp("Go to the ~y~Property~w~ Shown on The Map to Investigate.");
                 else Game.DisplayHelp("Go to the ~y~Caller~w~ Shown on The Map to Investigate.");
             }
             if (CalloutRunning == false) Callout();

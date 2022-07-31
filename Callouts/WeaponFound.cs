@@ -469,9 +469,10 @@ namespace YobbinCallouts.Callouts
             else //NO HIT
             {
                 Game.LogTrivial("YOBBINCALLOUTS: Weapon Serial Check = NO Hit.");
-                House = CallHandler.nearestLocationChooser(CallHandler.getHouseList, maxdistance: 600, mindistance: 100);
-                if (CallHandler.isHouse)
+                CallHandler.nearestLocationChooser(CallHandler.getHouseList);
+                if (CallHandler.locationReturned)
                 {
+                    House = CallHandler.SpawnPoint;
                     Game.LogTrivial("YOBBINCALLOUTS: House Found.");
                     NativeFunction.Natives.xA0F8A7517A273C05<bool>(World.GetNextPositionOnStreet(House), 0, out Vector3 SuspectVehicleSpawnPoint);
                     NativeFunction.Natives.GetClosestVehicleNodeWithHeading(SuspectVehicleSpawnPoint, out Vector3 nodePosition, out float heading, 1, 3.0f, 0);

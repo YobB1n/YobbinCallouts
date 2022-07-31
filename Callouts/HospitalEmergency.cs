@@ -110,10 +110,9 @@ namespace YobbinCallouts.Callouts
             int Scenario = r.Next(0, 0); //change later
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario value is: " + MainScenario);
-
-            MainSpawnPoint = CallHandler.nearestLocationChooser(CallHandler.getHospitalList);
-            if (!CallHandler.isHouse) { Game.LogTrivial("No Hospital location found within range. Aborting Callout."); return false; }
-
+            CallHandler.nearestLocationChooser(CallHandler.getHospitalList, maxdistance: 1000f);
+            if(CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; }
+            else { Game.LogTrivial("No Hospital location found within range. Aborting Callout."); return false; }
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 25f);
             AddMinimumDistanceCheck(60f, MainSpawnPoint);
             Functions.PlayScannerAudio("ATTENTION_ALL_UNITS_01 WE_HAVE YC_DISTURBANCE IN_A_01 YC_HOSPITAL");

@@ -14,8 +14,8 @@ namespace YobbinCallouts
 {
     class CallHandler
     {
-        public static Vector3 HousePoint; //returned location for houses, hospitals, stores, etc
-        public static bool isHouse = true; //if a location (house, hospital, store, etc) was returnred
+        public static Vector3 SpawnPoint; 
+        public static bool locationReturned = true; //if a location (house, hospital, store, etc) was returnred
         private static int count; //random counter for arrays
         private static string[] VehicleModels; //array of vehicle models for vehicle spawner
 
@@ -303,23 +303,23 @@ namespace YobbinCallouts
                 return null;
             }
         }
-        public static Vector3 nearestLocationChooser(ArrayList list, float maxdistance = 1000, float mindistance = 25)
+        public static void nearestLocationChooser(ArrayList list, float maxdistance = 600f, float mindistance = 25f)
         {
-            Vector3 closestLocation = (Vector3)list[0];
-            float closestDistance = Vector3.Distance(Game.LocalPlayer.Character.Position, (Vector3)list[0]);
+            ArrayList closeLocations = new ArrayList();
+            Random monke = new Random();
             for (int i = 1; i < list.Count; i++)
             {
                 float distance = Vector3.Distance(Game.LocalPlayer.Character.Position, (Vector3)list[i]);
                 if (distance <= maxdistance && distance >= mindistance)
                 {
-                    if (distance < closestDistance)
-                    {
-                        closestDistance = Vector3.Distance(Game.LocalPlayer.Character.Position, (Vector3)list[i]);
-                        closestLocation = (Vector3)list[i];
-                    }
+                    closeLocations.Add(list[i]);   
                 }
             }
-            return closestLocation;
+            if(closeLocations.Count == 0)
+            {
+                locationReturned = false;
+            }
+            SpawnPoint = (Vector3)closeLocations[monke.Next(0, closeLocations.Count)];
         }
     }
 }

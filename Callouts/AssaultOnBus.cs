@@ -158,7 +158,8 @@ namespace YobbinCallouts.Callouts
             Game.LogTrivial("==========YOBBINCALLOUTS: Assault on Bus Callout Start==========");
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).GameName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
-            SpawnPoint = CallHandler.nearestLocationChooser(list);
+            CallHandler.nearestLocationChooser(list);
+            if (CallHandler.locationReturned) { SpawnPoint = CallHandler.SpawnPoint; } else { return false; }
             ShowCalloutAreaBlipBeforeAccepting(SpawnPoint, 75f);    //Callout Blip Circle with radius 30m
             AddMinimumDistanceCheck(30f, SpawnPoint);   //Player must be 30m or further away
             AddMaximumDistanceCheck(600f, SpawnPoint); //Player must be 600m or closer 

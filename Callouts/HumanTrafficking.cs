@@ -142,8 +142,9 @@ namespace YobbinCallouts.Callouts
 
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).RealAreaName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
-            MainSpawnPoint = CallHandler.nearestLocationChooser(CallHandler.getStoreList, maxdistance: 650, mindistance: 50);
-            if (CallHandler.isHouse == false) { Game.LogTrivial("YOBBINCALLOUTS: Not near store. Aborting callout."); return false; }
+            CallHandler.nearestLocationChooser(CallHandler.getStoreList);
+            if (CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; } 
+            else { Game.LogTrivial("YOBBINCALLOUTS: Not near store. Aborting callout."); return false; }
 
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 75f);    //Callout Blip Circle with radius 50m
             AddMinimumDistanceCheck(25f, MainSpawnPoint);   //Player must be 25m or further away
@@ -522,7 +523,8 @@ namespace YobbinCallouts.Callouts
                     Victim.Tasks.EnterVehicle(Game.LocalPlayer.Character.CurrentVehicle, SeatIndex, EnterVehicleFlags.None).WaitForCompletion();
                 }
                 if (VictimBlip.Exists()) { VictimBlip.Delete(); }
-                Vector3 DriverDestination = CallHandler.nearestLocationChooser(CallHandler.getHouseList, maxdistance: 600, mindistance: 100);   //catYes
+                CallHandler.nearestLocationChooser(CallHandler.getHouseList);
+                Vector3 DriverDestination = CallHandler.SpawnPoint;  //catYes
                 VictimBlip = new Blip(DriverDestination);
                 VictimBlip.Color = System.Drawing.Color.Green;
                 VictimBlip.IsRouteEnabled = true;
