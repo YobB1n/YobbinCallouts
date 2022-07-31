@@ -229,7 +229,7 @@ namespace YobbinCallouts.Callouts
                 //    else if (WeaponType == 2) { Weapon = new Rage.Object("w_me_dagger", World.GetNextPositionOnStreet(Witness.Position)); WeaponName = "Dagger"; }
                 //    else if (WeaponType == 3) { Weapon = new Rage.Object("prop_cs_bowie_knife", World.GetNextPositionOnStreet(Witness.Position)); WeaponName = "Bowie Knife"; }
                 //}
-                Game.LogTrivial("YOBBINCALLOUTS: Weapon is "+ WeaponName);
+                Game.LogTrivial("YOBBINCALLOUTS: Weapon is " + WeaponName);
                 Weapon.IsPersistent = true;
             }
             catch (Exception e)
@@ -366,8 +366,8 @@ namespace YobbinCallouts.Callouts
                     SuspectVehicle = CallHandler.SpawnVehicle(World.GetNextPositionOnStreet(Suspect.Position), 69);
                     SuspectVehicle.IsPersistent = true;
                     Suspect.WarpIntoVehicle(SuspectVehicle, -1);
-                    Suspect.Tasks.CruiseWithVehicle(15f, VehicleDrivingFlags.AllowWrongWay|VehicleDrivingFlags.DriveAroundVehicles);
-                    if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Suspect is Driving a ~r~" + SuspectVehicle.Model.Name + "~w~ with Plate ~y~" + SuspectVehicle.LicensePlate); 
+                    Suspect.Tasks.CruiseWithVehicle(15f, VehicleDrivingFlags.AllowWrongWay | VehicleDrivingFlags.DriveAroundVehicles);
+                    if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Suspect is Driving a ~r~" + SuspectVehicle.Model.Name + "~w~ with Plate ~y~" + SuspectVehicle.LicensePlate);
                     Game.DisplayNotification("Suspect is Driving a ~r~" + SuspectVehicle.Model.Name + "~w~ with Plate ~y~" + SuspectVehicle.LicensePlate);
                     SuspectBlip = Suspect.AttachBlip();
                     SuspectBlip.IsFriendly = false;
@@ -392,7 +392,7 @@ namespace YobbinCallouts.Callouts
                     SuspectBlip.Scale = 0.69f;
                     while (player.DistanceTo(Suspect) >= 15) GameFiber.Wait(0);
 
-                    System.Random monke = new System.Random(); 
+                    System.Random monke = new System.Random();
                     int decision = monke.Next(0, 2);
                     if (decision == 1) Pursuit();
                     else
@@ -400,7 +400,7 @@ namespace YobbinCallouts.Callouts
                         System.Random yuy = new System.Random();
                         int WaitTime = yuy.Next(1500, 6000);
                         GameFiber.Wait(WaitTime);
-                        if(Suspect.Exists() && Suspect.IsAlive)
+                        if (Suspect.Exists() && Suspect.IsAlive)
                         {
                             Suspect.Tasks.FightAgainst(player, -1);
                         }
@@ -453,7 +453,7 @@ namespace YobbinCallouts.Callouts
 
             if (WeaponSerial < 50000000) //HIT //change to 50000000 later! always hit rn
             {
-                Game.LogTrivial("YOBBINCALLOUTS: Weapon Serial Check = Hit.");               
+                Game.LogTrivial("YOBBINCALLOUTS: Weapon Serial Check = Hit.");
                 SuspectVehicle = CallHandler.SpawnVehicle(World.GetNextPositionOnStreet(player.Position.Around(420f)), 69);
                 SuspectVehicle.IsPersistent = true;
                 Suspect = SuspectVehicle.CreateRandomDriver();
@@ -469,9 +469,10 @@ namespace YobbinCallouts.Callouts
             else //NO HIT
             {
                 Game.LogTrivial("YOBBINCALLOUTS: Weapon Serial Check = NO Hit.");
-                House = CallHandler.GetHouse();
-                if (CallHandler.isHouse)
+                CallHandler.locationChooser(CallHandler.HouseList);
+                if (CallHandler.locationReturned)
                 {
+                    House = CallHandler.SpawnPoint;
                     Game.LogTrivial("YOBBINCALLOUTS: House Found.");
                     NativeFunction.Natives.xA0F8A7517A273C05<bool>(World.GetNextPositionOnStreet(House), 0, out Vector3 SuspectVehicleSpawnPoint);
                     NativeFunction.Natives.GetClosestVehicleNodeWithHeading(SuspectVehicleSpawnPoint, out Vector3 nodePosition, out float heading, 1, 3.0f, 0);
@@ -482,13 +483,13 @@ namespace YobbinCallouts.Callouts
                     Suspect.IsPersistent = true; Suspect.BlockPermanentEvents = true;
                     var SuspectName = Functions.GetVehicleOwnerName(SuspectVehicle); //might mix up gender idk
                     var Distance = Math.Round(Suspect.DistanceTo(player));
-                    Game.DisplayNotification(WeaponName + " Serial ~r~" + WeaponSerial + " ~w~Registered to ~p~" + SuspectName + "~w~. Owner~w~ Lives in ~b~"+ Functions.GetZoneAtPosition(House).RealAreaName  + "~o~ " + Distance + " metres~w~ Away!");
+                    Game.DisplayNotification(WeaponName + " Serial ~r~" + WeaponSerial + " ~w~Registered to ~p~" + SuspectName + "~w~. Owner~w~ Lives in ~b~" + Functions.GetZoneAtPosition(House).RealAreaName + "~o~ " + Distance + " metres~w~ Away!");
                     if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, WeaponName + " Serial ~r~" + WeaponSerial + " ~w~Registered to ~p~" + SuspectName + "~w~. Owner~w~ Lives in ~b~" + Functions.GetZoneAtPosition(House).RealAreaName + "~o~ " + Distance + " metres~w~ Away!");
                     Suspect.Tasks.LeaveVehicle(Suspect.CurrentVehicle, LeaveVehicleFlags.WarpOut);
                     Suspect.Position = House;
                     Suspect.IsVisible = false;
                     GameFiber.Wait(1500);
-                    Game.DisplayHelp("Drive to the ~o~House~w~ of the ~r~Gun Owner~w~ in ~y~"+ Functions.GetZoneAtPosition(House).RealAreaName);
+                    Game.DisplayHelp("Drive to the ~o~House~w~ of the ~r~Gun Owner~w~ in ~y~" + Functions.GetZoneAtPosition(House).RealAreaName);
                     WitnessBlip = new Blip(House, 20);
                     WitnessBlip.IsRouteEnabled = true;
                     WitnessBlip.Color = Color.Orange;
@@ -500,7 +501,7 @@ namespace YobbinCallouts.Callouts
                     WitnessBlip.Alpha = 1f;
                     while (player.DistanceTo(House) >= 3.5f) GameFiber.Wait(0);
 
-                    Game.DisplayHelp("Press ~y~"+Config.MainInteractionKey+ "~w~ to ~b~Ring~w~ the Doorbell.");
+                    Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to ~b~Ring~w~ the Doorbell.");
                     while (!Game.IsKeyDown(Config.MainInteractionKey)) GameFiber.Wait(0);
                     CallHandler.Doorbell();
                     GameFiber.Wait(2000);
@@ -668,7 +669,7 @@ namespace YobbinCallouts.Callouts
                 Game.DisplaySubtitle("Dispatch, We Have Located the ~r~Suspect!");
                 GameFiber.Wait(1500);
 
-                SuspectDecisions();               
+                SuspectDecisions();
             }
         }
         private void SuspectDecisions()

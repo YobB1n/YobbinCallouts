@@ -44,8 +44,9 @@ namespace YobbinCallouts.Callouts
 
             if(MainScenario == 0) //suspect gone - house
             {
-                MainSpawnPoint = CallHandler.GetHouse();
-                if (!CallHandler.isHouse) MainScenario = 1; //if no house local, move on to scenario 1
+                CallHandler.locationChooser(CallHandler.HouseList);
+                if (CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; }
+                else { MainScenario = 1; } //if no house local, move on to scenario 1
             }
             else MainSpawnPoint = World.GetNextPositionOnStreet(player.Position.Around(600)); //no house
 
