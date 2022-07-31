@@ -25,14 +25,10 @@ This is the EntryPoint for the LSPDFR plugin. Not very interesting, there is an 
 This class is probably the most interesting if you're looking through my code to use for your own. The class contains a variety of
 useful helper functions that you can easily incorporate into your own LSPDFR/RPH plugins by simply copy/pasting. Functions include:
 
-`Vector3 GetHouse(float maxdistance = 600, float mindistance = 100)`
-Gets a random house from an existing ArrayList of houses all around the map, within mindistance and maxdistance (both are optional). If no house is found in that range, `IsHouse` will return as false, and a random street position maxdistance away will be chosen instead.
-
-`Vector3 GetHospital(float maxdistance = 600, float mindistance = 100)`
-Gets a random hospital from an existing ArrayList of hospitals all around the map, within mindistance and maxdistance (both are optional). Works the same as GetHouse.
-
-`Vector3 GetStore(float maxdistance = 600, float mindistance = 100)`
-Gets a random store from an existing ArrayList of stores all around the map, within mindistance and maxdistance (both are optional). Works the same as GetHouse.
+`void nearestLocationChooser(ArrayList list, float maxdistance = 600f, float mindistance = 25f)`
+Updates the variable SpawnPoint or locationReturned if a location was returned or not 
 
 `void Dialogue(List<string> dialogue, Ped animped = null, String animdict = "missfbi3_party_d", String animname = "stand_talk_loop_a_male1", float animspeed = -1, AnimationFlags animflag = AnimationFlags.Loop)`
 Plays a dialogue in "List<string>" form
+
+
