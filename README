@@ -28,9 +28,6 @@ useful helper functions that you can easily incorporate into your own LSPDFR/RPH
 `Vector3 nearestLocationChooser(ArrayList list, float maxdistance = 1000, float mindistance = 25)`
 Finds the nearest Vector3 in the ArrayList of locations that are within the float parameters of mindistance and maxdistance
 
-`Vector3 GetStore(float maxdistance = 600, float mindistance = 100)`
-Gets a random store from an existing ArrayList of stores all around the map, within the float parameters of mindistance and maxdistance. This method will soon be removed in place of nearestLocationChooser.
-
 `void Dialogue(List<string> dialogue, Ped animped = null, String animdict = "missfbi3_party_d", String animname = "stand_talk_loop_a_male1", float animspeed = -1, AnimationFlags animflag = AnimationFlags.Loop)`
 Plays a dialogue in "List<string>" form
 
