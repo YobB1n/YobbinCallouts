@@ -112,7 +112,7 @@ namespace YobbinCallouts.Callouts
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is Value is " + MainScenario);
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).GameName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
-            CallHandler.nearestLocationChooser(CallHandler.getHouseList);
+            CallHandler.locationChooser(CallHandler.getHouseList);
             if (CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; }
             else { Game.LogTrivial("YOBBINCALLOUTS: Could not find suitable house for callout location. Aborting Callout."); return false; }
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 75f);    //Callout Blip Circle with radius 50m

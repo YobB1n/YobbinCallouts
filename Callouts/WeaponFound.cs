@@ -469,7 +469,7 @@ namespace YobbinCallouts.Callouts
             else //NO HIT
             {
                 Game.LogTrivial("YOBBINCALLOUTS: Weapon Serial Check = NO Hit.");
-                CallHandler.nearestLocationChooser(CallHandler.getHouseList);
+                CallHandler.locationChooser(CallHandler.getHouseList);
                 if (CallHandler.locationReturned)
                 {
                     House = CallHandler.SpawnPoint;

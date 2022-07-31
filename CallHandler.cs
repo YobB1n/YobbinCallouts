@@ -303,7 +303,7 @@ namespace YobbinCallouts
                 return null;
             }
         }
-        public static void nearestLocationChooser(ArrayList list, float maxdistance = 600f, float mindistance = 25f)
+        public static void locationChooser(ArrayList list, float maxdistance = 600f, float mindistance = 25f)
         {
             ArrayList closeLocations = new ArrayList();
             Random monke = new Random();

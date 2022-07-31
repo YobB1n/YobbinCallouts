@@ -110,7 +110,7 @@ namespace YobbinCallouts.Callouts
             int Scenario = r.Next(0, 0); //change later
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario value is: " + MainScenario);
-            CallHandler.nearestLocationChooser(CallHandler.getHospitalList, maxdistance: 1000f);
+            CallHandler.locationChooser(CallHandler.getHospitalList, maxdistance: 1000f);
             if(CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; }
             else { Game.LogTrivial("No Hospital location found within range. Aborting Callout."); return false; }
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 25f);
