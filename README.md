@@ -4,7 +4,7 @@
 YobbinCallouts by YobB1n copyright (c) 2020-2022 YobB1n.
 This project in its entirety is open-source. Please provide appropriate credit when portions of this code are used as reference or in verbatim.
 
-`Quick Links:`
+## Quick Links: <br/>
 Download the callouts: https://www.lcpdfr.com/downloads/gta5mods/scripts/29467-yobbin-callouts/ <br/>
 Join my Discord: https://discord.com/invite/Wj522qa5mT  <br/>
 Website: https://www.yobbinmods.com/ (callout coding tutorials are also on my website!)
