@@ -1,7 +1,5 @@
 
 # YobbinCallouts
-
-[![Github All Releases](https://img.shields.io/github/downloads/YobB1n/YobbinCallouts/total.svg)]()
 [![Downloads](https://img.shields.io/github/downloads/YobB1n/YobbinCallouts/total.svg)](https://github.com/YobB1n/YobbinCallouts/releases)
 
 YobbinCallouts by YobB1n copyright (c) 2020-2022 YobB1n.
