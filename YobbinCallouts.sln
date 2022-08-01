@@ -1,25 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31515.178
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YobbinCallouts", "YobbinCallouts.csproj", "{E0A00A46-1259-4C5C-BAB1-B70B6BC86375}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YobbinCallouts", "YobbinCallouts.csproj", "{2DD3A11E-3F0A-4324-8E9E-B3CE85718444}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E0A00A46-1259-4C5C-BAB1-B70B6BC86375}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E0A00A46-1259-4C5C-BAB1-B70B6BC86375}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E0A00A46-1259-4C5C-BAB1-B70B6BC86375}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E0A00A46-1259-4C5C-BAB1-B70B6BC86375}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DD3A11E-3F0A-4324-8E9E-B3CE85718444}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2DD3A11E-3F0A-4324-8E9E-B3CE85718444}.Debug|x86.Build.0 = Debug|Any CPU
+		{2DD3A11E-3F0A-4324-8E9E-B3CE85718444}.Release|x86.ActiveCfg = Release|x86
+		{2DD3A11E-3F0A-4324-8E9E-B3CE85718444}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F0CAB64B-CE5C-431C-A946-A7F2FA5F0111}
+		SolutionGuid = {EA344063-C213-47D2-8616-681E3CC2A1B8}
 	EndGlobalSection
 EndGlobal

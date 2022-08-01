@@ -142,8 +142,9 @@ namespace YobbinCallouts.Callouts
 
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).RealAreaName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
-            MainSpawnPoint = CallHandler.GetStore();
-            if (CallHandler.isHouse == false) { Game.LogTrivial("YOBBINCALLOUTS: Not near store. Aborting callout."); return false; }
+            CallHandler.locationChooser(CallHandler.StoreList);
+            if (CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; } 
+            else { Game.LogTrivial("YOBBINCALLOUTS: Not near store. Aborting callout."); return false; }
 
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 75f);    //Callout Blip Circle with radius 50m
             AddMinimumDistanceCheck(25f, MainSpawnPoint);   //Player must be 25m or further away
@@ -264,7 +265,7 @@ namespace YobbinCallouts.Callouts
                 {
                     while (CalloutRunning)
                     {
-                        if(MainScenario <= 1) while (player.DistanceTo(Witness) >= 25 && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
+                        if (MainScenario <= 1) while (player.DistanceTo(Witness) >= 25 && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
                         else while (player.DistanceTo(Victim) >= 35 && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
                         if (Game.IsKeyDown(Config.CalloutEndKey)) { EndCalloutHandler.CalloutForcedEnd = true; break; }
                         Game.LogTrivial("YOBBINCALLOUTS: Player Arrived on Scene.");
@@ -522,7 +523,8 @@ namespace YobbinCallouts.Callouts
                     Victim.Tasks.EnterVehicle(Game.LocalPlayer.Character.CurrentVehicle, SeatIndex, EnterVehicleFlags.None).WaitForCompletion();
                 }
                 if (VictimBlip.Exists()) { VictimBlip.Delete(); }
-                Vector3 DriverDestination = CallHandler.GetHouse();    //catYes
+                CallHandler.locationChooser(CallHandler.HouseList);
+                Vector3 DriverDestination = CallHandler.SpawnPoint;  //catYes
                 VictimBlip = new Blip(DriverDestination);
                 VictimBlip.Color = System.Drawing.Color.Green;
                 VictimBlip.IsRouteEnabled = true;

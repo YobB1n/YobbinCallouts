@@ -64,8 +64,9 @@ namespace YobbinCallouts.Callouts
             //HOUSE CHOOSER FOR 1ST SCENARIO
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).GameName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
-            MainSpawnPoint = CallHandler.GetHouse();
-            if (!CallHandler.isHouse)
+            CallHandler.locationChooser(CallHandler.HouseList);
+            if (CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; } 
+            else
             {
                 Game.LogTrivial("YOBBINCALLOUTS: Player is not near any house. Aborting Callout.");
                 return false;
@@ -376,7 +377,7 @@ namespace YobbinCallouts.Callouts
                                         Game.DisplayHelp("When You are Done ~y~Investigating, ~w~Press End to ~b~Finish the Callout.");
                                         while (!Game.IsKeyDown(Config.CalloutEndKey)) { GameFiber.Wait(0); }
                                         Game.DisplayNotification("Dispatch, we are Code 4. We Have ~b~Secured~w~ the Property.");
-                                    }                                      
+                                    }
                                 }
                             }
                             else

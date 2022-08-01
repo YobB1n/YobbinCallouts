@@ -403,7 +403,7 @@ namespace YobbinCallouts.Callouts
                 //while (!Game.IsKeyDown(Config.MainInteractionKey)) GameFiber.Wait(0);
                 try
                 {
-                    StopThePed.API.Functions.callTowService();
+                    StopThePed.API.Functions.callTowService();  //breaks for some reason
                 }
                 catch (Exception e)
                 {
@@ -575,8 +575,9 @@ namespace YobbinCallouts.Callouts
                         Driver.Tasks.EnterVehicle(Game.LocalPlayer.Character.CurrentVehicle, SeatIndex, EnterVehicleFlags.None).WaitForCompletion();
                     }
                     if (DriverBlip.Exists()) { DriverBlip.Delete(); }
-                    DriverDestination = CallHandler.GetHouse();    //boom
-                    if (!CallHandler.isHouse)
+                    CallHandler.locationChooser(CallHandler.HouseList);
+                    if (CallHandler.locationReturned) { DriverDestination = CallHandler.SpawnPoint; }  //boom
+                    else
                     {
                         DriverDestination = World.GetNextPositionOnStreet(player.Position.Around(420f));
                     }
@@ -659,6 +660,5 @@ namespace YobbinCallouts.Callouts
         }
     }
 }
-
 
 

@@ -4,6 +4,7 @@ using LSPD_First_Response.Mod.API;
 using LSPD_First_Response.Mod.Callouts;
 using Rage.Native;
 using System;
+using System.Collections;
 
 namespace YobbinCallouts.Callouts
 {
@@ -11,15 +12,17 @@ namespace YobbinCallouts.Callouts
     public class BarFight : Callout
     {
         private Vector3 MainSpawnPoint;
-        private Vector3 LegionBar = new Vector3(253.8926f, -1009.604f, 29.27279f);
-        private Vector3 RanchoBar = new Vector3(500.8603f, -1536.218f, 29.27567f);
-        private Vector3 DowntownBar = new Vector3(224.254f, 314.3193f, 105.5649f);
-        private Vector3 EastVinewoodBar = new Vector3(966.7332f, -119.8229f, 74.35316f);
-        private Vector3 PaletoBar = new Vector3(-259.9449f, 6290.934f, 31.47674f);
-        private Vector3 SandyBar = new Vector3(1991.103f, 3047.539f, 47.21512f);   //inside, test
-        private Vector3 WestVinewoodBar = new Vector3(-561.0571f, 273.3992f, 83.10964f);
-        private Vector3 StripClub = new Vector3(142.3387f, -1299.464f, 29.17999f);  //add
-        private Vector3 DelPerroBar = new Vector3(-1650.104f, -1001.059f, 13.0174f);
+        ArrayList list = new ArrayList() { 
+        new Vector3(253.8926f, -1009.604f, 29.27279f),
+        new Vector3(500.8603f, -1536.218f, 29.27567f),
+        new Vector3(224.254f, 314.3193f, 105.5649f),
+        new Vector3(966.7332f, -119.8229f, 74.35316f),
+        new Vector3(-259.9449f, 6290.934f, 31.47674f),
+        new Vector3(1991.103f, 3047.539f, 47.21512f),   //inside, test
+        new Vector3(-561.0571f, 273.3992f, 83.10964f),
+        new Vector3(142.3387f, -1299.464f, 29.17999f),  //add
+        new Vector3(-1650.104f, -1001.059f, 13.0174f),
+        };
 
         private Ped Suspect;
         private Ped Suspect2;
@@ -46,62 +49,9 @@ namespace YobbinCallouts.Callouts
             int Scenario = r.Next(0, 2);    //change
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is " + MainScenario + "");
-
-            if (MainScenario >= 0)
-            {
-                Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).GameName;
-                Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
-                if (Zone == "Davis" || Zone == "Stad" || Zone == "STRAW" || Zone == "ChamH")
-                {
-                    //MainSpawnPoint = StripClub;
-                    MainSpawnPoint = StripClub;
-                }
-                else if (Zone == "PBOX" || Zone == "LegSqu" || Zone == "SKID" || Zone == "TEXTI")
-                {
-                    MainSpawnPoint = LegionBar;
-                }
-                else if (Zone == "Termina" || Zone == "Elysian" || Zone == "Banning" || Zone == "RANCHO" || Zone == "AirP")
-                {
-                    MainSpawnPoint = RanchoBar;
-                }
-                else if (Zone == "Mirr" || Zone == "East_V")
-                {
-                    MainSpawnPoint = EastVinewoodBar;
-                }
-                else if(Zone == "Cypre" || Zone == "Murri" || Zone == "EBuro" || Zone == "LMesa")
-                {
-                    MainSpawnPoint = new Vector3(1213.211f, -419.58f, 67.65f); //Mirror
-                }
-                else if (Zone == "Vesp" || Zone == "VCana" || Zone == "Beach" || Zone == "DeLBe" || Zone == "DelPe" || Zone == "Morn" || Zone == "PBluff" || Zone == "Movie")
-                {
-                    MainSpawnPoint = DelPerroBar;   //change
-                }
-                else if (Zone == "DelSol" || Zone == "Koreat")
-                {
-                    MainSpawnPoint = new Vector3(-878.88f, -1157.57f, 5.257f);   //liquor koreatown
-                }
-                else if (Zone == "Rockf" || Zone == "Burton" || Zone == "Richm" || Zone == "Golf")
-                {
-                    MainSpawnPoint = WestVinewoodBar;
-                }
-                else if (Zone == "CHIL" || Zone == "Vine" || Zone == "DTVine" || Zone == "WVine" || Zone == "Alta" || Zone == "Hawick")
-                {
-                    MainSpawnPoint = DowntownBar;
-                }
-                else if (Zone == "Sandy" || Zone == "GrapeS" || Zone == "Desrt")
-                {
-                    MainSpawnPoint = SandyBar;
-                }
-                else if (Zone == "ProcoB" || Zone == "PalFor" || Zone == "Paleto" || Zone == "MTChil")
-                {
-                    MainSpawnPoint = PaletoBar;
-                }
-                else
-                {
-                    Game.LogTrivial("YOBBINCALLOUTS: Player is Not Near Any Bar. Aborting Callout.");
-                    return false;
-                }
-            }
+            CallHandler.locationChooser(list);
+            if (CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; }
+            else { Game.LogTrivial("No location nearby. Ending Callout"); return false; }
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 75f);    //Callout Blip Circle with radius 50m
             AddMinimumDistanceCheck(25f, MainSpawnPoint);   //Player must be 25m or further away
             Functions.PlayScannerAudio("CITIZENS_REPORT CRIME_DISTURBING_THE_PEACE_01");

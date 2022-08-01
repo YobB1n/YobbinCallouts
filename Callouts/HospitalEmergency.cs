@@ -1,6 +1,4 @@
-﻿//Hospital Emergency Callout
-
-using LSPD_First_Response.Mod.API;
+﻿using LSPD_First_Response.Mod.API;
 using LSPD_First_Response.Mod.Callouts;
 using Rage;
 using Rage.Native;
@@ -112,10 +110,9 @@ namespace YobbinCallouts.Callouts
             int Scenario = r.Next(0, 0); //change later
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario value is: " + MainScenario);
-
-            MainSpawnPoint = CallHandler.GetHospital();
-            if (!CallHandler.isHouse) { Game.LogTrivial("No Hospital location found within range. Aborting Callout."); return false; }
-
+            CallHandler.locationChooser(CallHandler.HospitalList, maxdistance: 1000f);
+            if(CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; }
+            else { Game.LogTrivial("No Hospital location found within range. Aborting Callout."); return false; }
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 25f);
             AddMinimumDistanceCheck(60f, MainSpawnPoint);
             Functions.PlayScannerAudio("ATTENTION_ALL_UNITS_01 WE_HAVE YC_DISTURBANCE IN_A_01 YC_HOSPITAL");
@@ -276,7 +273,7 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(1000);
                 document.Delete();
                 GameFiber.Wait(1000);
-                //make this a helper later, add line breaks
+                //make this a helper later
                 var personaarray = new string[5];
                 personaarray[0] = "~w~Date of Birth: ~y~" + Functions.GetPersonaForPed(Suspect).Birthday.Date;
                 personaarray[1] = " ~w~Sex: ~y~" + Functions.GetPersonaForPed(Suspect).Gender;
@@ -356,16 +353,17 @@ namespace YobbinCallouts.Callouts
                             //GameFiber.Wait(1000);
                             Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop", 1f, AnimationFlags.None).WaitForCompletion(500);
                             Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop_mrk", 1f, AnimationFlags.Loop);
-                            HostageBlip = CallHandler.AssignBlip(Hostage, Color.Blue, 0.69f, "Hostage");
+                            HostageBlip = Hostage.AttachBlip();
+                            HostageBlip.IsFriendly = true;
+                            HostageBlip.Scale = 0.69f;
                             if (Hostage.IsFemale) Hostage.Tasks.PlayAnimation("anim@move_hostages@female", "female_idle", 1f, AnimationFlags.Loop);
                             else Hostage.Tasks.PlayAnimation("anim@move_hostages@male", "male_idle", 1f, AnimationFlags.Loop);
 
-                            //this switch statement doesn't actually do anything, just for breaking out of it at the end
                             var lewis = 0;
                             switch (lewis)
                             {
                                 case 0:
-                                    //the following code is for the hostage situation: if the suspect is killed before the end of the situation, break out of the switch statement.
+                                    //GameFiber.Yield();
                                     Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to Reason with the ~o~Patient.");
                                     HostageHold();
                                     if (Suspect.IsAlive) Game.DisplaySubtitle("~g~You:~w~ " + Functions.GetPersonaForPed(Suspect).Forename + "! You don't have to do this! Let's talk this through!");
@@ -378,7 +376,7 @@ namespace YobbinCallouts.Callouts
                                     else break;
                                     System.Random morsha = new System.Random();
                                     int action = morsha.Next(0, 2);
-                                    Game.LogTrivial("YOBBINCALLOUTS: Suspect Action is " + action);
+                                    Game.LogTrivial("YOBBINCALLOUTS: Suspect Action is " + WeaponModel);
                                     if (action == 0) //release
                                     {
                                         HostageHold();
@@ -540,7 +538,7 @@ namespace YobbinCallouts.Callouts
             while (true)
             {
                 GameFiber.Yield();
-                if(Suspect.Tasks.CurrentTaskStatus == TaskStatus.Interrupted) Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop_mrk", 1f, AnimationFlags.Loop); //test this
+                if (Suspect.Tasks.CurrentTaskStatus == TaskStatus.Interrupted) Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop_mrk", 1f, AnimationFlags.Loop); //test this
                 if (Suspect.IsDead || (Functions.IsPedArrested(Suspect)) || Hostage.IsDead) break;
                 if (Game.IsKeyDown(Config.MainInteractionKey)) break;
             }
