@@ -5,10 +5,10 @@
 YobbinCallouts by YobB1n copyright (c) 2020-2022 YobB1n.
 This project in its entirety is open-source. Please provide appropriate credit when portions of this code are used as reference or in verbatim.
 
-## Quick Links: <br/>
-Download the callouts: https://www.lcpdfr.com/downloads/gta5mods/scripts/29467-yobbin-callouts/ <br/>
-Join my Discord: https://discord.com/invite/Wj522qa5mT  <br/>
-Website: https://www.yobbinmods.com/ (callout coding tutorials are also on my website!)
+### Quick Links: <br/>
+**Download the callouts:** https://www.lcpdfr.com/downloads/gta5mods/scripts/29467-yobbin-callouts/ <br/>
+**Join my Discord:** https://discord.com/invite/Wj522qa5mT  <br/>
+**Website:** https://www.yobbinmods.com/ (callout coding tutorials are also on my website!)
 
 ## Introduction
 
@@ -27,7 +27,7 @@ This is the EntryPoint for the LSPDFR plugin. Not very interesting, there is an 
 This class is probably the most interesting if you're looking through my code to use for your own. The class contains a variety of
 useful helper functions that you can easily incorporate into your own LSPDFR/RPH plugins by simply copy/pasting. Functions include:
 
-`void nearestLocationChooser(ArrayList list, float maxdistance = 600f, float mindistance = 25f)`
+**`void nearestLocationChooser(ArrayList list, float maxdistance = 600f, float mindistance = 25f)`**
 Updates the variable SpawnPoint or locationReturned if a location was returned or not 
 
 `void Dialogue(List<string> dialogue, Ped animped = null, String animdict = "missfbi3_party_d", String animname = "stand_talk_loop_a_male1", float animspeed = -1, AnimationFlags animflag = AnimationFlags.Loop)`
