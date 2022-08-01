@@ -27,6 +27,9 @@ This is the EntryPoint for the LSPDFR plugin. Not very interesting, there is an 
 This class is probably the most interesting if you're looking through my code to use for your own. The class contains a variety of
 useful helper functions that you can easily incorporate into your own LSPDFR/RPH plugins by simply copy/pasting. Functions include:
 
+**`void IdleAction(Ped ped, bool iscop)`**
+Plays an Idle Animation for `ped`. If `iscop = true`, the animation will be a cop idle animation. Different animations available for male/female cops and citizens, specified in the relevant two-dimensional arrays at the start of the class.
+
 **`void locationChooser(ArrayList list, float maxdistance = 600f, float mindistance = 25f)`**
 Creates a list of all the Vector3 locations within `mindistance` and `maxdistance` contained in `list`. Returns `locationReturned = false` if no corresponding locations are found in `list`, and a random corresponding location if a location is found.
 
