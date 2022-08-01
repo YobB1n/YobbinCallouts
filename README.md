@@ -6,7 +6,7 @@ This project in its entirety is open-source. Please provide appropriate credit w
 
 `Quick Links:`
 Download the callouts: https://www.lcpdfr.com/downloads/gta5mods/scripts/29467-yobbin-callouts/ <br/>
-Join my Discord: https://discord.com/invite/Wj522qa5mT
+Join my Discord: https://discord.com/invite/Wj522qa5mT  <br/>
 Website: https://www.yobbinmods.com/ (callout coding tutorials are also on my website!)
 
 ## Introduction
