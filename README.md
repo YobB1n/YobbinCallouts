@@ -27,9 +27,9 @@ This is the EntryPoint for the LSPDFR plugin. Not very interesting, there is an 
 This class is probably the most interesting if you're looking through my code to use for your own. The class contains a variety of
 useful helper functions that you can easily incorporate into your own LSPDFR/RPH plugins by simply copy/pasting. Functions include:
 
-**`void nearestLocationChooser(ArrayList list, float maxdistance = 600f, float mindistance = 25f)`**
-Updates the variable SpawnPoint or locationReturned if a location was returned or not 
+**`void locationChooser(ArrayList list, float maxdistance = 600f, float mindistance = 25f)`**
+Creates a list of all the Vector3 locations within `mindistance` and `maxdistance` contained in `list`. Returns `locationReturned = false` if no corresponding locations are found in `list`, and a random corresponding location if a location is found.
 
-`void Dialogue(List<string> dialogue, Ped animped = null, String animdict = "missfbi3_party_d", String animname = "stand_talk_loop_a_male1", float animspeed = -1, AnimationFlags animflag = AnimationFlags.Loop)`
-Plays a dialogue in "List<string>" form
+**`void Dialogue(List<string> dialogue, Ped animped = null, String animdict = "missfbi3_party_d", String animname = "stand_talk_loop_a_male1", float animspeed = -1, AnimationFlags animflag = AnimationFlags.Loop)`**
+Plays a dialogue in `List<string>` form. Optionally, specify a Ped and animation to play while the dialogue is progressing. The dialgoue will be progress when the player presses the `MainInteractionKey` key in the `Config.ini` file.
 
