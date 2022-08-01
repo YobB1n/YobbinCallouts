@@ -1,6 +1,9 @@
 
 # YobbinCallouts
 
+[![Github All Releases](https://img.shields.io/github/downloads/YobB1n/YobbinCallouts/total.svg)]()
+
+
 YobbinCallouts by YobB1n copyright (c) 2020-2022 YobB1n.
 This project in its entirety is open-source. Please provide appropriate credit when portions of this code are used as reference or in verbatim.
 
