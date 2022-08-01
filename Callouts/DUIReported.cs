@@ -100,6 +100,7 @@ namespace YobbinCallouts.Callouts
                     Suspect.IsPersistent = true;
                     Suspect.BlockPermanentEvents = true;
                     //MAKE SUSPECT DRUNK WITH NATIVES
+                    NativeFunction.Natives.SET_​PED_​IS_​DRUNK(Suspect, true);
 
                     if (MainScenario == 0) Witness = new Ped(MainSpawnPoint);
                     else Witness = new Ped(Suspect.GetOffsetPosition(Suspect.Position.Around(3f)));
