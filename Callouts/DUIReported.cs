@@ -114,7 +114,8 @@ namespace YobbinCallouts.Callouts
                 else //suspect on scene
                 {
                     SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, 0.69f, "Suspect", true);
-                    //MAKE SUSPECT DRUNK WITH NATIVES, ARGUE WITH WITNESS TASK
+                    Witness.Heading = Suspect.Heading - 180;
+                    //MAKE SUSPECT DRUNK WITH NATIVES, ARGUE WITH WITNESS TASK ANIMATION
                     //ARGUE WITH SUSPECT TASK
                 }
             }
@@ -147,18 +148,24 @@ namespace YobbinCallouts.Callouts
                 {
                     while (CalloutRunning)
                     {
-                        while (player.DistanceTo(Suspect) >= 25 && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
+                        System.Random r = new System.Random();
+                        int TriggerDistance = r.Next(20, 35); 
+                        while (player.DistanceTo(Suspect) >= TriggerDistance && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
                         if (Game.IsKeyDown(Config.CalloutEndKey)) break;
 
                         if (MainScenario == 0) //not on scene
                         { 
-                            
+                            //dialogue
                         }
                         else //on scene
                         {
-                            if (Suspect.IsMale) Game.DisplaySubtitle("~b~Caller:~w~ You can't drive bro! I won't let you get in that car!");
-                            else Game.DisplaySubtitle("~b~Caller:~w~ You can't drive miss! I won't let you get in that car!");
+                            if (Config.DisplayHelp) Game.DisplayHelp("~b~Investigate~w~ the Situation.");
+                            if (Suspect.IsMale) Game.DisplaySubtitle("~b~Caller:~w~ You can't drive bro! I won't let you get in that car!", 2500);
+                            else Game.DisplaySubtitle("~b~Caller:~w~ You can't drive miss! I won't let you get in that car!", 2500);
+
+                            //argument between the two peds starts now. After a certain point the suspect leaves to hop in the car.
                         }
+                        break;
                     }
                     GameFiber.Wait(2000);
                     Game.LogTrivial("YOBBINCALLOUTS: Callout Finished, Ending...");

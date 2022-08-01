@@ -286,7 +286,7 @@ namespace YobbinCallouts
             "emporor", "fugitive", "ingot", "intruder", "premier", "primo", "primo2", "regina", "stanier", "stratum", "surge", "tailgater", "washington", "bestiagts", "blista2", "buffalo", "schafter2", "euros",
             "sadler", "bison", "bison2", "bison3", "burrito", "burrito2", "minivan", "minivan2", "paradise", "pony"};
             System.Random chez = new System.Random();
-            int model = chez.Next(0, VehicleModels.Length);
+            int model =     chez.Next(0, VehicleModels.Length);
             Game.LogTrivial("YOBBINCALLOUTS: VEHICLESPAWNER: Vehicle Model is " + VehicleModels[model]);
             var veh = new Vehicle(VehicleModels[model], SpawnPoint, Heading);
             veh.IsPersistent = true; //vehicle is marked as persistent by default
@@ -407,6 +407,7 @@ namespace YobbinCallouts
         {
             try
             {
+                if (!entity.Exists()) return null;
                 Blip blip = entity.AttachBlip();
                 blip.Color = blipcolor;
                 blip.Scale = scale;
