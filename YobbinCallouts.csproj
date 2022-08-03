@@ -92,6 +92,7 @@
     <Compile Include="EUPHelper.cs" />
     <Compile Include="InvestigationHandler.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="PedBackground.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
