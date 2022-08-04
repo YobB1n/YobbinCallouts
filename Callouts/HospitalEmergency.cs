@@ -34,12 +34,12 @@ namespace YobbinCallouts.Callouts
          "~b~Nurse:~w~ Hey Officer, Over Here!!",
          "~g~You:~w~ What's going on? Are you guys okay?",
          "~b~Nurse:~w~ Yeah we're fine, but we got a big problem here!",
-         "~b~Nurse:~w~ We just had a patient escape who has a known history of shizophrenia and paranoia.",
+         "~b~Nurse:~w~ We just had a patient escape who has a known history of serious mental health issues.",
          "~b~Nurse:~w~ They were saying some really concerning and threatening things before they escaped!",
          "~g~You:~w~ Do you know where they went?",
          "~b~Nurse:~w~ I have no clue. You got to find them as soon as possible, for their safety and everyone elses!",
          "~g~You:~w~ Is there any information on the patient, or a description?",
-         "~b~Nurse:~w~ Yes, I have some medical records right here, take them!",
+         "~b~Nurse:~w~ Yes, I have some medical records right here, take them! This will explain their diagnoses too.",
         };
         private readonly List<string> GuardOpening1 = new List<string>()
         {
@@ -47,12 +47,12 @@ namespace YobbinCallouts.Callouts
          "~g~You:~w~ What's going on? Are you guys okay?",
          "~b~Security Guard: ~w~We're fine, but our situation here isn't!",
          "~g~You:~w~ What happened?",
-         "~b~Security Guard: ~w~A person came in with a bunch of stab wounds and was bleading all over.",
+         "~b~Security Guard: ~w~A person came in bleeding.",
          "~g~You:~w~ Hospital staff started treating them immediately, but it became clear we'd need to contact the police regarding their condition.",
          "~b~Security Guard: ~w~When we mentioned the Police were on their way, the suspect freaked out and became violent with the nurses and doctors.",
          "~b~Security Guard: ~w~They ran out of the ER before anyone could stop them! I'm worried they won't make it far with their injuries, or worse yet, hurt someone else!",
          "~g~You:~w~ Do you have a description or location I should start looking?!",
-         "~b~Security Guard:~w~ Yes, I have some medical records right here, take them!",
+         "~b~Security Guard:~w~ Yes, I have some medical records right here, take them! This will explain their diagnoses too.",
         };
 
         //private readonly List<string> Hostage1 = new List<string>() //this might not work, test
@@ -273,17 +273,11 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(1000);
                 document.Delete();
                 GameFiber.Wait(1000);
-                //make this a helper later, test ~n~ (new break)
-                var personaarray = new string[5];
-                personaarray[0] = "~w~Date of Birth: ~y~" + Functions.GetPersonaForPed(Suspect).Birthday.Date;
-                personaarray[1] = "~n~~w~Sex: ~y~" + Functions.GetPersonaForPed(Suspect).Gender;
-                personaarray[2] = "~n~~w~Times Stopped: ~o~" + Functions.GetPersonaForPed(Suspect).TimesStopped;
-                personaarray[3] = "~n~~w~Medical History: ~r~Shizophrenia, Paranoia";
-                personaarray[4] = "~n~~w~Medication: ~r~Antipsychotic medication"; //make this change
-                var persona = string.Concat(personaarray);
+                PedBackground background = new PedBackground(Suspect);
+                background.setMedicalProblemsForMentallyIllSuspect();
                 //mpinventory -> drug_trafficking
                 //commonmenu -> shop_health_icon_b
-                Game.DisplayNotification("commonmenu", "shop_health_icon_b", "~g~Patient Information", "~b~" + Functions.GetPersonaForPed(Suspect).FullName, persona);
+                Game.DisplayNotification("commonmenu", "shop_health_icon_b", "~g~Patient Information", "~b~" + background.fullName, background.ToString());
                 //Functions.DisplayPedId(Suspect, true); //test this
                 GameFiber.Wait(1500);
                 CallHandler.IdleAction(Nurse, false);
@@ -429,13 +423,13 @@ namespace YobbinCallouts.Callouts
                             {
                                 Game.DisplayNotification("Dispatch, we have taken the Patient into ~r~Custody.");
                                 GameFiber.Wait(1500);
-                                LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                                Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
                                 GameFiber.Wait(1500);
                                 DriveBack();
                             }
                             else Game.DisplayNotification("Dispatch, Suspect has been ~r~Killed.");
                             GameFiber.Wait(2000);
-                            LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                            Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
                             GameFiber.Wait(1500);
                         }
                         else
@@ -496,7 +490,7 @@ namespace YobbinCallouts.Callouts
 
                 Game.DisplayNotification("Dispatch, we are ~g~Code 4.~w~ We have taken the Patient back to the ~b~Hospital.");
                 GameFiber.Wait(1500);
-                LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
                 GameFiber.Wait(1500);
             }
         }
@@ -507,14 +501,14 @@ namespace YobbinCallouts.Callouts
             {
                 Game.DisplayNotification("Suspect is ~r~Evading!");
                 Suspect.Tasks.ClearImmediately();
-                LSPD_First_Response.Mod.API.Functions.ForceEndCurrentPullover();
-                MainPursuit = LSPD_First_Response.Mod.API.Functions.CreatePursuit();
-                LSPD_First_Response.Mod.API.Functions.RequestBackup(Suspect.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
-                LSPD_First_Response.Mod.API.Functions.SetPursuitIsActiveForPlayer(MainPursuit, true);
-                LSPD_First_Response.Mod.API.Functions.AddPedToPursuit(MainPursuit, Suspect);
+                Functions.ForceEndCurrentPullover();
+                MainPursuit = Functions.CreatePursuit();
+                Functions.RequestBackup(Suspect.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
+                Functions.SetPursuitIsActiveForPlayer(MainPursuit, true);
+                Functions.AddPedToPursuit(MainPursuit, Suspect);
                 GameFiber.Wait(1500);
-                LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
-                while (LSPD_First_Response.Mod.API.Functions.IsPursuitStillRunning(MainPursuit)) { GameFiber.Wait(0); }
+                Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
+                while (Functions.IsPursuitStillRunning(MainPursuit)) { GameFiber.Wait(0); }
                 while (Suspect.Exists())
                 {
                     GameFiber.Yield();
@@ -530,7 +524,7 @@ namespace YobbinCallouts.Callouts
                     GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Following the Pursuit.");
                 }
                 GameFiber.Wait(2000);
-                LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
             }
         }
         //this helper is the logic the suspect is assigned in between dialogue advances in the hostage situation
