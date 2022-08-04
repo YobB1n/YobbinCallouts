@@ -115,7 +115,7 @@ namespace YobbinCallouts.Callouts
                         Game.LogTrivial("IN: " + this);
                         string error = e.ToString();
                         Game.LogTrivial("ERROR: " + error);
-                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Chck Your ~g~Log File.~w~ Sorry for the Inconvenience!");
+                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
                         Game.DisplayNotification("Error: ~r~" + error);
                         Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
                         Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
@@ -234,42 +234,18 @@ namespace YobbinCallouts.Callouts
                     if (Game.IsKeyDown(Config.MainInteractionKey) && SuspectVehicle.Exists())
                     {
                         Game.DisplayNotification("~b~Searching the Vehicle.");
-                        //idk if this is neccessary but I liked to check if all bones are valid
-                        if (SuspectVehicle.HasBone("door_dside_f"))
-                        {
-                            if (SuspectVehicle.Doors[0].IsValid())
-                            {
-                                SuspectVehicle.Doors[0].Open(false);
-                            }
-                        }
-                        if (SuspectVehicle.HasBone("door_pside_f"))
-                        {
-                            if (SuspectVehicle.Doors[1].IsValid())
-                            {
-                                SuspectVehicle.Doors[1].Open(false);
-                            }
-                        }
-                        if (SuspectVehicle.HasBone("door_dside_r"))
-                        {
-                            if (SuspectVehicle.Doors[2].IsValid())
-                            {
-                                SuspectVehicle.Doors[2].Open(false);
-                            }
-                        }
-                        if (SuspectVehicle.HasBone("door_pside_r"))
-                        {
-                            if (SuspectVehicle.Doors[3].IsValid())
-                            {
-                                SuspectVehicle.Doors[3].Open(false);
-                            }
-                        }
-                        if (SuspectVehicle.HasBone("boot"))
-                        {
-                            if (SuspectVehicle.Doors[5].IsValid())
-                            {
-                                SuspectVehicle.Doors[5].Open(false);
-                            }
-                        }
+                        //idk if this is necessary but I liked to check if all bones are valid
+                        if (SuspectVehicle.HasBone("door_dside_f") && SuspectVehicle.Doors[0].IsValid())
+                            SuspectVehicle.Doors[0].Open(false);
+                        if (SuspectVehicle.HasBone("door_pside_f") && SuspectVehicle.Doors[1].IsValid())
+                            SuspectVehicle.Doors[1].Open(false);
+                        if (SuspectVehicle.HasBone("door_dside_r") && SuspectVehicle.Doors[2].IsValid())
+                            SuspectVehicle.Doors[2].Open(false);
+                        if (SuspectVehicle.HasBone("door_pside_r") && SuspectVehicle.Doors[3].IsValid())
+                            SuspectVehicle.Doors[3].Open(false);
+                        if (SuspectVehicle.HasBone("boot") && SuspectVehicle.Doors[5].IsValid())
+                            SuspectVehicle.Doors[5].Open(false);
+
                         GameFiber.Wait(500);
                         Game.LocalPlayer.Character.Tasks.GoStraightToPosition(SuspectVehicle.GetOffsetPositionRight(1.5f), 1f, SuspectVehicle.Heading - 90, 1f, -1).WaitForCompletion(500);
                         Game.LocalPlayer.Character.Tasks.PlayAnimation("mini@repair", "fixing_a_ped", -1, AnimationFlags.Loop).WaitForCompletion(4000);
