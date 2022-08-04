@@ -36,7 +36,7 @@ Creates a list of all the Vector3 locations within `mindistance` and `maxdistanc
 **`void Dialogue(List<string> dialogue, Ped animped = null, String animdict = "missfbi3_party_d", String animname = "stand_talk_loop_a_male1", float animspeed = -1, AnimationFlags animflag = AnimationFlags.Loop)`**<br/>
 Plays a dialogue in `List<string>` form. Optionally, specify a Ped and animation to play while the dialogue is progressing. The dialgoue will be progress when the player presses the `MainInteractionKey` key in the `Config.ini` file.
 
-###PedBackground
+### PedBackground
 
 This class was made for the HospitalEmergency callout. It was made in order to keep the code clean inside the actual callout file. This class gives a detailed medical report about the suspect that ran away from the hospital. The suspect could be either a wanted criminal or a person with a mental health condition which this class takes into account. Method explanation coming soon.
 
