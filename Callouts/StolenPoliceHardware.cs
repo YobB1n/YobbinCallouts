@@ -12,15 +12,11 @@ namespace YobbinCallouts.Callouts
     class StolenPoliceHardware : Callout
     {
         private Vector3 MainSpawnPoint;
-
         private LSPD_First_Response.Engine.Scripting.EWorldZoneCounty WorldZone;    //this is for the investigation at the end of the callout
-
+        
         private LHandle MainPursuit;
-
         private Vehicle SuspectVehicle;
-
         private Ped Suspect;
-
         private Blip SuspectBlip;
 
         private bool CalloutRunning = false;
@@ -45,7 +41,7 @@ namespace YobbinCallouts.Callouts
             LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("WE_HAVE_01 YC_STOLEN_FIREARM");
             CalloutMessage = "Stolen Police Hardware";
             CalloutPosition = MainSpawnPoint;
-            CalloutAdvisory = "~r~ANPR Hit~w~ on Vehicle Suspected of Carrying Stolen Police Weapons.";
+            CalloutAdvisory = "ANPR Hit on Vehicle Suspected of Carrying Stolen Police Weapons.";
             return base.OnBeforeCalloutDisplayed();
         }
         public override bool OnCalloutAccepted()
@@ -63,6 +59,7 @@ namespace YobbinCallouts.Callouts
             NativeFunction.Natives.GetClosestVehicleNodeWithHeading(MainSpawnPoint, out Vector3 nodePosition, out float outheading, 1, 3.0f, 0);
             SuspectVehicle = CallHandler.SpawnVehicle(MainSpawnPoint, outheading);
 
+            //Suspect Spawning
             Peds = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
             System.Random r2 = new System.Random();
             int SuspectModel = r2.Next(0, Peds.Length);
@@ -76,6 +73,7 @@ namespace YobbinCallouts.Callouts
             SuspectBlip.Scale = 0.8f;   //may botch?
             SuspectBlip.IsRouteEnabled = true;
             SuspectBlip.Name = "Suspect";
+
             if (!CalloutRunning) Callout();
             return base.OnCalloutAccepted();
         }
@@ -98,16 +96,12 @@ namespace YobbinCallouts.Callouts
                         if (Game.IsKeyDown(Config.CalloutEndKey)) { EndCalloutHandler.CalloutForcedEnd = true; break; }
                         SuspectBlip.IsRouteEnabled = false;
                         Game.DisplayHelp("Perform a Traffic Stop on the ~r~Suspect.");
-                        while (!LSPD_First_Response.Mod.API.Functions.IsPlayerPerformingPullover())
-                        {
-                            GameFiber.Wait(0);
-                        }
+                        while (!LSPD_First_Response.Mod.API.Functions.IsPlayerPerformingPullover()) GameFiber.Wait(0);
 
                         if (MainScenario == 0) Pursuit();
                         else if (MainScenario == 1) Shootout();
                         else if (MainScenario == 2 || MainScenario == 3) Pullover();
-                        break;
-                        //GameFiber.Wait(2500);
+                        break; //finishes the callout
                     }
                     Game.LogTrivial("YOBBINCALLOUTS: Callout Finished, Ending...");
                     EndCalloutHandler.EndCallout();
@@ -121,7 +115,7 @@ namespace YobbinCallouts.Callouts
                         Game.LogTrivial("IN: " + this);
                         string error = e.ToString();
                         Game.LogTrivial("ERROR: " + error);
-                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Chck Your ~g~Log File.~w~ Sorry for the Inconvenience!");
+                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
                         Game.DisplayNotification("Error: ~r~" + error);
                         Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
                         Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
@@ -240,42 +234,18 @@ namespace YobbinCallouts.Callouts
                     if (Game.IsKeyDown(Config.MainInteractionKey) && SuspectVehicle.Exists())
                     {
                         Game.DisplayNotification("~b~Searching the Vehicle.");
-                        //idk if this is neccessary but I liked to check if all bones are valid
-                        if (SuspectVehicle.HasBone("door_dside_f"))
-                        {
-                            if (SuspectVehicle.Doors[0].IsValid())
-                            {
-                                SuspectVehicle.Doors[0].Open(false);
-                            }
-                        }
-                        if (SuspectVehicle.HasBone("door_pside_f"))
-                        {
-                            if (SuspectVehicle.Doors[1].IsValid())
-                            {
-                                SuspectVehicle.Doors[1].Open(false);
-                            }
-                        }
-                        if (SuspectVehicle.HasBone("door_dside_r"))
-                        {
-                            if (SuspectVehicle.Doors[2].IsValid())
-                            {
-                                SuspectVehicle.Doors[2].Open(false);
-                            }
-                        }
-                        if (SuspectVehicle.HasBone("door_pside_r"))
-                        {
-                            if (SuspectVehicle.Doors[3].IsValid())
-                            {
-                                SuspectVehicle.Doors[3].Open(false);
-                            }
-                        }
-                        if (SuspectVehicle.HasBone("boot"))
-                        {
-                            if (SuspectVehicle.Doors[5].IsValid())
-                            {
-                                SuspectVehicle.Doors[5].Open(false);
-                            }
-                        }
+                        //idk if this is necessary but I liked to check if all bones are valid
+                        if (SuspectVehicle.HasBone("door_dside_f") && SuspectVehicle.Doors[0].IsValid())
+                            SuspectVehicle.Doors[0].Open(false);
+                        if (SuspectVehicle.HasBone("door_pside_f") && SuspectVehicle.Doors[1].IsValid())
+                            SuspectVehicle.Doors[1].Open(false);
+                        if (SuspectVehicle.HasBone("door_dside_r") && SuspectVehicle.Doors[2].IsValid())
+                            SuspectVehicle.Doors[2].Open(false);
+                        if (SuspectVehicle.HasBone("door_pside_r") && SuspectVehicle.Doors[3].IsValid())
+                            SuspectVehicle.Doors[3].Open(false);
+                        if (SuspectVehicle.HasBone("boot") && SuspectVehicle.Doors[5].IsValid())
+                            SuspectVehicle.Doors[5].Open(false);
+
                         GameFiber.Wait(500);
                         Game.LocalPlayer.Character.Tasks.GoStraightToPosition(SuspectVehicle.GetOffsetPositionRight(1.5f), 1f, SuspectVehicle.Heading - 90, 1f, -1).WaitForCompletion(500);
                         Game.LocalPlayer.Character.Tasks.PlayAnimation("mini@repair", "fixing_a_ped", -1, AnimationFlags.Loop).WaitForCompletion(4000);

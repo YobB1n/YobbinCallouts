@@ -114,6 +114,7 @@ namespace YobbinCallouts.Callouts
                 Suspect.IsPersistent = true;
                 Suspect.BlockPermanentEvents = true;
                 Functions.SetPedAsArrested(Suspect, true, false);
+                Suspect.Tasks.StandStill(-1);
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect Spawned");
 
                 Citizen = new Ped(Suspect.GetOffsetPositionFront(2));
@@ -141,7 +142,7 @@ namespace YobbinCallouts.Callouts
                 Game.LogTrivial("IN: " + this);
                 string error = e.ToString();
                 Game.LogTrivial("ERROR: " + error);
-                Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Chck Your ~g~Log File.~w~ Sorry for the Inconvenience!");
+                Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
                 Game.DisplayNotification("Error: ~r~" + error);
                 Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
                 Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INTIALIZATION==========");
@@ -226,9 +227,11 @@ namespace YobbinCallouts.Callouts
             if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~b~Victim.");
             CallHandler.Dialogue(AssaultInvestigation, Victim);
 
-            Victim.Dismiss(); VictimBlip.Delete();
+            Victim.Dismiss(); if(VictimBlip.Exists()) VictimBlip.Delete();
+            Citizen.Dismiss(); if (CitizenBlip.Exists()) CitizenBlip.Delete();
+
             GameFiber.Wait(2000);
-            Game.DisplayHelp("Deal With the ~r~Suspect. Press ~y~"+Config.CalloutEndKey+" ~w~When Finished.");
+            Game.DisplayHelp("Deal With the ~r~Suspect. ~w~Press ~y~"+Config.CalloutEndKey+" ~w~When Finished.");
             Functions.SetPedAsArrested(Suspect, true, true);
             while (!Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
             if (Suspect.Exists()) if (Suspect.IsAlive) Game.DisplayNotification("Dispatch, We Have ~b~Arrested~w~ the Suspect.");

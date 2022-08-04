@@ -2,6 +2,7 @@
 // This class provides a variety of important helper functions for Callouts. Feel free to use with credit!
 // TO-DO: * MORE HOUSES; especially east vinewood
 //        * Refactor Store Handler
+// Thanks to ROHEAT THE GOAT!! :D
 
 using Rage;
 using LSPD_First_Response.Mod.API;
@@ -14,10 +15,11 @@ namespace YobbinCallouts
 {
     class CallHandler
     {
-        public static Vector3 SpawnPoint; 
+        public static Vector3 SpawnPoint;
         public static bool locationReturned = true; //if a location (house, hospital, store, etc) was returnred
         private static int count; //random counter for arrays
         private static string[] VehicleModels; //array of vehicle models for vehicle spawner
+        public static bool SoundPlayed; //if Sound is Played
 
         //These are the animations for the Idle Actions (ped just standing around)
         //“amb@world_human_cop_idles”
@@ -45,6 +47,7 @@ namespace YobbinCallouts
             {"amb@world_human_hang_out_street@female_arms_crossed@idle_a", "idle_b"},
             {"amb@world_human_hang_out_street@female_arms_crossed@idle_a", "idle_c"},
         };
+        //couldn't find as many good rando male idle animations sadge
         private static string[,] MaleRandoAnim = new string[,] {
             {"amb@world_human_hang_out_street@male_a@base", "base"},
             {"amb@world_human_hang_out_street@male_b@base", "base"},
@@ -88,12 +91,17 @@ namespace YobbinCallouts
             new Vector3(2557.269f, 380.7113f, 108.6229f),
             new Vector3(-3038f, 483.778f, 7.91f),
             new Vector3(-2545.63f, 2316.986f, 33.21579f),
-
     };
 
-
-
-        //plays a dialgoue in a List<string> format. Optionally, specify a ped and animation to use while the dialogue is playing.
+        /// <summary>
+        /// plays a dialgoue in a List<string> format. Optionally, specify a ped and animation to use while the dialogue is playing.
+        /// </summary>
+        /// <param name="dialogue"></param>
+        /// <param name="animped"></param>
+        /// <param name="animdict"></param>
+        /// <param name="animname"></param>
+        /// <param name="animspeed"></param>
+        /// <param name="animflag"></param>
         public static void Dialogue(List<string> dialogue, Ped animped = null, String animdict = "missfbi3_party_d", String animname = "stand_talk_loop_a_male1", float animspeed = -1, AnimationFlags animflag = AnimationFlags.Loop)
         {
             count = 0;
@@ -115,8 +123,11 @@ namespace YobbinCallouts
                 }
             }
         }
-
-        //Plays an idle animation, depending on if the Ped is a cop or not.
+        /// <summary>
+        /// Plays an idle animation, depending on if the Ped is a cop or not.
+        /// </summary>
+        /// <param name="ped"></param>
+        /// <param name="iscop"></param>
         public static void IdleAction(Ped ped, bool iscop)
         {
             if (ped != null && ped.Exists())
@@ -156,9 +167,14 @@ namespace YobbinCallouts
                 }
             }
         }
-
-        //spawns a vehicle at the position and heading.
-        public static Vehicle SpawnVehicle(Vector3 SpawnPoint, float Heading)
+        /// <summary>
+        /// Spawns a vehicle at the position and heading.
+        /// </summary>
+        /// <param name="SpawnPoint"></param>
+        /// <param name="Heading"></param>
+        /// <param name="persistent"></param>
+        /// <returns></returns>
+        public static Vehicle SpawnVehicle(Vector3 SpawnPoint, float Heading, bool persistent = true)
         {
             VehicleModels = new string[63] {"asbo", "blista", "dilettante", "panto", "prairie", "cogcabrio", "exemplar", "f620", "felon", "felon2", "jackal", "oracle", "oracle2", "sentinel", "sentinel2",
             "zion", "zion2", "baller", "baller2", "baller3", "cavalcade", "fq2", "granger", "gresley", "habanero", "huntley", "mesa", "radi", "rebla", "rocoto", "seminole", "serrano", "xls", "asea", "asterope",
@@ -168,11 +184,15 @@ namespace YobbinCallouts
             int model = chez.Next(0, VehicleModels.Length);
             Game.LogTrivial("YOBBINCALLOUTS: VEHICLESPAWNER: Vehicle Model is " + VehicleModels[model]);
             var veh = new Vehicle(VehicleModels[model], SpawnPoint, Heading);
-            veh.IsPersistent = true; //vehicle is marked as persistent by default
+            if(persistent) veh.IsPersistent = true; //vehicle is marked as persistent by default
             return veh;
         }
-
-        //knock on a door of a house and wait for response (with doorbell audio)
+        /// <summary>
+        /// knock on the door of a house and wait for response (with doorbell audio)
+        /// </summary>
+        /// <param name="doorlocation"></param>
+        /// <param name="resident"></param>
+        /// <param name="residentmodel"></param>
         public static void OpenDoor(Vector3 doorlocation, Ped resident = null, String residentmodel = "")
         {
             Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to ~b~Ring~w~ the Doorbell.");
@@ -192,8 +212,10 @@ namespace YobbinCallouts
             Game.FadeScreenIn(1500, true);
             Game.LocalPlayer.HasControl = true;
         }
-
-        //plays a sound at any specific file location.
+        /// <summary>
+        /// plays a sound at any specific file location.
+        /// </summary>
+        /// <param name="SoundLocation"></param>
         public static void PlaySound(string SoundLocation)
         {
             try
@@ -209,6 +231,7 @@ namespace YobbinCallouts
                         sound.Play();
                         GameFiber.Wait(4500);
                         sound.Stop();
+                        SoundPlayed = true;
                     }
                     catch (System.IO.FileNotFoundException) //most common error due to user error not installing sound file properly
                     {
@@ -216,6 +239,7 @@ namespace YobbinCallouts
                         Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
                         Game.LogTrivial("AUDIO FILE FOR YOBBINCALLOUTS NOT INSTALLED. PLEASE REINSTALL THE PLUGIN PROPERLY.");
                         Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
+                        SoundPlayed = false;
                     }
                 });
             }
@@ -226,6 +250,7 @@ namespace YobbinCallouts
                 Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
                 Game.LogTrivial("AUDIO FILE FOR YOBBINCALLOUTS NOT INSTALLED. PLEASE REINSTALL THE PLUGIN PROPERLY.");
                 Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
+                SoundPlayed = false;
             }
             catch (Exception e) //any other error
             {
@@ -237,6 +262,7 @@ namespace YobbinCallouts
                 //Game.DisplayNotification("Error: ~r~" + error);
                 Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
                 Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
+                SoundPlayed = false;
             }
         }
         //just for my callouts, plays a doorbell sound.
@@ -248,6 +274,10 @@ namespace YobbinCallouts
             else if (model == 2) PlaySound(@"lspdfr\audio\scanner\YobbinCallouts Audio\YC_DOORBELL2.wav");
             else PlaySound(@"lspdfr\audio\scanner\YobbinCallouts Audio\YC_RINGDOORBELL.wav");
         }
+        /// <summary>
+        /// wait the active GameFiber until the suspect no longer exists, is killed, or is arrested.
+        /// </summary>
+        /// <param name="Suspect"></param>
         public static void SuspectWait(Ped Suspect) //test this
         {
             while (Suspect.Exists())
@@ -268,8 +298,10 @@ namespace YobbinCallouts
             GameFiber.Wait(2000);
         }
 
-        //finish this (use from hospital emergency callout)
-        //~n~
+        /// <summary>
+        /// will be finished later.
+        /// </summary>
+        /// <param name="ped"></param>
         public static void PedInfo(Ped ped)
         {
             if (ped.Exists())
@@ -281,15 +313,30 @@ namespace YobbinCallouts
             Game.DisplayNotification("3dtextures", "mpgroundlogo_cops", "", "", "");
         }
 
-        //Assign blip to entity
+        /// <summary>
+        /// assign a blip that will be attached to an entity.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="blipcolor"></param>
+        /// <param name="scale"></param>
+        /// <param name="name"></param>
+        /// <param name="route"></param>
+        /// <param name="intensity"></param>
+        /// <returns></returns>
         public static Blip AssignBlip(Entity entity, Color blipcolor, float scale = 1f, string name = "", bool route = false, float intensity = 1f)
         {
             try
             {
+                if (!entity.Exists()) return null;
                 Blip blip = entity.AttachBlip();
-                blip.Color = blipcolor;
+
+                if (blipcolor == Color.Blue) blip.IsFriendly = true;
+                else if (blipcolor == Color.Red) blip.IsFriendly = false;
+                else blip.Color = blipcolor;
                 blip.Scale = scale;
                 if (name != "") blip.Name = name;
+                else if (blipcolor == Color.Blue) blip.Name = "Citizen";
+                else if (blipcolor == Color.Red) blip.Name = "Suspect";
                 blip.IsRouteEnabled = route;
                 blip.Alpha = intensity;
                 return blip;
@@ -300,6 +347,12 @@ namespace YobbinCallouts
                 return null;
             }
         }
+        /// <summary>
+        /// Chooses a random location in list between mindistance and maxdistance.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="maxdistance"></param>
+        /// <param name="mindistance"></param>
         public static void locationChooser(ArrayList list, float maxdistance = 600f, float mindistance = 25f)
         {
             ArrayList closeLocations = new ArrayList();
@@ -309,14 +362,20 @@ namespace YobbinCallouts
                 float distance = Vector3.Distance(Game.LocalPlayer.Character.Position, (Vector3)list[i]);
                 if (distance <= maxdistance && distance >= mindistance)
                 {
-                    closeLocations.Add(list[i]);   
+                    closeLocations.Add(list[i]);
                 }
             }
-            if(closeLocations.Count == 0)
+            if (closeLocations.Count == 0)
             {
+                Game.LogTrivial("YOBBINCALLOUTS: Spawn Point not found.");
                 locationReturned = false;
             }
-            SpawnPoint = (Vector3)closeLocations[monke.Next(0, closeLocations.Count)];
+            else //test this (else wasn't here before)
+            {
+                SpawnPoint = (Vector3)closeLocations[monke.Next(0, closeLocations.Count)];
+                locationReturned = true;
+                Game.LogTrivial("YOBBINCALLOUTS: Spawn Point found successfully.");
+            }
         }
     }
 }

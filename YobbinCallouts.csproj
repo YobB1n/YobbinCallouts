@@ -47,7 +47,11 @@
       <HintPath>..\..\..\..\..\..\..\..\Steam\steamapps\common\Grand Theft Auto V\RAGENativeUI.dll</HintPath>
     </Reference>
     <Reference Include="RagePluginHook, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>packages\RagePluginHook.1.86.1\lib\net472\RagePluginHook.dll</HintPath>
+      <HintPath>..\..\LSPDFR_049_7874_Manual_Install\RAGEPluginHook.exe</HintPath>
+    </Reference>
+    <Reference Include="RagePluginHookSDK, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\RAGEPluginHook_1_87_1293_16189_Release\SDK\RagePluginHookSDK.dll</HintPath>
     </Reference>
     <Reference Include="StopThePed, Version=4.9.4.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -77,6 +81,7 @@
     <Compile Include="Callouts\Explosion.cs" />
     <Compile Include="Callouts\HospitalEmergency.cs" />
     <Compile Include="Callouts\HumanTrafficking.cs" />
+    <Compile Include="Callouts\LandlordTenantDispute.cs" />
     <Compile Include="Callouts\Sovereign Citizen.cs" />
     <Compile Include="Callouts\StolenCellPhone.cs" />
     <Compile Include="Callouts\PropertyCheck.cs" />

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿//TO-DO: Refactor this callout with more RNG and methods, and add more ending scenarios.
+
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Rage;
@@ -31,6 +33,7 @@ namespace YobbinCallouts.Callouts
         private int MainScenario;
         private int WaitTime;
         private int Peeps;
+        private int PeepsSpawned = 1;
         private bool CalloutRunning = false;
         private bool HighCrime = false;
 
@@ -67,8 +70,7 @@ namespace YobbinCallouts.Callouts
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is Value is " + MainScenario);
 
-            //HOUSE CHOOSER FOR 1ST SCENARIO
-            Zone = LSPD_First_Response.Mod.API.Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).GameName;
+            Zone = LSPD_First_Response.Mod.API.Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).RealAreaName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
             if (MainScenario >= 0)
             {
@@ -100,7 +102,7 @@ namespace YobbinCallouts.Callouts
             Functions.PlayScannerAudio("WE_HAVE_01 CRIME_OFFICER_IN_NEED_OF_ASSISTANCE_02");  //change this
             CalloutMessage = "Bait Car";
             CalloutPosition = MainSpawnPoint;
-            CalloutAdvisory = "Officer Requests Assistance Monitoring a ~b~Bait Car~w~ Operation.";
+            CalloutAdvisory = "Officer Requests Assistance Monitoring a Bait Car Operation.";
             return base.OnBeforeCalloutDisplayed();
         }
         public override bool OnCalloutAccepted()
@@ -172,7 +174,10 @@ namespace YobbinCallouts.Callouts
                         Setup();
                         Observe();
                         Stolen();
+                        break;
                     }
+                    Game.LogTrivial("YOBBINCALLOUTS: Callout Finished, Ending...");
+                    EndCalloutHandler.EndCallout();
                 }
                 catch (Exception e)
                 {
@@ -182,7 +187,7 @@ namespace YobbinCallouts.Callouts
                         Game.LogTrivial("IN: " + this);
                         string error = e.ToString();
                         Game.LogTrivial("ERROR: " + error);
-                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Chck Your ~g~Log File.~w~ Sorry for the Inconvenience!");
+                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
                         Game.DisplayNotification("Error: ~r~" + error);
                         Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
                         Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
@@ -250,13 +255,8 @@ namespace YobbinCallouts.Callouts
                 Officer.Tasks.ClearImmediately();
                 Random r = new Random();
                 int Dialogue = r.Next(0, 1); //dialogue switcher I haven't got around to using yet
-                if (Dialogue == 0)
-                {
-                    CallHandler.Dialogue(OpeningDialogue1, Officer);
-                }
-                BaitVehicleBlip = BaitVehicle.AttachBlip(); //mark the bait car
-                BaitVehicleBlip.Color = Color.Green;
-                BaitVehicleBlip.Name = "Bait Car";
+                if (Dialogue == 0) CallHandler.Dialogue(OpeningDialogue1, Officer);
+                BaitVehicleBlip = CallHandler.AssignBlip(BaitVehicle, Color.Green, 1, "Bait Car");
                 GameFiber.Wait(1000);
                 Officer.PlayAmbientSpeech("generic_thanks");
                 OfficerBlip.Delete();
@@ -531,7 +531,7 @@ namespace YobbinCallouts.Callouts
                     }
                     catch (Exception)
                     {
-                        Game.DisplayNotification("There was an ~r~Error~w~ in Getting the Driver to Move. ~w~Please Chck Your ~g~Log File.~w~Sorry for the Inconvenience!");
+                        Game.DisplayNotification("There was an ~r~Error~w~ in Getting the Driver to Move. ~w~Please Check Your ~g~Log File.~w~Sorry for the Inconvenience!");
                         Game.LogTrivial("YOBBINCALLOUTS: Crash Making Bait Car Drivable/Task Invoker. Sorry for the Inconvenience.");
                         End();
                     }
@@ -588,10 +588,51 @@ namespace YobbinCallouts.Callouts
                 //Game.DisplayHelp("Press End to ~b~Finish ~w~the Callout.");
                 if (Officer.Exists()) Officer.Delete(); //probably dont need this anymore
                 SuspectBlip.Alpha = 0;
-                Game.LogTrivial("YOBBINCALLOUTS: Callout Finished, Ending...");
-                EndCalloutHandler.EndCallout();
+            }
+        }
+        private void SpawnSuspect()
+        {
+            Game.LogTrivial("YOBBINCALLOUTS: Started Suspect "+PeepsSpawned+" Spawn");
+            var Peds = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
+            System.Random r2 = new System.Random();
+            try
+            {
+                Ped tempsuspect;
+                if (PeepsSpawned == 1)
+                {
+                    NativeFunction.Natives.xA0F8A7517A273C05<Vector3>(World.GetNextPositionOnStreet(player.Position.Around(45)), 360, out Vector3 suspectspawn);
+                    tempsuspect = new Ped(Peds[r2.Next(0, Peds.Length)], suspectspawn, 69);
+                }
+                else if (PeepsSpawned == 2)
+                {
+                    tempsuspect = new Ped(Peds[r2.Next(0, Peds.Length)], Rando1.Position.Around(25), 69);
+                }
+                else
+                {
+                    tempsuspect = new Ped(Peds[r2.Next(0, Peds.Length)], Rando2.Position.Around(15), 69);
+                }
+                tempsuspect.IsPersistent = true;
+                tempsuspect.BlockPermanentEvents = true;
+                tempsuspect.IsVisible = false;
+                tempsuspect.Tasks.Wander();
+                if (PeepsSpawned == 1) Rando1 = tempsuspect;
+                else if (PeepsSpawned == 2) Rando2 = tempsuspect;
+                else Rando3 = tempsuspect;
+            }
+            catch (Rage.Exceptions.InvalidHandleableException) //this is a fairly common error that I can't seem to find a solution for.
+            {
+                Game.LogTrivial("YOBBINCALLOUTS: Yobbincallouts Crash Prevented. InvalidHandableException.");
+                Game.DisplayNotification("~b~YobbinCallouts~r~ Crash~g~ Prevented.~w~ I Apologize for the ~y~Inconvenience.");
                 End();
             }
+            //while (Suspect.DistanceTo(player) <= 35)
+            //{
+            //    Vector3 TempPos = player.GetOffsetPositionRight(-45);
+            //    Suspect.Position = World.GetNextPositionOnStreet(TempPos);
+            //    GameFiber.Yield();
+            //}
+            Game.LogTrivial("YOBBINCALLOUTS: Finished Suspect "+PeepsSpawned+" Spawn");
+            PeepsSpawned++;
         }
     }
 }

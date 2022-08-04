@@ -168,7 +168,7 @@ namespace YobbinCallouts.Callouts
                 Game.LogTrivial("IN: " + this);
                 string error = e.ToString();
                 Game.LogTrivial("ERROR: " + error);
-                Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Chck Your ~g~Log File.~w~ Sorry for the Inconvenience!");
+                Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
                 Game.DisplayNotification("Error: ~r~" + error);
                 Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
                 Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INTIALIZATION==========");
@@ -211,7 +211,7 @@ namespace YobbinCallouts.Callouts
                         Game.LogTrivial("IN: " + this);
                         string error = e.ToString();
                         Game.LogTrivial("ERROR: " + error);
-                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Chck Your ~g~Log File.~w~ Sorry for the Inconvenience!");
+                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
                         Game.DisplayNotification("Error: ~r~" + error);
                         Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
                         Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
@@ -335,7 +335,7 @@ namespace YobbinCallouts.Callouts
                             Hostage.IsPersistent = true; Hostage.BlockPermanentEvents = true;
                             //to-do: set hostage facial override (mood native)
                             // Suspect.Tasks.GoStraightToPosition(Hostage.Position, 3f, Hostage.Heading, 1f, 5000).WaitForCompletion();
-                            Suspect.Tasks.FollowNavigationMeshToPosition(Hostage.Position, Hostage.Heading, 5f, 1f).WaitForCompletion();
+                            Suspect.Tasks.FollowNavigationMeshToPosition(Hostage.Position, Hostage.Heading, 5.5f, 1f).WaitForCompletion();
                             Hostage.Position = Suspect.GetOffsetPosition(new Vector3(0f, 0.14445f, 0f));
                             System.Random rhcp = new System.Random();
                             int WeaponModel = rhcp.Next(1, 4);
@@ -353,11 +353,11 @@ namespace YobbinCallouts.Callouts
                             if (Hostage.IsFemale) Hostage.Tasks.PlayAnimation("anim@move_hostages@female", "female_idle", 1f, AnimationFlags.Loop);
                             else Hostage.Tasks.PlayAnimation("anim@move_hostages@male", "male_idle", 1f, AnimationFlags.Loop);
 
+                            //This switch doesn't actually do anything, it's just a statement to break out of if the Suspect is killed prematurely in the hostage situation
                             var lewis = 0;
                             switch (lewis)
                             {
                                 case 0:
-                                    //GameFiber.Yield();
                                     Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to Reason with the ~o~Patient.");
                                     HostageHold();
                                     if (Suspect.IsAlive) Game.DisplaySubtitle("~g~You:~w~ " + Functions.GetPersonaForPed(Suspect).Forename + "! You don't have to do this! Let's talk this through!");
@@ -406,7 +406,7 @@ namespace YobbinCallouts.Callouts
                                         if (Suspect.IsAlive) Game.DisplaySubtitle(DialogueAdvance(Kill3));
                                         else break;
                                         System.Random zach = new System.Random();
-                                        int WaitTime = zach.Next(2000, 5000); //in ms
+                                        int WaitTime = zach.Next(1500, 5000); //in ms
                                         GameFiber.Wait(WaitTime);
                                         if (Suspect.IsDead) break;
                                         Suspect.Tasks.FireWeaponAt(Hostage, -1, FiringPattern.SingleShot).WaitForCompletion();
@@ -527,16 +527,20 @@ namespace YobbinCallouts.Callouts
                 Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
             }
         }
+        //this helper is the logic the suspect is assigned in between dialogue advances in the hostage situation
         private void HostageHold()
         {
             while (true)
             {
                 GameFiber.Yield();
-                if (Suspect.Tasks.CurrentTaskStatus == TaskStatus.Interrupted) Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop_mrk", 1f, AnimationFlags.Loop); //test this
+                //Suspect.Tasks.PlayAnimation(xyz) //causes the Ped to glitch when using STP surrender
+                if (Suspect.Tasks.CurrentTaskStatus == TaskStatus.Interrupted) Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop_mrk", 1f, AnimationFlags.Loop); //test this (does it override STP surrender?)
                 if (Suspect.IsDead || (Functions.IsPedArrested(Suspect)) || Hostage.IsDead) break;
                 if (Game.IsKeyDown(Config.MainInteractionKey)) break;
             }
         }
+        //this helper returns a certain dialogue for the specific point in the callout as indicated by dialogue.
+        //see the various String lists containing the dialogue for each point in the hostage situation.
         private String DialogueAdvance(List<string> dialogue)
         {
             System.Random twboop = new System.Random();

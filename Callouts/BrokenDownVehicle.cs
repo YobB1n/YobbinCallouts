@@ -162,7 +162,7 @@ namespace YobbinCallouts.Callouts
             LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CITIZENS_REPORT CRIME_MOTOR_VEHICLE_ACCIDENT_01"); //Default
             CalloutMessage = "Broken Down Vehicle";
             CalloutPosition = SpawnPoint;
-            CalloutAdvisory = "A Car Has Reportedly ~r~Stalled~w~ in the Middle of Traffic.";
+            CalloutAdvisory = "A Car Has Reportedly Stalled in the Middle of Traffic.";
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).GameName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
 
@@ -279,7 +279,7 @@ namespace YobbinCallouts.Callouts
                         Game.LogTrivial("IN: " + this);
                         string error = e.ToString();
                         Game.LogTrivial("ERROR: " + error);
-                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Chck Your ~g~Log File.~w~ Sorry for the Inconvenience!");
+                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
                         Game.DisplayNotification("Error: ~r~" + error);
                         Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
                         Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
@@ -472,7 +472,7 @@ namespace YobbinCallouts.Callouts
                         DriverVehicle.Doors[4].Close(false);
                         Game.LogTrivial("YOBBINCALLOUTS: Closed the Hood");
                     }
-                    Game.DisplayHelp("Talk to the ~b~Driver.");
+                    Game.DisplayHelp("Inform the ~b~Driver.");
                     GameFiber.Wait(4500);
 
                     NativeFunction.Natives.TASK_TURN_PED_TO_FACE_ENTITY(Driver, Game.LocalPlayer.Character, -1);
