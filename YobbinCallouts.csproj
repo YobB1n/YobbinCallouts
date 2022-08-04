@@ -81,6 +81,7 @@
     <Compile Include="Callouts\Explosion.cs" />
     <Compile Include="Callouts\HospitalEmergency.cs" />
     <Compile Include="Callouts\HumanTrafficking.cs" />
+    <Compile Include="Callouts\LandlordTenantDispute.cs" />
     <Compile Include="Callouts\Sovereign Citizen.cs" />
     <Compile Include="Callouts\StolenCellPhone.cs" />
     <Compile Include="Callouts\PropertyCheck.cs" />
