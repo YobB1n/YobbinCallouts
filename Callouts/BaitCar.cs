@@ -182,7 +182,7 @@ namespace YobbinCallouts.Callouts
                         Game.LogTrivial("IN: " + this);
                         string error = e.ToString();
                         Game.LogTrivial("ERROR: " + error);
-                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Chck Your ~g~Log File.~w~ Sorry for the Inconvenience!");
+                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
                         Game.DisplayNotification("Error: ~r~" + error);
                         Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
                         Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
@@ -531,7 +531,7 @@ namespace YobbinCallouts.Callouts
                     }
                     catch (Exception)
                     {
-                        Game.DisplayNotification("There was an ~r~Error~w~ in Getting the Driver to Move. ~w~Please Chck Your ~g~Log File.~w~Sorry for the Inconvenience!");
+                        Game.DisplayNotification("There was an ~r~Error~w~ in Getting the Driver to Move. ~w~Please Check Your ~g~Log File.~w~Sorry for the Inconvenience!");
                         Game.LogTrivial("YOBBINCALLOUTS: Crash Making Bait Car Drivable/Task Invoker. Sorry for the Inconvenience.");
                         End();
                     }
