@@ -74,12 +74,6 @@ namespace YobbinCallouts
                                 Game.LogTrivial("====================YOBBINCALLOUTS WARNING====================");
                                 UpToDate = false;
                             }
-                            else if (curVersion.CompareTo(NewVersion) > 0)
-                            {
-                                Game.LogTrivial("YOBBINCALLOUTS: DETECTED BETA RELEASE. DO NOT REDISTRIBUTE. PLEASE REPORT ALL ISSUES.");
-                                Game.DisplayNotification("YOBBINCALLOUTS: ~r~DETECTED BETA RELEASE. ~w~DO NOT REDISTRIBUTE. PLEASE REPORT ALL ISSUES.");
-                                UpToDate = true;
-                            }
                             else
                             {
                                 Game.LogTrivial("YOBBINCALLOUTS: Finished Checking Yobbin Callouts for Updates.");
@@ -134,7 +128,7 @@ namespace YobbinCallouts
 
             Game.LogTrivial("Please Join My Discord Server to Report Bugs/Improvements: https://discord.gg/Wj522qa5mT. Enjoy!");
             Game.LogTrivial("Started Registering Callouts.");
-            
+
             if (Config.BrokenDownVehicle || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.BrokenDownVehicle));
             if (Config.AssaultOnBus || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.AssaultOnBus));
             if (Config.TrafficBreak || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.TrafficBreak));
@@ -154,7 +148,6 @@ namespace YobbinCallouts
             if (Config.WeaponFound || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.WeaponFound));
             if (Config.HospitalEmergency || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.HospitalEmergency));
             if (Config.DUIReported || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.DUIReported));
-            if (Config.LandlordTenantDispute || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.LandlordTenantDispute));
             Game.LogTrivial("Finished Registering Callouts.");
 
             if (Config.RunInvestigations) //not for not sadge

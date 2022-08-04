@@ -1,6 +1,4 @@
-﻿//To Initialize your own INI file, pull a pro gamer move and simply copy/paste a random INI file and rename it to what you want to call it.
-
-using Rage;
+﻿using Rage;
 using System.Windows.Forms;
 
 namespace YobbinCallouts
@@ -29,7 +27,6 @@ namespace YobbinCallouts
         public static readonly bool WeaponFound = INIFile.ReadBoolean("Callouts", "Weapon Found", true);
         public static readonly bool HospitalEmergency = INIFile.ReadBoolean("Callouts", "Hospital Emergency", true);
         public static readonly bool DUIReported = INIFile.ReadBoolean("Callouts", "DUI Reported", true);
-        public static readonly bool LandlordTenantDispute = INIFile.ReadBoolean("Callouts", "Landlord-Tenant Dispute", true);
 
 
         public static readonly Keys MainInteractionKey = INIFile.ReadEnum<Keys>("Keys", "Main Key", Keys.Y);

@@ -341,7 +341,7 @@ namespace YobbinCallouts.Callouts
                             Hostage.IsPersistent = true; Hostage.BlockPermanentEvents = true;
                             //to-do: set hostage facial override (mood native)
                             // Suspect.Tasks.GoStraightToPosition(Hostage.Position, 3f, Hostage.Heading, 1f, 5000).WaitForCompletion();
-                            Suspect.Tasks.FollowNavigationMeshToPosition(Hostage.Position, Hostage.Heading, 5.5f, 1f).WaitForCompletion();
+                            Suspect.Tasks.FollowNavigationMeshToPosition(Hostage.Position, Hostage.Heading, 5f, 1f).WaitForCompletion();
                             Hostage.Position = Suspect.GetOffsetPosition(new Vector3(0f, 0.14445f, 0f));
                             System.Random rhcp = new System.Random();
                             int WeaponModel = rhcp.Next(1, 4);

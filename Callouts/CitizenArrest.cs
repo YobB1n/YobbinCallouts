@@ -114,7 +114,6 @@ namespace YobbinCallouts.Callouts
                 Suspect.IsPersistent = true;
                 Suspect.BlockPermanentEvents = true;
                 Functions.SetPedAsArrested(Suspect, true, false);
-                Suspect.Tasks.StandStill(-1);
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect Spawned");
 
                 Citizen = new Ped(Suspect.GetOffsetPositionFront(2));
@@ -227,11 +226,9 @@ namespace YobbinCallouts.Callouts
             if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~b~Victim.");
             CallHandler.Dialogue(AssaultInvestigation, Victim);
 
-            Victim.Dismiss(); if(VictimBlip.Exists()) VictimBlip.Delete();
-            Citizen.Dismiss(); if (CitizenBlip.Exists()) CitizenBlip.Delete();
-
+            Victim.Dismiss(); VictimBlip.Delete();
             GameFiber.Wait(2000);
-            Game.DisplayHelp("Deal With the ~r~Suspect. ~w~Press ~y~"+Config.CalloutEndKey+" ~w~When Finished.");
+            Game.DisplayHelp("Deal With the ~r~Suspect. Press ~y~"+Config.CalloutEndKey+" ~w~When Finished.");
             Functions.SetPedAsArrested(Suspect, true, true);
             while (!Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
             if (Suspect.Exists()) if (Suspect.IsAlive) Game.DisplayNotification("Dispatch, We Have ~b~Arrested~w~ the Suspect.");
