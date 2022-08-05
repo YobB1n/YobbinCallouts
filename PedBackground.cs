@@ -11,12 +11,12 @@ namespace YobbinCallouts
     class PedBackground
     {
         //PED RELATED
-        public string fullName { get; }
-        public string TimesStopped { get; }
+        public string fullName { get; private set; }
+        public string TimesStopped { get; private set; }
 
-        public bool Wanted { get; }
-        public List<string> MedicalProblems { get; set; }
-        public string Gender { get; }
+        public bool Wanted { get; private set; }
+        public List<string> MedicalProblems { get; private set; }
+        public string Gender { get; private set; }
         Random monke = new Random();
         //GENERAL
         private List<string> commonMedicalProblems = new List<string>()
