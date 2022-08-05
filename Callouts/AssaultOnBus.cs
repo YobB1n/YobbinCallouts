@@ -366,7 +366,7 @@ namespace YobbinCallouts.Callouts
                 }
                 catch (Rage.Exceptions.InvalidHandleableException)
                 {
-                    Game.LogTrivial("YOBBINCALLOUTS: Yobbincallouts Crash Prevented. InvalidHandableException.");
+                    Game.LogTrivial("YOBBINCALLOUTS: Yobbincallouts Crash Prevented. InvalidHandleableException.");
                     Game.DisplayNotification("~b~YobbinCallouts~r~ Crash~g~ Prevented.~w~ I Apologize for the ~y~Inconvenience.");
                     End();
                 }
