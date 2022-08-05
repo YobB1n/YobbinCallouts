@@ -53,10 +53,10 @@ namespace YobbinCallouts.Callouts
         //DIALOGUE
         private readonly List<string> OpeningDialogue1 = new List<string>()
         {
-            "~b~Officer: ~w~Heyhope you're doing well Officer.",
+            "~b~Officer: ~w~Hey, hope you're doing well Officer.",
             "~b~Officer: ~w~As part of a new effort to reduce vehicle theft, we've decided to run a bait car setup in a high crime area.",
             "~b~Officer: ~w~The ~g~bait car~w~ is parked down the street.",
-            "~b~Officer: ~w~Park your cruiser in a nondiscript location in view of the car.",
+            "~b~Officer: ~w~Park your cruiser in a nondescript location in view of the car.",
             "~g~You:~w~ Sounds good, hopefully we catch some people!",
             "~b~Officer:~w~ One more thing, if someone drives off, you can remotely switch the car off using ~y~"+Config.MainInteractionKey+"~w~.",
             "~b~Officer:~w~ The car will have to move around 100 metres from the start point before you can shut the engine off.",
