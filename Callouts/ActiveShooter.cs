@@ -112,11 +112,13 @@ namespace YobbinCallouts.Callouts
                 }
                 else //just one dude
                 {
-                    Suspect = new Ped(MainSpawnPoint);
-                    Suspect.Health = 150;
-                    Suspect.Armor = 200;
-                    Suspect.BlockPermanentEvents = true;
-                    Suspect.IsPersistent = true;
+                    Suspect = new Ped(MainSpawnPoint)
+                    {
+                        Health = 150,
+                        Armor = 200,
+                        BlockPermanentEvents = true,
+                        IsPersistent = true
+                    };
 
                     System.Random r = new System.Random();  //Instantiate Random Weapon  generator
                     int WeaponModel = r.Next(0, 5);    //Use Random Weapon generator
