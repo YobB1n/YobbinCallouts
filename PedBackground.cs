@@ -15,11 +15,11 @@ namespace YobbinCallouts
         public string TimesStopped { get; }
 
         public bool Wanted { get; }
-        public ArrayList MedicalProblems { get; set; }
+        public List<string> MedicalProblems { get; set; }
         public string Gender { get; }
         Random monke = new Random();
         //GENERAL
-        private ArrayList commonMedicalProblems = new ArrayList()
+        private List<string> commonMedicalProblems = new List<string>()
         {
             "Multiple Lacerations all over upper body and face",
             "Gunshot wounds in the thigh, arm, neck",
@@ -32,7 +32,7 @@ namespace YobbinCallouts
             "Stab wounds in the stomach",
             "Bruise marks on wrists and forearms"
         };
-        private ArrayList commonMentalHealthProblems = new ArrayList()
+        private List<string> commonMentalHealthProblems = new List<string>()
         {
             "Depression",
             "Generalised anxiety disorder",
@@ -62,7 +62,7 @@ namespace YobbinCallouts
                 TimesStopped = pedPersona.TimesStopped.ToString();
                 Wanted = pedPersona.Wanted;
                 Gender = pedPersona.Gender.ToString();
-                MedicalProblems = new ArrayList();
+                MedicalProblems = new List<string>();
 
             }
             
@@ -73,7 +73,7 @@ namespace YobbinCallouts
         public void setMedicalProblemsForEscapedSuspect()
         {
             MedicalProblems.Clear();
-            ArrayList CMP = commonMedicalProblems;
+            List<string> CMP = commonMedicalProblems;
             for (int i = 0; i < monke.Next(1, 3); i++)
             {
                 int num = monke.Next(0, CMP.Count);
@@ -84,7 +84,7 @@ namespace YobbinCallouts
         public void setMedicalProblemsForMentallyIllSuspect()
         {
             MedicalProblems.Clear();
-            ArrayList CMHP = commonMentalHealthProblems;
+            List<string> CMHP = commonMentalHealthProblems;
             for (int i = 0; i < monke.Next(1, 3); i++)
             {
                 int num = monke.Next(0, CMHP.Count);
@@ -97,21 +97,12 @@ namespace YobbinCallouts
         /// </summary>
         /// <param name="list"></param>
         /// <returns>Elements of arrays seperated by commas</returns>
-        public string arrayToString(ArrayList list)
-        {
-            string str = "";
-            for(int i = 0; i < list.Count;i++)
-            {
-                str += list[i] + ", ";
-            }
-            string newStr = str.Substring(0, str.Length - 2);   
-            return newStr; 
-        }
+        public static string ListToString(List<string> list) => string.Join(", ", list);
 
         override
         public string ToString()    
         {
-            return "~w~ Wanted Status: ~y~" + Wanted + "\n" + "~w~ Times Stopped: ~o~ " + TimesStopped + "\n" + "~w~ Medical History: ~r~" + arrayToString(MedicalProblems);
+            return "~w~ Wanted Status: ~y~" + Wanted + "\n" + "~w~ Times Stopped: ~o~ " + TimesStopped + "\n" + "~w~ Medical History: ~r~" + ListToString(MedicalProblems);
             //\n  ~w~Symptoms: ~r~ {4}"; if symptoms are needed
         }
 
