@@ -37,7 +37,7 @@ namespace YobbinCallouts.Callouts
          "~b~Nurse:~w~ We just had a patient escape who has a known history of shizophrenia and paranoia.",
          "~b~Nurse:~w~ They were saying some really concerning and threatening things before they escaped!",
          "~g~You:~w~ Do you know where they went?",
-         "~b~Nurse:~w~ I have no clue. You got to find them as soon as possible, for their safety and everyone elses!",
+         "~b~Nurse:~w~ I have no clue. You got to find them as soon as possible, for their safety and everyone else's!",
          "~g~You:~w~ Is there any information on the patient, or a description?",
          "~b~Nurse:~w~ Yes, I have some medical records right here, take them!",
         };
