@@ -155,7 +155,7 @@ namespace YobbinCallouts.Callouts
                 Game.LogTrivial("YOBBINCALLOUTS: Could Not Find Spawnpoint. Aborting Callout.");
                 return false;
             }
-            Game.LogTrivial("YOBBINCALLOUTS: Sucessfuly Found Spawn Point");
+            Game.LogTrivial("YOBBINCALLOUTS: Successfully Found Spawn Point");
             ShowCalloutAreaBlipBeforeAccepting(SpawnPoint, 75f);    //Callout Blip Circle with radius 70m
             AddMinimumDistanceCheck(50f, SpawnPoint);   //Player must be 50m or further away
 
@@ -331,7 +331,7 @@ namespace YobbinCallouts.Callouts
             {
                 Game.DisplayHelp("Press " + Config.MainInteractionKey + " to Call a ~b~Tow Truck.");
                 while (!Game.IsKeyDown(Config.MainInteractionKey) && DriverVehicle.Speed < 1f) { GameFiber.Wait(0); }
-                if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Requesting Tow Truck to Clear Disabled Veicle.");
+                if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Requesting Tow Truck to Clear Disabled Vehicle.");
                 Game.DisplaySubtitle("Hey Dispatch, We Need a Tow Truck ASAP, Vehicle Blocking the Road.", 3500);
                 Game.LocalPlayer.Character.Tasks.PlayAnimation("random@arrests", "generic_radio_chatter", -1, AnimationFlags.SecondaryTask | AnimationFlags.UpperBodyOnly).WaitForCompletion(4000);
                 GameFiber.Wait(3000);
@@ -644,9 +644,11 @@ namespace YobbinCallouts.Callouts
             GameFiber.Wait(750);
             Game.DisplaySubtitle("Holy Crap!", 1500);
             DriverVehicleBlip.Delete();
-            DriverBlip = new Blip(Driver);
-            DriverBlip.Scale = 0.8f;
-            DriverBlip.Color = Color.Blue;
+            DriverBlip = new Blip(Driver)
+            {
+                Scale = 0.8f,
+                Color = Color.Blue
+            };
             //
             GameFiber.Wait(1000);
             Game.DisplayNotification("~r~Fire Department~w~ is En Route!");

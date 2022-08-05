@@ -443,7 +443,7 @@ namespace YobbinCallouts.Callouts
                 }
                 catch (Exception)
                 {
-                    Game.LogTrivial("YOBBINCALLOUTS: Yobbincallouts Crash Prevented. InvalidHandableException.");
+                    Game.LogTrivial("YOBBINCALLOUTS: Yobbincallouts Crash Prevented. InvalidHandleableException.");
                     End();
                 }
                 GameFiber.Wait(2000);

@@ -242,7 +242,7 @@ namespace YobbinCallouts.Callouts
             if (Victim.Exists()) Victim.Dismiss();
             if (VictimBlip.Exists()) VictimBlip.Delete();
             if (CellPhoneAreaBlip.Exists()) CellPhoneAreaBlip.Delete();
-            Game.LogTrivial("YOBBINCALLOUTS: Stollen Cellphone Callout Finished Cleaning Up.");
+            Game.LogTrivial("YOBBINCALLOUTS: Stolen Cellphone Callout Finished Cleaning Up.");
         }
         public override void Process()
         {
