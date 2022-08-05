@@ -156,14 +156,14 @@ namespace YobbinCallouts.Callouts
             }
             catch (Exception e)
             {
-                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INTIALIZATION==========");
+                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INITIALIZATION==========");
                 Game.LogTrivial("IN: " + this);
                 string error = e.ToString();
                 Game.LogTrivial("ERROR: " + error);
                 Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
                 Game.DisplayNotification("Error: ~r~" + error);
                 Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
-                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INTIALIZATION==========");
+                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INITIALIZATION==========");
             }
             if (!CalloutRunning) { Callout(); }
             return base.OnCalloutAccepted();
