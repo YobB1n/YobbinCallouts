@@ -99,7 +99,7 @@ namespace YobbinCallouts.Callouts
             Functions.PlayScannerAudio("WE_HAVE_01 CRIME_MALICIOUS_VEHICLE_DAMAGE_01"); //Default
             CalloutMessage = "Road Rage";
             CalloutPosition = MainSpawnPoint;
-            if (MainScenario == 0) CalloutAdvisory = "Caller Reports a ~r~Road Rage~w~ Incident. Suspect Then Fleed the Scene.";
+            if (MainScenario == 0) CalloutAdvisory = "Caller Reports a ~r~Road Rage~w~ Incident. Suspect Then Fled the Scene.";
             else CalloutAdvisory = "Caller Reprots a ~r~Road Rage~w~ Incident. Suspect is Damaging their Vehicle.";
             return base.OnBeforeCalloutDisplayed();
         }
