@@ -12,8 +12,9 @@ namespace YobbinCallouts
     {
         //PED RELATED
         public string fullName { get; }
-        public DateTime Birthday { get; }
         public string TimesStopped { get; }
+
+        public bool Wanted { get; }
         public ArrayList MedicalProblems { get; set; }
         public string Gender { get; }
         Random monke = new Random();
@@ -59,7 +60,7 @@ namespace YobbinCallouts
                 pedPersona = Functions.GetPersonaForPed(ped);
                 fullName = pedPersona.FullName;
                 TimesStopped = pedPersona.TimesStopped.ToString();
-                Birthday = pedPersona.Birthday;
+                Wanted = pedPersona.Wanted;
                 Gender = pedPersona.Gender.ToString();
                 MedicalProblems = new ArrayList();
 
@@ -72,23 +73,23 @@ namespace YobbinCallouts
         public void setMedicalProblemsForEscapedSuspect()
         {
             MedicalProblems.Clear();
-            ArrayList CMP = (ArrayList)commonMedicalProblems.Clone();
-            for (int i = 0; i < monke.Next(1, 4); i++)
+            ArrayList CMP = commonMedicalProblems;
+            for (int i = 0; i < monke.Next(1, 3); i++)
             {
                 int num = monke.Next(0, CMP.Count);
                 MedicalProblems.Add(CMP[num]);
-                CMP.Remove(num);
+                CMP.RemoveRange(num,1);
             }
         }
         public void setMedicalProblemsForMentallyIllSuspect()
         {
             MedicalProblems.Clear();
-            ArrayList CMHP = (ArrayList)commonMentalHealthProblems.Clone();
-            for (int i = 0; i < monke.Next(1, 4); i++)
+            ArrayList CMHP = commonMentalHealthProblems;
+            for (int i = 0; i < monke.Next(1, 3); i++)
             {
                 int num = monke.Next(0, CMHP.Count);
                 MedicalProblems.Add(CMHP[num]);
-                CMHP.Remove(num);
+                CMHP.RemoveRange(num, 1);
             }
         }
         /// <summary>
@@ -99,16 +100,18 @@ namespace YobbinCallouts
         public string arrayToString(ArrayList list)
         {
             string str = "";
-            foreach(string item in list)
+            for(int i = 0; i < list.Count;i++)
             {
-                str += item + ", ";
+                str += list[i] + ", ";
             }
-            return str; 
+            string newStr = str.Substring(0, str.Length - 1);   
+            return newStr; 
         }
 
-        public string toString()
+        override
+        public string ToString()    
         {
-            return String.Format("~w~Date of Birth: ~y~ {0} \n ~w~Sex: ~y~ {1} \n  ~w~Times Stopped: ~o~ {2} \n  ~w~Medical History: ~r~ {3}", Birthday.ToString(), Gender, TimesStopped, arrayToString(MedicalProblems));
+            return "~w~ Wanted Status: ~y~" + Wanted + "\n" + "~w~ Times Stopped: ~o~ " + TimesStopped + "\n" + "~w~ Medical History: ~r~" + arrayToString(MedicalProblems);
             //\n  ~w~Symptoms: ~r~ {4}"; if symptoms are needed
         }
 

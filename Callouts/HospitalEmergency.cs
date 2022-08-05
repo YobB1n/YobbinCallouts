@@ -277,7 +277,7 @@ namespace YobbinCallouts.Callouts
                 background.setMedicalProblemsForMentallyIllSuspect();
                 //mpinventory -> drug_trafficking
                 //commonmenu -> shop_health_icon_b
-                Game.DisplayNotification("commonmenu", "shop_health_icon_b", "~g~Patient Information", "~b~" + background.fullName, background.ToString());
+                Game.DisplayNotification("commonmenu", "shop_health_icon_b", "~g~Patient Information", "~b~" + background.fullName + " | " + background.Gender, background.ToString());
                 //Functions.DisplayPedId(Suspect, true); //test this
                 GameFiber.Wait(1500);
                 CallHandler.IdleAction(Nurse, false);
