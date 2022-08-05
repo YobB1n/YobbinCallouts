@@ -139,9 +139,9 @@ namespace YobbinCallouts.Callouts
          "~r~Suspect:~w~ Yes I was, it was one of the more suitable houses that met the criteria for the film.",
          "~r~Suspect:~w~ Why do you ask?",
          "~g~You:~w~ Yhe resident was a bit concerned, is all. Sounds like they didn't want their house photographed.",
-         "~r~Suspect:~w~ Oh, sorry about that! I never meant to disturb anyone! Would you like me to go somwhere else?",
-         "~g~You:~w~ Yhat would be great, if you don't mind.",
-         "~r~Suspect:~w~ Ueah, no problem. I guess we won't be using their house for the shoot anytime soon!",
+         "~r~Suspect:~w~ Oh, sorry about that! I never meant to disturb anyone! Would you like me to go somewhere else?",
+         "~g~You:~w~ That would be great, if you don't mind.",
+         "~r~Suspect:~w~ Yeah, no problem. I guess we won't be using their house for the shoot anytime soon!",
          "~g~You:~w~ Haha, I guess not. Thanks so much for your understanding!",
         };
         private readonly List<string> SuspectOpeningDialogue4 = new List<string>()
@@ -161,8 +161,8 @@ namespace YobbinCallouts.Callouts
             "~g~You:~w~ I just want to ask what you're doing here.",
             "~r~Suspect:~w~ Why do you ask, officer? Am I doing something wrong?",
             "~g~You:~w~ No, I'm just wondering what you're up to. Some residents want to know what you're doing as well.",
-            "~r~Suspect:~w~ I'm just minding my own business. Please stop harrassing me if I haven't done anything wrong officer.",
-            "~g~You:~w~ I'm not harrassing you, I just want to know what you're doing here. Neighbours have said you've been around here awhile.",
+            "~r~Suspect:~w~ I'm just minding my own business. Please stop harassing me if I haven't done anything wrong officer.",
+            "~g~You:~w~ I'm not harassing you, I just want to know what you're doing here. Neighbours have said you've been around here awhile.",
             "~r~Suspect:~w~ I'm not going to talk to you anymore officer. Are you gonna arrest me now or what?",
         };
         //SCENARIO 1
@@ -172,8 +172,8 @@ namespace YobbinCallouts.Callouts
             "~g~You:~w~ I just want to ask what you're doing here.",
             "~r~Suspect:~w~ Why do you ask, officer? Am I doing something wrong?",
             "~g~You:~w~ Bo, I'm just wondering what you're up to. Apparently someone asked you to stop taking pictures of them.",
-            "~r~Suspect:~w~ I'm just minding my own business. Please stop harrassing me if I haven't done anything wrong officer.",
-            "~g~You:~w~ I'm not harrassing you, I just want to know why you're taking photos of them. They've said you refused to leave.",
+            "~r~Suspect:~w~ I'm just minding my own business. Please stop harassing me if I haven't done anything wrong officer.",
+            "~g~You:~w~ I'm not harassing you, I just want to know why you're taking photos of them. They've said you refused to leave.",
             "~r~Suspect:~w~ I'm not going to talk to you anymore officer. Are you gonna arrest me now or what?",
         };
         private readonly List<string> SuspectOpeningDialogue7 = new List<string>()
@@ -197,7 +197,7 @@ namespace YobbinCallouts.Callouts
         private readonly List<string> ResidentEndingDialogue2 = new List<string>()
         {
          "~g~You:~w~ Alright, so I spoke with the photographer, and they agreed to go somewhere else.",
-         "~g~You:~w~ Yhey didn't want any trouble, and were very understanding.",
+         "~g~You:~w~ They didn't want any trouble, and were very understanding.",
          "~b~Caller:~w~ Sounds good officer. I just don't like the idea of people potentially taking pictures of my house, I guess.",
          "~g~You:~w~ Sure, I understand. Is there anything else I can help you with today?",
          "~b~Caller:~w~ No, that's about it. Thanks for the help!",
@@ -221,7 +221,7 @@ namespace YobbinCallouts.Callouts
         private readonly List<string> ResidentEndingDialogue5 = new List<string>()
         {
          "~g~You:~w~ So I spoke with the person, however they refused to leave unfortunately.",
-         "~b~Caller:~w~ So there's nothing you cand do about them taking pictures of my property without consent?",
+         "~b~Caller:~w~ So there's nothing you can do about them taking pictures of my property without consent?",
          "~g~You:~w~ Unfortunately no. They are legally allowed to take photos as long as they aren't trespassing.",
          "~b~Caller:~w~ Really? That seems unreasonable. They've been around here for hours and refuses to leave! What am I supposed to do?",
          "~g~You:~w~ If they trespass on your property, you can call us and we can have them trespassed.",
