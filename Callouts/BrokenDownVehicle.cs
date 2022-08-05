@@ -644,9 +644,11 @@ namespace YobbinCallouts.Callouts
             GameFiber.Wait(750);
             Game.DisplaySubtitle("Holy Crap!", 1500);
             DriverVehicleBlip.Delete();
-            DriverBlip = new Blip(Driver);
-            DriverBlip.Scale = 0.8f;
-            DriverBlip.Color = Color.Blue;
+            DriverBlip = new Blip(Driver)
+            {
+                Scale = 0.8f,
+                Color = Color.Blue
+            };
             //
             GameFiber.Wait(1000);
             Game.DisplayNotification("~r~Fire Department~w~ is En Route!");
