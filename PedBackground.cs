@@ -104,7 +104,7 @@ namespace YobbinCallouts
             {
                 str += list[i] + ", ";
             }
-            string newStr = str.Substring(0, str.Length - 1);   
+            string newStr = str.Substring(0, str.Length - 2);   
             return newStr; 
         }
 
