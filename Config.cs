@@ -1,4 +1,4 @@
-﻿//To Initialize your own INI file, pull a pro gamer move and simply copy/paste a random INI file and rename it to what you want to call it.
+﻿//To Create your own INI file, pull a pro gamer move and simply copy/paste a random INI file and rename it to what you want to call it.
 
 using Rage;
 using System.Windows.Forms;
@@ -10,6 +10,7 @@ namespace YobbinCallouts
 
         public static readonly InitializationFile INIFile = new InitializationFile(@"Plugins\LSPDFR\YobbinCallouts.ini");
 
+        //All Callouts
         public static readonly bool BrokenDownVehicle = INIFile.ReadBoolean("Callouts", "Broken Down Vehicle", true);
         public static readonly bool AssaultOnBus = INIFile.ReadBoolean("Callouts", "Assault On Bus", true);
         public static readonly bool TrafficBreak = INIFile.ReadBoolean("Callouts", "Traffic Break", true);
@@ -31,17 +32,19 @@ namespace YobbinCallouts
         public static readonly bool DUIReported = INIFile.ReadBoolean("Callouts", "DUI Reported", true);
         public static readonly bool LandlordTenantDispute = INIFile.ReadBoolean("Callouts", "Landlord-Tenant Dispute", true);
 
-
+        //All keys
         public static readonly Keys MainInteractionKey = INIFile.ReadEnum<Keys>("Keys", "Main Key", Keys.Y);
         public static readonly Keys CalloutEndKey = INIFile.ReadEnum<Keys>("Keys", "Callout End Key", Keys.End);
         public static readonly Keys InvestigationEndKey = INIFile.ReadEnum<Keys>("Keys", "Investigation End Key", Keys.PageUp);
         public static readonly Keys Key1 = INIFile.ReadEnum<Keys>("Keys", "First Option", Keys.Z);
         public static readonly Keys Key2 = INIFile.ReadEnum<Keys>("Keys", "Second Option", Keys.X);
 
+        //Callout-wide settings
         public static readonly bool DisplayHelp = INIFile.ReadBoolean("Miscellaneous", "Display Help Messages", true);
         public static readonly bool RunInvestigations = INIFile.ReadBoolean("Miscellaneous", "Run Investigations", true);
         public static readonly bool LeaveCalloutsRunning = INIFile.ReadBoolean("Miscellaneous", "Leave Callouts Running", false);
 
+        //Settings for Individual Callouts
         public static readonly string PoliceVehicle = INIFile.ReadString("Vehicle", "Police Vehicle", "POLICE");
 
         public static readonly bool CallFD = INIFile.ReadBoolean("Arson", "Automatically Call Fire Department", true);

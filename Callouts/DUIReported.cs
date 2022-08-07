@@ -38,6 +38,23 @@ namespace YobbinCallouts.Callouts
             "~g~You:~w~ Do you know what the vehicle looks like?",
             "~b~Caller:~w~ I do, here's a vehicle description. Please find them before they hurt themselves or others!",
         };
+        private readonly List<string> WitnessOpening2 = new List<string>()
+        {
+            "~b~Caller:~w~ Officer, over here!",
+            "~g~You:~w~ Are you the person who called in a DUI?",
+            "~b~Caller:~w~ Yes that's me! Someone at this party was in no condition to drive, but managed to get behind the wheel and drive off!",
+            "~g~You:~w~ Do you have a vehicle description?",
+            "~b~Caller:~w~ I do, here you go. Please find them before they hurt themselves or others!",
+        };
+        private readonly List<string> WitnessOpening3 = new List<string>()
+        {
+            "~b~Caller:~w~ Over here, Officer",
+            "~g~You:~w~ Did you call in the DUI?",
+            "~b~Caller:~w~ Yes that's me! My friend and I were drinking and they had a little to much.",
+            "~b~Caller:~w~ When it was time for them to leave, I offered to call them a taxi, but they refused and managed to drive off despite my best efforts!",
+            "~g~You:~w~ Do you know what their vehicle looks like?",
+            "~b~Caller:~w~ I do, here's a description of their vehicle. Please find them before they hurt themselves or others!",
+        };
         private readonly List<string> Argument1 = new List<string>()
         {
             "~r~Suspect:~w~ I-I told you, I'm TOTALLY fine to drive! Leave m-m-me alone!!",
@@ -66,6 +83,30 @@ namespace YobbinCallouts.Callouts
             "~b~Caller:~w~ The cops are already on their way! Don't make this any worse for yourself!",
             "~b~Caller:~w~ The police are on the way now, they're gonna be here soon! Give me the keys now!",
             "~b~Caller:~w~ This won't end well for you unless you give me the keys right now!",
+        };
+        private readonly List<string> Reason1 = new List<string>()
+        {
+            "~g~You:~w~ Hey, stop right there for me!",
+            "~r~Suspect:~w~ What do YOU want, Officer? I d-don't remember calling you!",
+            "~g~You:~w~ Actually, someone called us saying that you were trying to drive after drinking too much.",
+            "~r~Suspect:~w~ What?! You got the wrong person, I'm totally fine! Who snitched on me?!",
+             "~g~You:~w~ Alright, well to me, you don't seem to be. Hang tight right here for me.",
+        };
+        private readonly List<string> Reason2 = new List<string>()
+        {
+            "~g~You:~w~ Hey, hold up right there for me!",
+            "~r~Suspect:~w~ Who, me?! What do you want from me, Officer?! I'm just trying to get back home!!",
+            "~g~You:~w~ Well, we got a call saying that you were trying to drive after drinking too much.",
+            "~r~Suspect:~w~ H-huh?! ME? You got the wrong person!! Leave me alone and let me go!!",
+             "~g~You:~w~ Alright, we'll see about that. Hang tight right here for me.",
+        };
+        private readonly List<string> Reason3 = new List<string>()
+        {
+            "~g~You:~w~ Hey, stop right there!",
+            "~r~Suspect:~w~ What do YOU want, Officer? I never called YOU!",
+            "~g~You:~w~ Actually, someone called us saying that you were going to drive off after drinking too much.",
+            "~r~Suspect:~w~ That ain't me, Officer! I'm just trying to exercise my freedom of travel!",
+             "~g~You:~w~ Alright, well to me, you don't seem fit to do that right now. Hang tight right here for me.",
         };
 
         public override bool OnBeforeCalloutDisplayed()
@@ -192,8 +233,15 @@ namespace YobbinCallouts.Callouts
                         if (MainScenario == 0) //not on scene
                         {
                             System.Random twboop = new System.Random();
-                            int dialoguechosen = twboop.Next(0, 0);
+                            int dialoguechosen = twboop.Next(0, 3);
                             if (dialoguechosen == 0) CallHandler.Dialogue(WitnessOpening1, Witness);
+                            else if (dialoguechosen == 1) CallHandler.Dialogue(WitnessOpening2, Witness);
+                            else CallHandler.Dialogue(WitnessOpening3, Witness);
+                            GameFiber.Wait(1500);
+                            CallHandler.IdleAction(Witness, false);
+                            Search();
+
+                            //...
                         }
                         else //on scene
                         {
@@ -206,7 +254,7 @@ namespace YobbinCallouts.Callouts
 
                             //argument between the two peds starts now. After a certain point the suspect leaves to hop in the car.
                             int useless = 0;
-                            switch (useless)
+                            switch (useless) //swtich statement doesn't do anything
                             {
                                 case 0:
                                     if (speechtowait == 1 || Functions.IsPedStoppedByPlayer(Suspect)) break;
@@ -226,7 +274,13 @@ namespace YobbinCallouts.Callouts
 
                             if (Functions.IsPedStoppedByPlayer(Suspect))  //test this
                             {
+
                                 //dialogue
+                                System.Random twboop = new System.Random();
+                                int dialoguechosen = twboop.Next(0, 3);
+                                if (dialoguechosen == 0) CallHandler.Dialogue(Reason1, Suspect);
+                                else if (dialoguechosen == 1) CallHandler.Dialogue(Reason2, Suspect);
+                                else CallHandler.Dialogue(Reason3, Suspect);
 
                                 System.Random r2 = new System.Random();
                                 int action = r2.Next(0, 2);
@@ -240,6 +294,7 @@ namespace YobbinCallouts.Callouts
                                 {
                                     Pursuit();
                                     CallHandler.SuspectWait(Suspect);
+                                    break;
                                 }
                             }
 
@@ -321,17 +376,27 @@ namespace YobbinCallouts.Callouts
             LSPD_First_Response.Mod.API.Functions.SetPursuitIsActiveForPlayer(MainPursuit, true);
             LSPD_First_Response.Mod.API.Functions.AddPedToPursuit(MainPursuit, Suspect);
             while (Functions.IsPursuitStillRunning(MainPursuit)) GameFiber.Wait(0);
-        }
-        private void VehicleDescription()
+        }  
+        private void Search()
         {
-            Functions.SetVehicleOwnerName(SuspectVehicle, Functions.GetPersonaForPed(Suspect).FullName);
-            var personaarray = new string[3];
-            personaarray[0] = "~n~~w~Registered to: ~y~" + Functions.GetPersonaForPed(Suspect).Forename;
-            personaarray[1] = "~n~~w~Plate: ~y~" + SuspectVehicle.LicensePlate;
-            personaarray[2] = "~n~~w~Color: ~y~" + SuspectVehicle.PrimaryColor.Name;
-            var persona = string.Concat(personaarray);
-            //change icon later
-            Game.DisplayNotification("commonmenu", "shop_health_icon_b", "~g~Vehicle Description", "~b~" + SuspectVehicle.Model.Name, persona);
+            CallHandler.VehicleInfo(SuspectVehicle, Suspect);
+            GameFiber.Wait(1000);
+            if (Config.DisplayHelp) Game.DisplayHelp("Search for the ~r~Suspect~w~.");
+
+            Suspect.Tasks.CruiseWithVehicle(20f, VehicleDrivingFlags.AllowWrongWay | VehicleDrivingFlags.DriveAroundVehicles);
+            SuspectBlip = new Blip(Suspect.Position.Around(15), 200);
+            SuspectBlip.IsRouteEnabled = true;
+            SuspectBlip.Color = Color.Orange;
+            SuspectBlip.Alpha = 0.69f;
+
+            while (player.DistanceTo(Suspect) >= 50) GameFiber.Wait(0);
+            Game.DisplayNotification("Callers have spoted the ~r~Suspect~w~ driving ~o~Recklessly~w~. Updating Map...");
+            if (SuspectBlip.Exists()) SuspectBlip.Delete();
+            CallHandler.AssignBlip(Suspect, Color.Red, 1, "Suspect");
+
+            while (!Functions.IsPlayerPerformingPullover()) GameFiber.Wait(0);
+            Pursuit();
+            CallHandler.SuspectWait(Suspect);
         }
     }
 }

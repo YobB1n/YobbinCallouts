@@ -205,8 +205,8 @@ namespace YobbinCallouts.Callouts
                                             }
                                         }
                                     }
-                                    GameFiber.Wait(1500);
-                                    Game.DisplayHelp("Deal with the ~o~Landlord~w~ and ~r~Suspect~w~ as you see fit. Press ~b~"+Config.CalloutEndKey+" ~w~when done.");
+                                    GameFiber.Wait(2500);
+                                    Game.DisplayHelp("Deal with the ~o~Landlord~w~ and ~r~Tenant~w~ as you see fit. Press ~b~"+Config.CalloutEndKey+" ~w~when done.");
                                     while (!Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
                                     break;
                                 }
