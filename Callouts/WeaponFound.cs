@@ -104,7 +104,7 @@ namespace YobbinCallouts.Callouts
         private List<string> SuspectInnocent1 = new List<string>() //vvv removed readonly for testing
         {
             "~o~Suspect:~w~ Hi Officer, what seems to be the issue? Is everything alright?",
-            "~g~You:~w~ Hello, I'm here because a weapon registered to you was recovered "+OriginalZone+"~w~.",
+            $"~g~You:~w~ Hello, I'm here because a weapon registered to you was recovered {OriginalZone}~w~.",
             "~o~Suspect:~w~ Oh shit, I was worried about that. I can explain everything, Officer!",
             "~o~Suspect:~w~ I have my CCW and sometimes keep my handgun in my car. Last week, someone broke in and stole it!",
             "~o~Suspect:~w~ I reported it stolen, but I was advised it might take a bit to show up in the system. I'm very sorry for the confusion!",
@@ -113,7 +113,7 @@ namespace YobbinCallouts.Callouts
         private List<string> SuspectInnocent2 = new List<string>()
         {
             "~o~Suspect:~w~ Hi Officer, is everything alright?",
-            "~g~You:~w~ Well not exactly, I'm here because a weapon registered to you was recovered "+OriginalZone+"~w~.",
+            $"~g~You:~w~ Well not exactly, I'm here because a weapon registered to you was recovered {OriginalZone}~w~.",
             "~o~Suspect:~w~ Oh shit, I was hoping something like that wouldn't happen. I promise I can explain everything!",
             "~o~Suspect:~w~ I have my CCW and store my weapon in the glove compartment of my vehicle.",
             "~o~Suspect:~w~ A few days ago, my car was broken into and my gun was stolen.",
@@ -123,7 +123,7 @@ namespace YobbinCallouts.Callouts
         private List<string> SuspectInnocent3 = new List<string>()
         {
             "~o~Suspect:~w~ Hi Officer, what seems to be going on here? Is everything okay?",
-            "~g~You:~w~ Well not exactly, a weapon registered to the homeowner of this house was recovered "+OriginalZone+"~w~.",
+            $"~g~You:~w~ Well not exactly, a weapon registered to the homeowner of this house was recovered {OriginalZone}~w~.",
             "~o~Suspect:~w~ Oh no, I was hoping this wouldn't end up happening. I promise I can explain everything!",
             "~o~Suspect:~w~ I have my Concealed Permit, and usually keep my handgun in my home.",
             "~o~Suspect:~w~ A couple days ago, my house was broken into and my gun was stolen.",
@@ -133,7 +133,7 @@ namespace YobbinCallouts.Callouts
         private List<string> SuspectGuilty1 = new List<string>()
         {
             "~o~Suspect:~w~ Hi Officer, what seems to be the issue? Is everything alright?",
-            "~g~You:~w~ Hello, I'm here because a weapon registered to you was recovered "+OriginalZone+"~w~.",
+            $"~g~You:~w~ Hello, I'm here because a weapon registered to you was recovered {OriginalZone}~w~.",
             "~o~Suspect:~w~ Oh shit, uh - wow! I don't know anything about that Officer, I don't know why that would flag me.",
             "~g~You:~w~ So you don't know anything about a firearm that was discovered on the street registered to you?",
             "~o~Suspect:~w~ No idea Officer, I've never owned a gun. Now am I free to go? I haven't done anything wrong.",
@@ -142,7 +142,7 @@ namespace YobbinCallouts.Callouts
         private List<string> SuspectGuilty2 = new List<string>()
         {
             "~o~Suspect:~w~ Oh, Officer! What are you doing here? Is everything alright?",
-            "~g~You:~w~ Hello, I'm here because a weapon registered to you was discovered over "+OriginalZone+"~w~.",
+            $"~g~You:~w~ Hello, I'm here because a weapon registered to you was discovered over {OriginalZone}~w~.",
             "~o~Suspect:~w~ Oh, uh - wow! I don't know anything about that Officer, I've never even shot a gun let alone owned one.",
             "~g~You:~w~ So you don't know anything about a firearm that was discovered on the street that happened to be registered to you?",
             "~o~Suspect:~w~ No idea Officer, aren't you supposed to know that? Now am I free to go?",
@@ -151,7 +151,7 @@ namespace YobbinCallouts.Callouts
         private List<string> SuspectFlees = new List<string>()
         {
             "~o~Suspect:~w~ Oh, Officer! What are you doing here? Is everything alright?",
-            "~g~You:~w~ Hello, I'm here because a weapon registered to you was discovered over "+OriginalZone+"~w~.",
+            $"~g~You:~w~ Hello, I'm here because a weapon registered to you was discovered over {OriginalZone}~w~.",
         };
 
         public override bool OnBeforeCalloutDisplayed()
@@ -234,14 +234,14 @@ namespace YobbinCallouts.Callouts
             }
             catch (Exception e)
             {
-                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INTIALIZATION==========");
+                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INITIALIZATION==========");
                 Game.LogTrivial("IN: " + this);
                 string error = e.ToString();
                 Game.LogTrivial("ERROR: " + error);
                 Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
                 Game.DisplayNotification("Error: ~r~" + error);
                 Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
-                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INTIALIZATION==========");
+                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INITIALIZATION==========");
             }
             if (!CalloutRunning) { Callout(); }
             return base.OnCalloutAccepted();
