@@ -161,10 +161,6 @@ namespace YobbinCallouts.Callouts
                 Suspect.Tasks.Wander();
                 while (player.DistanceTo(Suspect) >= 5) GameFiber.Wait(0);
                 Game.DisplaySubtitle("~g~You:~w~ Hey, Could I Speak With You for a Sec?", 3000);
-                if()
-                GameFiber.Wait(3000);
-                Suspect.Tasks.AchieveHeading(player.Heading - 180).WaitForCompletion(500);
-                if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to talk to the ~r~Suspect.");
                 if (CallHandler.FiftyFifty()) { CallHandler.Dialogue(SuspectDialogue, Suspect); }
                 else
                 {
@@ -205,7 +201,7 @@ namespace YobbinCallouts.Callouts
         }
         private void Shoots()
         {
-            Suspect.Inventory.
+            //Suspect.Inventory.GiveNewWeapon();
 
         }
         private void WrapUp()
