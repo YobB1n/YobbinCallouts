@@ -33,7 +33,15 @@ namespace YobbinCallouts.Callouts
         };
         List<string> SuspectDialogue = new List<string>()
         {
-
+            "Suspect: Watchu want",
+            "You: Hey, just want to talk to you. Whats in your hand there?",
+            "Suspect: Watchu think it is, mail. punk ass",
+            "You: Where did you get that mail from?",
+            "Suspect: Places.....",
+            "You: I am going to go straight to the point if you straight with me, aight. We got a call about someone stealing mail. You are the only one in this vicinity that is walking around with mail. Did you steal it",
+            "Suspect: fine man, you got me...good job sherlock",
+            "You: Do you got any weapons on you?",
+            "Suspect: nah man, who the fuck you think I am. Don't piss me off 'fore I beat yo ass up."
         };
         System.Windows.Forms.Keys EndKey = Config.CalloutEndKey;
         System.Windows.Forms.Keys InteractionKey = Config.MainInteractionKey;
@@ -172,7 +180,7 @@ namespace YobbinCallouts.Callouts
                 Suspect.Tasks.Wander();
                 while (player.DistanceTo(Suspect) >= 5) GameFiber.Wait(0);
                 Game.DisplaySubtitle("You: Hey, Could I Speak With You for a Sec?", 3000);
-                if (CallHandler.FiftyFifty()) { CallHandler.Dialogue(SuspectDialogue, Suspect); WrapUp(); }
+                if (CallHandler.FiftyFifty()) { CallHandler.Dialogue(SuspectDialogue, Suspect); if (Config.DisplayHelp) { Game.DisplayNotification("Arrest thes suspect"); } WrapUp(); }
                 else
                 {
                     if (CallHandler.FiftyFifty()) { Runs();} else { Shoots(); }
