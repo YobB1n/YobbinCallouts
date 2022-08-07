@@ -68,11 +68,12 @@ namespace YobbinCallouts
             
         }
         /// <summary>
-        /// sets medical problems for escaped suspect using the commonMedicalProblems arraylist
+        /// sets medical problems for escaped suspect using the commonMedicalProblems list of strings
         /// </summary>
         public void setMedicalProblemsForEscapedSuspect()
         {
             MedicalProblems.Clear();
+            Wanted = true;
             List<string> CMP = commonMedicalProblems;
             for (int i = 0; i < monke.Next(1, 3); i++)
             {
@@ -81,9 +82,14 @@ namespace YobbinCallouts
                 CMP.RemoveRange(num,1);
             }
         }
+
+        /// <summary>
+        ///sets medical problems for mentally ill suspect using the commonMentalHealthProblems list of strings 
+        /// </summary>
         public void setMedicalProblemsForMentallyIllSuspect()
         {
             MedicalProblems.Clear();
+            Wanted = false;
             List<string> CMHP = commonMentalHealthProblems;
             for (int i = 0; i < monke.Next(1, 3); i++)
             {
