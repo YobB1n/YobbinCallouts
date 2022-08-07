@@ -6,6 +6,7 @@ using LSPD_First_Response.Mod.Callouts;
 using Rage.Native;
 using System;
 using System.Collections.Generic;
+
 namespace YobbinCallouts.Callouts
 {
     public class StolenMail : Callout
@@ -16,6 +17,7 @@ namespace YobbinCallouts.Callouts
         private Ped HouseOwner;
         Ped player = Game.LocalPlayer.Character;
         private Blip HouseOwnerBlip;
+        private Blip SuspectBlip;
         private Blip SearchArea;
         private int MainScenario;
         private bool CalloutRunning;
@@ -113,6 +115,7 @@ namespace YobbinCallouts.Callouts
                         Game.DisplaySubtitle("Hello Sir. Did you call about your mail being stolen.");
                         HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
                         if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to speak with the ~b~Landlord.");
+
                         CallHandler.Dialogue(HouseOwnerDialogue, HouseOwner);
 
 
@@ -152,17 +155,62 @@ namespace YobbinCallouts.Callouts
                 while (!player.IsInAnyVehicle(false)) GameFiber.Wait(0);
                 Vector3 SuspectSpawn = World.GetNextPositionOnStreet(player.Position.Around(550));
                 Suspect = new Ped(SuspectSpawn, 69);
+                SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, .69f, "Tenant");
                 Suspect.IsPersistent = true;
                 Suspect.BlockPermanentEvents = true;
                 Suspect.Tasks.Wander();
                 while (player.DistanceTo(Suspect) >= 5) GameFiber.Wait(0);
                 Game.DisplaySubtitle("~g~You:~w~ Hey, Could I Speak With You for a Sec?", 3000);
+                if()
                 GameFiber.Wait(3000);
                 Suspect.Tasks.AchieveHeading(player.Heading - 180).WaitForCompletion(500);
                 if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to talk to the ~r~Suspect.");
-                CallHandler.Dialogue(SuspectDialogue, Suspect);
-
+                if (CallHandler.FiftyFifty()) { CallHandler.Dialogue(SuspectDialogue, Suspect); }
+                else
+                {
+                    if (CallHandler.FiftyFifty()) { Runs();} else { Shoots(); }
+                }
             }
+        }
+
+        private void Runs()
+        {
+            if (CalloutRunning)
+            {
+                Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
+                LHandle SuspectPursuit = Functions.CreatePursuit();
+                Suspect.Inventory.Weapons.Clear();  
+                Functions.SetPursuitIsActiveForPlayer(SuspectPursuit, true);
+                Functions.AddPedToPursuit(SuspectPursuit, Suspect);
+                while (Functions.IsPursuitStillRunning(SuspectPursuit)) GameFiber.Wait(0);
+                while (Suspect.Exists())
+                {
+                    GameFiber.Yield();
+                    if (!Suspect.Exists() || Suspect.IsDead || Functions.IsPedArrested(Suspect))
+                    {
+                        break;
+                    }
+                }
+                if (Suspect.Exists())
+                {
+                    if (Functions.IsPedArrested(Suspect)) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Following the Pursuit."); }
+                }
+                if (SuspectBlip.Exists()) { SuspectBlip.Delete(); }
+                GameFiber.Wait(2000);
+                Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                GameFiber.Wait(2000);
+                if (SuspectBlip.Exists()) SuspectBlip.Delete();
+                WrapUp();
+            }
+        }
+        private void Shoots()
+        {
+            Suspect.Inventory.
+
+        }
+        private void WrapUp()
+        {
+
         }
 
 

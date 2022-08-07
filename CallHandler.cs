@@ -377,5 +377,12 @@ namespace YobbinCallouts
                 Game.LogTrivial("YOBBINCALLOUTS: Spawn Point found successfully.");
             }
         }
+
+        public static bool FiftyFifty()
+        {
+            Random monke = new Random();
+            int num = monke.Next(0, 2);
+            if (num == 0) { return false; } else { return true; }
+        }
     }
 }
