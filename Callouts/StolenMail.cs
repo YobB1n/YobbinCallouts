@@ -23,7 +23,13 @@ namespace YobbinCallouts.Callouts
         private bool CalloutRunning;
         List<string> HouseOwnerDialogue = new List<string>()
         {
-
+            "Home Owner: Hello Officer. Yes, I was the one who called about my mail being stolen. Thank you for coming.",
+            "You: How long has this been happening for?",
+            "Home Owner: This has been happening for a week now.",
+            "You: Why didn't you call us before?",
+            "Home Owner: I thought the mail company took a break.",
+            "You: That is an excuse for being lazy if I have ever heard of one. Anyways, do you have any description of the person?",
+            "Home Owner: I took some notes for you about the suspect. I will bring it right now"
         };
         List<string> SuspectDialogue = new List<string>()
         {
@@ -48,7 +54,7 @@ namespace YobbinCallouts.Callouts
 
             CalloutMessage = "Stolen Mail";
             CalloutPosition = MainSpawnPoint;
-            CalloutAdvisory = "RP states that he has not gotten mail in several days. He thinks that his mail was stolen.";
+            CalloutAdvisory = "RP states that he has not gotten mail in several days. He thinks that his mail is being stolen.";
 
             return base.OnBeforeCalloutDisplayed();
         }
@@ -112,13 +118,21 @@ namespace YobbinCallouts.Callouts
                         if (Game.IsKeyDown(EndKey)) { break; }
                         CallHandler.IdleAction(HouseOwner, false);
                         while (Vector3.Distance(player.Position, HouseOwner.Position) >= 7.5f) { GameFiber.Wait(0); }
-                        Game.DisplaySubtitle("Hello Sir. Did you call about your mail being stolen.");
+                        Game.DisplaySubtitle("~g~You:~w~ Hello Sir. Did you call about your mail being stolen.");
                         HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
                         if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to speak with the ~b~Landlord.");
-
+                        Vector3 SuspectSpawn = World.GetNextPositionOnStreet(player.Position.Around(550f));
+                        Suspect = new Ped(SuspectSpawn, 69);
+                        Suspect.IsPersistent = true;
+                        Suspect.BlockPermanentEvents = true;
                         CallHandler.Dialogue(HouseOwnerDialogue, HouseOwner);
-
-
+                        PedBackground SuspectPersona = new PedBackground(Suspect);
+                        Game.DisplayNotification(SuspectPersona.Gender);
+                        Game.DisplaySubtitle("You: Really, you couldn't tell me any clothing descriptions? I cannot guarantee I will be able to find him, but I will try my best.");
+                        if (Config.DisplayHelp) { Game.DisplayNotification("Press " + InteractionKey + " to continue dialogue"); }
+                        while (!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
+                        Game.DisplaySubtitle("Home Owner: Umm...he hid somewhere before I could get a proper description. I am pretty sure he will still be holding my mail stil. You have a good chance. Thank you officer."); ;
+                        SearchArea = new Blip(Suspect.Position.Around(15), 50);
 
                     }
                 }
@@ -152,16 +166,13 @@ namespace YobbinCallouts.Callouts
         {
             if (CalloutRunning)
             {
-                while (!player.IsInAnyVehicle(false)) GameFiber.Wait(0);
-                Vector3 SuspectSpawn = World.GetNextPositionOnStreet(player.Position.Around(550));
-                Suspect = new Ped(SuspectSpawn, 69);
+                while (!player.IsInAnyVehicle(false) && Vector3.Distance(player.Position, Suspect.Position) <= 25f) GameFiber.Wait(0);
+                if (SearchArea.Exists()) { SearchArea.Delete(); }
                 SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, .69f, "Tenant");
-                Suspect.IsPersistent = true;
-                Suspect.BlockPermanentEvents = true;
                 Suspect.Tasks.Wander();
                 while (player.DistanceTo(Suspect) >= 5) GameFiber.Wait(0);
-                Game.DisplaySubtitle("~g~You:~w~ Hey, Could I Speak With You for a Sec?", 3000);
-                if (CallHandler.FiftyFifty()) { CallHandler.Dialogue(SuspectDialogue, Suspect); }
+                Game.DisplaySubtitle("You: Hey, Could I Speak With You for a Sec?", 3000);
+                if (CallHandler.FiftyFifty()) { CallHandler.Dialogue(SuspectDialogue, Suspect); WrapUp(); }
                 else
                 {
                     if (CallHandler.FiftyFifty()) { Runs();} else { Shoots(); }
@@ -201,16 +212,38 @@ namespace YobbinCallouts.Callouts
         }
         private void Shoots()
         {
-            //Suspect.Inventory.GiveNewWeapon();
-
+            Suspect.Inventory.GiveNewWeapon("WEAPON_APPISTOL", -1, true);
+            Suspect.Tasks.GoToWhileAiming(World.GetNextPositionOnStreet(Suspect.Position.Around(550)), player.Position, 5f, 3f, true, FiringPattern.FullAutomatic).WaitForCompletion(3000);
+            while(Suspect.Exists() && Suspect.IsAlive) { GameFiber.Wait(0); }
+            if (!Suspect.Exists()) { Game.DisplayNotification("Dispatch, a Suspect was ~r~killed~w~ Following a foot chase and a shootout."); }
+            GameFiber.Wait(2000);
+            Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+            GameFiber.Wait(2000);
+            if (SuspectBlip.Exists()) SuspectBlip.Delete();
+            WrapUp();
         }
         private void WrapUp()
         {
 
         }
+        public override void End()
+        {
+            base.End();
+            if (CalloutRunning)
+            {
+                Game.DisplayNotification("~g~Code 4~w~, return to patrol.");
+                Functions.PlayScannerAudio("ATTENTION_ALL_UNITS WE_ARE_CODE_4");
+            }
+            CalloutRunning = false;
+            if (SuspectBlip.Exists()) { SuspectBlip.Delete(); }
+            if (HouseOwnerBlip.Exists()) { HouseOwnerBlip.Delete(); }
+            Game.LogTrivial("YOBBINCALLOUTS: Stolen Mail Callout Finished Cleaning Up.");
+        }
 
-
-
+        public override void Process()
+        {
+            base.Process();
+        }
 
     }
 }
