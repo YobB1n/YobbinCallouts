@@ -35,6 +35,14 @@ namespace YobbinCallouts.Callouts
             "You: That is an excuse for being lazy if I have ever heard of one. Anyways, do you have any description of the person?",
             "Home Owner: No."
         };
+        List<string> HouseOwnerFalseAlarmDialogue = new List<string>()
+        {
+            "Home Owner: Hello Officer. Sorry for the trouble. My mail was just put on hold for a week longer than it should have by the mail company because our vacation was cut short.",
+            "You: So you are getting your mail?",
+            "Home Owner: Yes. It was a false alarm. Sorry about that.",
+            "You: No worries. Please make sure you contact 911 only for emergencies.",
+            "Home Owner: Sorry about that. Will do. Stay safe"
+        };
         List<string> SuspectDialogue = new List<string>()
         {
             "Suspect: Watchu want",
@@ -62,7 +70,7 @@ namespace YobbinCallouts.Callouts
             if (CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; Game.LogTrivial("Spawnpoint vector is " + MainSpawnPoint); } else { Game.LogTrivial("No Location found. Ending Callout");  return false; }
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 25f);
 
-            // Add Scanner Audio
+            Functions.PlayScannerAudio("CITIZENS_REPORT YC_STOLEN_PROPERTY");
 
             CalloutMessage = "Stolen Mail";
             CalloutPosition = MainSpawnPoint;
@@ -111,7 +119,15 @@ namespace YobbinCallouts.Callouts
                 Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
                 Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INTIALIZATION==========");
             }
-            Callout();
+            int num = monke.Next(0, 101);
+            if(num <= 25)
+            {
+                FalseAlarm();
+            }
+            else
+            {
+                Callout();
+            }
 
 
             return base.OnCalloutAccepted();
@@ -176,6 +192,64 @@ namespace YobbinCallouts.Callouts
                 }
             });
         }
+
+        private void FalseAlarm()
+        {
+            CalloutRunning = true;
+            GameFiber.StartNew(delegate
+            {
+                try
+                {
+                    while (CalloutRunning)
+                    {
+                        while (Vector3.Distance(player.Position, HouseOwner.Position) >= 25f && !Game.IsKeyDown(EndKey)) { GameFiber.Wait(0); }
+                        if (Game.IsKeyDown(EndKey)) { break; }
+                        CallHandler.IdleAction(HouseOwner, false);
+                        while (Vector3.Distance(player.Position, HouseOwner.Position) >= 7.5f) { GameFiber.Wait(0); }
+                        Game.DisplaySubtitle("~g~You:~w~ Hello Sir. Did you call about your mail being stolen.");
+                        HouseOwnerBlip.IsRouteEnabled = false;
+                        HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
+                        if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to speak with the ~b~Landlord.");
+                        CallHandler.Dialogue(HouseOwnerFalseAlarmDialogue, HouseOwner);
+                        GameFiber.Wait(1500); 
+                        Game.DisplayNotification("Dispatch, It was a ~g~False Alarm~w~. I will be ~g~Code 4~w~.");
+                        GameFiber.Wait(2000);
+                        Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                        GameFiber.Wait(2000);
+                        End();
+                    }
+                }
+                catch
+                {
+                    if (CalloutRunning)
+                    {
+                        Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
+                        Game.LogTrivial("IN: " + this);
+                        string error = e.ToString();
+                        Game.LogTrivial("ERROR: " + error);
+                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Chck Your ~g~Log File.~w~ Sorry for the Inconvenience!");
+                        Game.DisplayNotification("Error: ~r~" + error);
+                        Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
+                        Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
+                    }
+                    else
+                    {
+                        Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT - CALLOUT NO LONGER RUNNING==========");
+                        string error = e.ToString();
+                        Game.LogTrivial("ERROR: " + error);
+                        Game.LogTrivial("No Need to Report This Error if it Did not Result in an LSPDFR Crash.");
+                        Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT - CALLOUT NO LONGER RUNNING==========");
+                    }
+                    End();
+                }
+            }
+
+
+
+            );
+
+        }
+
 
         private void DetachAndSetBlip()
         {
