@@ -23,7 +23,6 @@ namespace YobbinCallouts.Callouts
         private Blip DroppedMailBlip;
         private int MainScenario;
         private Rage.Object Mail;
-        private Rage.Object Note;
         private bool CalloutRunning;
         List<string> HouseOwnerDialogue = new List<string>()
         {
