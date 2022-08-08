@@ -23,6 +23,7 @@ namespace YobbinCallouts.Callouts
         private Blip DroppedMailBlip;
         private int MainScenario;
         private Rage.Object Mail;
+        private Rage.Object Note;
         private bool CalloutRunning;
         List<string> HouseOwnerDialogue = new List<string>()
         {
@@ -32,7 +33,7 @@ namespace YobbinCallouts.Callouts
             "You: Why didn't you call us before?",
             "Home Owner: I thought the mail company took a break.",
             "You: That is an excuse for being lazy if I have ever heard of one. Anyways, do you have any description of the person?",
-            "Home Owner: I took some notes for you about the suspect. I will bring it right now"
+            "Home Owner: No."
         };
         List<string> SuspectDialogue = new List<string>()
         {
@@ -125,7 +126,7 @@ namespace YobbinCallouts.Callouts
                 {
                     while (CalloutRunning)
                     {
-                        while(Vector3.Distance(player.Position, HouseOwner.Position) >= 25f && !Game.IsKeyDown(EndKey)) { GameFiber.Wait(0); }
+                        while (Vector3.Distance(player.Position, HouseOwner.Position) >= 25f && !Game.IsKeyDown(EndKey)) { GameFiber.Wait(0); }
                         if (Game.IsKeyDown(EndKey)) { break; }
                         CallHandler.IdleAction(HouseOwner, false);
                         while (Vector3.Distance(player.Position, HouseOwner.Position) >= 7.5f) { GameFiber.Wait(0); }
@@ -137,13 +138,13 @@ namespace YobbinCallouts.Callouts
                         Suspect = new Ped(SuspectSpawn, 69);
                         Suspect.IsPersistent = true;
                         Suspect.BlockPermanentEvents = true;
+                        Suspect.Tasks.Wander();
                         CallHandler.Dialogue(HouseOwnerDialogue, HouseOwner);
                         PedBackground SuspectPersona = new PedBackground(Suspect);
-                        Game.DisplayNotification(SuspectPersona.Gender);
-                        Game.DisplaySubtitle("You: Really, you couldn't tell me any clothing descriptions? I cannot guarantee I will be able to find him, but I will try my best.");
+                        Game.DisplaySubtitle("You: Really, you cannot tell me anything about the suspect? I cannot guarantee I will be able to find him, but I will try my best.");
                         if (Config.DisplayHelp) { Game.DisplayNotification("Press " + InteractionKey + " to continue dialogue"); }
                         while (!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
-                        Game.DisplaySubtitle("Home Owner: Umm...he hid somewhere before I could get a proper description. I am pretty sure he will still be holding my mail stil. You have a good chance. Thank you officer."); ;
+                        Game.DisplaySubtitle("Home Owner: Umm...the person ran off....before I could remember any of that. I think the person was " + SuspectPersona.Gender + " and was holding my mail while wandering off.");
                         SearchArea = new Blip(Suspect.Position.Around(15), 50);
 
                     }
@@ -188,10 +189,12 @@ namespace YobbinCallouts.Callouts
         {
             if (CalloutRunning)
             {
+                Mail = new Rage.Object("prop_cs_envolope_01", Vector3.Zero);
+                Mail.IsPersistent = true;
+                Mail.AttachTo(Suspect, Suspect.GetBoneIndex(PedBoneId.LeftHand), new Vector3(0.1490f, 0.0560f, -0.0100f), new Rotator(-17f, -142f, -151f));
                 while (!player.IsInAnyVehicle(false) && Vector3.Distance(player.Position, Suspect.Position) <= 25f) { GameFiber.Wait(0); }
                 if (SearchArea.Exists()) { SearchArea.Delete(); }
                 SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, .69f);
-                Suspect.Tasks.Wander();
                 while (player.DistanceTo(Suspect) >= 5) GameFiber.Wait(0);
                 Game.DisplaySubtitle("You: Hey, Could I Speak With You for a Sec?", 3000);
                 if (CallHandler.FiftyFifty()) { Cooperates(); }
@@ -204,9 +207,6 @@ namespace YobbinCallouts.Callouts
 
         private void Cooperates()
         {
-            Mail = new Rage.Object("prop_cs_envolope_01", Vector3.Zero);
-            Mail.IsPersistent = true;
-            Mail.AttachTo(Suspect, Suspect.GetBoneIndex(PedBoneId.LeftHand), new Vector3(0.1490f, 0.0560f, -0.0100f), new Rotator(-17f, -142f, -151f));
             CallHandler.Dialogue(SuspectDialogue, Suspect);
             DetachAndSetBlip();  
             if (Config.DisplayHelp) { Game.DisplayNotification("Arrest the suspect"); }
