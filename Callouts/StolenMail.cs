@@ -129,8 +129,8 @@ namespace YobbinCallouts.Callouts
                         if (Game.IsKeyDown(EndKey)) { break; }
                         CallHandler.IdleAction(HouseOwner, false);
                         while (Vector3.Distance(player.Position, HouseOwner.Position) >= 7.5f) { GameFiber.Wait(0); }
-                        HouseOwnerBlip.IsRouteEnabled = false;
                         Game.DisplaySubtitle("~g~You:~w~ Hello Sir. Did you call about your mail being stolen.");
+                        HouseOwnerBlip.IsRouteEnabled = false;
                         HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
                         if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to speak with the ~b~Landlord.");
                         Vector3 SuspectSpawn = World.GetNextPositionOnStreet(player.Position.Around(550f));
@@ -275,7 +275,8 @@ namespace YobbinCallouts.Callouts
                 HouseOwnerBlip.IsRouteEnabled = true;
                 while (Vector3.Distance(player.Position, HouseOwner.Position) >= 7.5f) { GameFiber.Wait(0); }
                 HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
-                Game.DisplaySubtitle("I have retrieved your mail sir.");
+                Game.DisplaySubtitle("You: I have retrieved your mail sir.");
+                if(Config.DisplayHelp) { Game.DisplayNotification("Press + " + InteractionKey + " to return mail."); }
                 while(!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
                 player.Tasks.PlayAnimation("mp_common", "givetake1_b", 1f, AnimationFlags.Loop);
                 GameFiber.Wait(1000);
@@ -283,9 +284,9 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(1000);
                 player.Tasks.Clear();
                 GameFiber.Wait(1000);
-                Game.DisplaySubtitle("Thank you so much officer. Legend");
+                Game.DisplaySubtitle("Home Owner: Thank you so much officer.");
                 GameFiber.Wait(2000);
-                Game.DisplaySubtitle("No worries");
+                Game.DisplaySubtitle("You: No worries");
                 End();
 
             }
@@ -302,8 +303,8 @@ namespace YobbinCallouts.Callouts
             if (SuspectBlip.Exists()) { SuspectBlip.Delete(); }
             if (HouseOwnerBlip.Exists()) { HouseOwnerBlip.Delete(); }
             if (Suspect.Exists()) { Suspect.Dismiss(); }
+            if (Mail.Exists()) { Mail.Delete(); }
             if (HouseOwner.Exists()) { HouseOwner.Dismiss(); }
-            if(Mail.Exists()) { Mail.Delete(); }
             if (SearchArea.Exists()) { SearchArea.Delete(); }
             if (DroppedMailBlip.Exists()) { DroppedMailBlip.Delete(); }
             Game.LogTrivial("YOBBINCALLOUTS: Stolen Mail Callout Finished Cleaning Up.");
