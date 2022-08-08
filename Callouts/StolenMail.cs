@@ -145,8 +145,10 @@ namespace YobbinCallouts.Callouts
                         if (Config.DisplayHelp) { Game.DisplayNotification("Press " + InteractionKey + " to continue dialogue"); }
                         while (!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
                         Game.DisplaySubtitle("Home Owner: Umm...the person ran off....before I could remember any of that. I think the person was " + SuspectPersona.Gender + " and was holding my mail while wandering off.");
+                        while (!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
+                        Game.DisplaySubtitle("You: Ok. Will try my best. Thank you.");
                         SearchArea = new Blip(Suspect.Position.Around(15), 50);
-
+                        FindSuspect();
                     }
                 }
                 catch (Exception e)
@@ -248,7 +250,7 @@ namespace YobbinCallouts.Callouts
         {
             DetachAndSetBlip();
             Suspect.Inventory.GiveNewWeapon("WEAPON_APPISTOL", -1, true);
-            Suspect.Tasks.GoToWhileAiming(World.GetNextPositionOnStreet(Suspect.Position.Around(550)), player.Position, 5f, 3f, true, FiringPattern.FullAutomatic).WaitForCompletion(3000);
+            Suspect.Tasks.GoToWhileAiming(World.GetNextPositionOnStreet(Suspect.Position.Around(550)), player.Position, 5f, Suspect.Speed * (float)2.5, true, FiringPattern.FullAutomatic).WaitForCompletion(3000);
             while(Suspect.Exists() && Suspect.IsAlive) { GameFiber.Wait(0); }
             if (!Suspect.Exists()) { Game.DisplayNotification("Dispatch, a Suspect was ~r~killed~w~ following a foot chase and a shootout."); }
             GameFiber.Wait(2000);
