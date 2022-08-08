@@ -19,7 +19,10 @@ namespace YobbinCallouts.Callouts
         private Blip HouseOwnerBlip;
         private Blip SuspectBlip;
         private Blip SearchArea;
+        private Vector3 DroppedMail;
+        private Blip DroppedMailBlip;
         private int MainScenario;
+        private Rage.Object Mail;
         private bool CalloutRunning;
         List<string> HouseOwnerDialogue = new List<string>()
         {
@@ -170,17 +173,28 @@ namespace YobbinCallouts.Callouts
             });
         }
 
+        private void DetachAndSetBlip()
+        {
+            if (Mail.Exists())
+            {
+                Mail.Detach();
+                DroppedMail = Mail.Position;
+                DroppedMailBlip = CallHandler.AssignBlip(Mail, Color.Blue, .4f);
+            }
+        }
+
         private void FindSuspect()
         {
             if (CalloutRunning)
             {
                 while (!player.IsInAnyVehicle(false) && Vector3.Distance(player.Position, Suspect.Position) <= 25f) GameFiber.Wait(0);
                 if (SearchArea.Exists()) { SearchArea.Delete(); }
-                SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, .69f, "Tenant");
+                SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, .69f);
                 Suspect.Tasks.Wander();
                 while (player.DistanceTo(Suspect) >= 5) GameFiber.Wait(0);
                 Game.DisplaySubtitle("You: Hey, Could I Speak With You for a Sec?", 3000);
-                if (CallHandler.FiftyFifty()) { CallHandler.Dialogue(SuspectDialogue, Suspect); if (Config.DisplayHelp) { Game.DisplayNotification("Arrest thes suspect"); } WrapUp(); }
+
+                if (CallHandler.FiftyFifty()) { Cooperates(); }
                 else
                 {
                     if (CallHandler.FiftyFifty()) { Runs();} else { Shoots(); }
@@ -188,11 +202,23 @@ namespace YobbinCallouts.Callouts
             }
         }
 
+        private void Cooperates()
+        {
+            Mail = new Rage.Object("prop_cs_envolope_01", Vector3.Zero);
+            Mail.IsPersistent = true;
+            Mail.AttachTo(Suspect, Suspect.GetBoneIndex(PedBoneId.LeftHand), new Vector3(0.1490f, 0.0560f, -0.0100f), new Rotator(-17f, -142f, -151f));
+            CallHandler.Dialogue(SuspectDialogue, Suspect);
+            DetachAndSetBlip();  
+            if (Config.DisplayHelp) { Game.DisplayNotification("Arrest the suspect"); }
+            WrapUp();
+        }
+
         private void Runs()
         {
             if (CalloutRunning)
             {
                 Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
+                DetachAndSetBlip();
                 LHandle SuspectPursuit = Functions.CreatePursuit();
                 Suspect.Inventory.Weapons.Clear();  
                 Functions.SetPursuitIsActiveForPlayer(SuspectPursuit, true);
@@ -220,6 +246,7 @@ namespace YobbinCallouts.Callouts
         }
         private void Shoots()
         {
+            DetachAndSetBlip();
             Suspect.Inventory.GiveNewWeapon("WEAPON_APPISTOL", -1, true);
             Suspect.Tasks.GoToWhileAiming(World.GetNextPositionOnStreet(Suspect.Position.Around(550)), player.Position, 5f, 3f, true, FiringPattern.FullAutomatic).WaitForCompletion(3000);
             while(Suspect.Exists() && Suspect.IsAlive) { GameFiber.Wait(0); }
@@ -245,6 +272,10 @@ namespace YobbinCallouts.Callouts
             CalloutRunning = false;
             if (SuspectBlip.Exists()) { SuspectBlip.Delete(); }
             if (HouseOwnerBlip.Exists()) { HouseOwnerBlip.Delete(); }
+            if (Suspect.Exists()) { Suspect.Dismiss(); }
+            if (HouseOwner.Exists()) { HouseOwner.Dismiss(); }
+            if(Mail.Exists()) { Mail.Delete(); }
+
             Game.LogTrivial("YOBBINCALLOUTS: Stolen Mail Callout Finished Cleaning Up.");
         }
 
