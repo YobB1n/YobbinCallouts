@@ -219,7 +219,7 @@ namespace YobbinCallouts.Callouts
                         End();
                     }
                 }
-                catch
+                catch (Exception e)
                 {
                     if (CalloutRunning)
                     {

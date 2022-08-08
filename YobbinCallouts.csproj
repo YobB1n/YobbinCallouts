@@ -87,6 +87,7 @@
     <Compile Include="Callouts\PropertyCheck.cs" />
     <Compile Include="Callouts\PhotographyOfPrivateProperty.cs" />
     <Compile Include="Callouts\RoadRage.cs" />
+    <Compile Include="Callouts\StolenMail.cs" />
     <Compile Include="Callouts\StolenPoliceHardware.cs" />
     <Compile Include="Callouts\TrafficBreak.cs" />
     <Compile Include="Callouts\WeaponFound.cs" />
