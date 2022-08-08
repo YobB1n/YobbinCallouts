@@ -129,6 +129,7 @@ namespace YobbinCallouts.Callouts
                         if (Game.IsKeyDown(EndKey)) { break; }
                         CallHandler.IdleAction(HouseOwner, false);
                         while (Vector3.Distance(player.Position, HouseOwner.Position) >= 7.5f) { GameFiber.Wait(0); }
+                        HouseOwnerBlip.IsRouteEnabled = false;
                         Game.DisplaySubtitle("~g~You:~w~ Hello Sir. Did you call about your mail being stolen.");
                         HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
                         if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to speak with the ~b~Landlord.");
@@ -187,13 +188,12 @@ namespace YobbinCallouts.Callouts
         {
             if (CalloutRunning)
             {
-                while (!player.IsInAnyVehicle(false) && Vector3.Distance(player.Position, Suspect.Position) <= 25f) GameFiber.Wait(0);
+                while (!player.IsInAnyVehicle(false) && Vector3.Distance(player.Position, Suspect.Position) <= 25f) { GameFiber.Wait(0); }
                 if (SearchArea.Exists()) { SearchArea.Delete(); }
                 SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, .69f);
                 Suspect.Tasks.Wander();
                 while (player.DistanceTo(Suspect) >= 5) GameFiber.Wait(0);
                 Game.DisplaySubtitle("You: Hey, Could I Speak With You for a Sec?", 3000);
-
                 if (CallHandler.FiftyFifty()) { Cooperates(); }
                 else
                 {
@@ -250,7 +250,7 @@ namespace YobbinCallouts.Callouts
             Suspect.Inventory.GiveNewWeapon("WEAPON_APPISTOL", -1, true);
             Suspect.Tasks.GoToWhileAiming(World.GetNextPositionOnStreet(Suspect.Position.Around(550)), player.Position, 5f, 3f, true, FiringPattern.FullAutomatic).WaitForCompletion(3000);
             while(Suspect.Exists() && Suspect.IsAlive) { GameFiber.Wait(0); }
-            if (!Suspect.Exists()) { Game.DisplayNotification("Dispatch, a Suspect was ~r~killed~w~ Following a foot chase and a shootout."); }
+            if (!Suspect.Exists()) { Game.DisplayNotification("Dispatch, a Suspect was ~r~killed~w~ following a foot chase and a shootout."); }
             GameFiber.Wait(2000);
             Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
             GameFiber.Wait(2000);
@@ -259,7 +259,36 @@ namespace YobbinCallouts.Callouts
         }
         private void WrapUp()
         {
+            if (CalloutRunning)
+            {
+                if (Config.DisplayHelp) { Game.DisplayNotification("Retrieve the mail"); }
+                while(Vector3.Distance(player.Position, DroppedMail) >= 5f) { GameFiber.Wait(0); }
+                if (Config.DisplayHelp) { Game.DisplayNotification("Press " + InteractionKey + " in order to retrieve the mail"); }
+                while (!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
+                player.Tasks.PlayAnimation("amb@medic@standing@kneel@idle_a", "idle_b", 1f, AnimationFlags.Loop);
+                GameFiber.Wait(1000);
+                Mail.AttachTo(player, player.GetBoneIndex(PedBoneId.LeftHand), new Vector3(0.1490f, 0.0560f, -0.0100f), new Rotator(-17f, -142f, -151f));
+                GameFiber.Wait(1000);
+                player.Tasks.Clear();
+                GameFiber.Wait(1000);
+                if (Config.DisplayHelp) { Game.DisplayNotification("Go return mail to home owner."); }
+                HouseOwnerBlip.IsRouteEnabled = true;
+                while (Vector3.Distance(player.Position, HouseOwner.Position) >= 7.5f) { GameFiber.Wait(0); }
+                HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
+                Game.DisplaySubtitle("I have retrieved your mail sir.");
+                while(!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
+                player.Tasks.PlayAnimation("mp_common", "givetake1_b", 1f, AnimationFlags.Loop);
+                GameFiber.Wait(1000);
+                Mail.AttachTo(HouseOwner, HouseOwner.GetBoneIndex(PedBoneId.LeftHand), new Vector3(0.1490f, 0.0560f, -0.0100f), new Rotator(-17f, -142f, -151f));
+                GameFiber.Wait(1000);
+                player.Tasks.Clear();
+                GameFiber.Wait(1000);
+                Game.DisplaySubtitle("Thank you so much officer. Legend");
+                GameFiber.Wait(2000);
+                Game.DisplaySubtitle("No worries");
+                End();
 
+            }
         }
         public override void End()
         {
@@ -275,7 +304,8 @@ namespace YobbinCallouts.Callouts
             if (Suspect.Exists()) { Suspect.Dismiss(); }
             if (HouseOwner.Exists()) { HouseOwner.Dismiss(); }
             if(Mail.Exists()) { Mail.Delete(); }
-
+            if (SearchArea.Exists()) { SearchArea.Delete(); }
+            if (DroppedMailBlip.Exists()) { DroppedMailBlip.Delete(); }
             Game.LogTrivial("YOBBINCALLOUTS: Stolen Mail Callout Finished Cleaning Up.");
         }
 
