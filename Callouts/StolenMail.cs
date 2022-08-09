@@ -1,4 +1,4 @@
-﻿//THIS CALLOUT IS NOT FINISHED (or even started lol)
+﻿//THIS CALLOUT IS READY FOR TESTING
 using System.Drawing;
 using Rage;
 using LSPD_First_Response.Mod.API;
@@ -54,8 +54,8 @@ namespace YobbinCallouts.Callouts
             "You: Do you got any weapons on you?",
             "Suspect: nah man, who the fuck you think I am. Don't piss me off 'fore I beat yo ass up."
         };
-        System.Windows.Forms.Keys EndKey = Config.CalloutEndKey;
-        System.Windows.Forms.Keys InteractionKey = Config.MainInteractionKey;
+        private System.Windows.Forms.Keys EndKey = Config.CalloutEndKey;
+        private System.Windows.Forms.Keys InteractionKey = Config.MainInteractionKey;
         Random monke = new Random();
 
         public override bool OnBeforeCalloutDisplayed()
@@ -267,10 +267,10 @@ namespace YobbinCallouts.Callouts
                 Mail = new Rage.Object("prop_cs_envolope_01", Vector3.Zero);
                 Mail.IsPersistent = true;
                 Mail.AttachTo(Suspect, Suspect.GetBoneIndex(PedBoneId.LeftHand), new Vector3(0.1490f, 0.0560f, -0.0100f), new Rotator(-17f, -142f, -151f));
-                while (!player.IsInAnyVehicle(false) && Vector3.Distance(player.Position, Suspect.Position) <= 25f) { GameFiber.Wait(0); }
+                while (!player.IsInAnyVehicle(false) && Vector3.Distance(player.Position, Suspect.Position) >= 10f) { GameFiber.Wait(0); }
                 if (SearchArea.Exists()) { SearchArea.Delete(); }
                 SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, .69f);
-                while (player.DistanceTo(Suspect) >= 5) GameFiber.Wait(0);
+                while (player.DistanceTo(Suspect) >= 5f) GameFiber.Wait(0);
                 Game.DisplaySubtitle("You: Hey, Could I Speak With You for a Sec?", 3000);
                 if (CallHandler.FiftyFifty()) { Cooperates(); }
                 else
@@ -285,6 +285,7 @@ namespace YobbinCallouts.Callouts
             CallHandler.Dialogue(SuspectDialogue, Suspect);
             DetachAndSetBlip();  
             if (Config.DisplayHelp) { Game.DisplayNotification("Arrest the suspect"); }
+            while(Suspect.Exists() && !Suspect.IsCuffed) { GameFiber.Wait(0); }
             WrapUp();
         }
 
@@ -323,7 +324,7 @@ namespace YobbinCallouts.Callouts
         {
             DetachAndSetBlip();
             Suspect.Inventory.GiveNewWeapon("WEAPON_APPISTOL", -1, true);
-            Suspect.Tasks.GoToWhileAiming(World.GetNextPositionOnStreet(Suspect.Position.Around(550)), player.Position, 5f, Suspect.Speed * (float)2.5, true, FiringPattern.FullAutomatic).WaitForCompletion(3000);
+            Suspect.Tasks.GoToWhileAiming(World.GetNextPositionOnStreet(Suspect.Position.Around(550)), player.Position, 5f, 5f, true, FiringPattern.FullAutomatic).WaitForCompletion(1500);
             while(Suspect.Exists() && Suspect.IsAlive) { GameFiber.Wait(0); }
             if (!Suspect.Exists()) { Game.DisplayNotification("Dispatch, a Suspect was ~r~killed~w~ following a foot chase and a shootout."); }
             GameFiber.Wait(2000);
@@ -336,6 +337,7 @@ namespace YobbinCallouts.Callouts
         {
             if (CalloutRunning)
             {
+                Game.LogTrivial("Starting Wrap Up Method");
                 if (Config.DisplayHelp) { Game.DisplayNotification("Retrieve the mail"); }
                 while(Vector3.Distance(player.Position, DroppedMail) >= 5f) { GameFiber.Wait(0); }
                 if (Config.DisplayHelp) { Game.DisplayNotification("Press " + InteractionKey + " in order to retrieve the mail"); }
