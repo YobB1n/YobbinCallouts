@@ -17,6 +17,8 @@ using Rage.Native;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using YobbinCallouts.Utilities;
+
 //using StopThePed.API;
 
 namespace YobbinCallouts.Callouts
@@ -449,11 +451,9 @@ namespace YobbinCallouts.Callouts
                 Game.LocalPlayer.Character.Heading = DriverVehicle.Heading - 180;
                 Game.LogTrivial("YOBBINCALLOUTS: Player Has Started Looking at Vehicle's Hood.");
                 //some task to open the hood
-                if (DriverVehicle.Doors[4].IsValid())
-                {
-                    DriverVehicle.Doors[4].Open(false);
-                    Game.LogTrivial("YOBBINCALLOUTS: Opened the Hood");
-                }
+                DriverVehicle.OpenDoor(VehicleExtensions.Doors.Hood);
+                Game.LogTrivial("YOBBINCALLOUTS: Opened the Hood");
+
                 GameFiber.Wait(1000);
                 Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to Look at the ~b~Engine.");
                 while (!Game.IsKeyDown(Config.MainInteractionKey)) GameFiber.Wait(0);
@@ -467,11 +467,8 @@ namespace YobbinCallouts.Callouts
                     GameFiber.Wait(1000);
                     Game.DisplaySubtitle("~g~You:~w~ Looks Like That Worked!", 3500);
                     Game.LogTrivial("YOBBINCALLOUTS: Player fixed le car");
-                    if (DriverVehicle.Doors[4].IsValid())
-                    {
-                        DriverVehicle.Doors[4].Close(false);
-                        Game.LogTrivial("YOBBINCALLOUTS: Closed the Hood");
-                    }
+                    DriverVehicle.CloseDoor(VehicleExtensions.Doors.Hood);
+                    Game.LogTrivial("YOBBINCALLOUTS: Closed the Hood");
                     Game.DisplayHelp("Inform the ~b~Driver.");
                     GameFiber.Wait(4500);
 
@@ -496,11 +493,9 @@ namespace YobbinCallouts.Callouts
                     GameFiber.Wait(1000);
                     Game.DisplaySubtitle("~g~You:~w~ Damn, Looks Like I Couldn't Get it Working.", 3500);
                     Game.LogTrivial("YOBBINCALLOUTS: Player did not fix le car");
-                    if (DriverVehicle.Doors[4].IsValid())
-                    {
-                        DriverVehicle.Doors[4].Close(false);
-                        Game.LogTrivial("YOBBINCALLOUTS: Closed the Hood");
-                    }
+                    DriverVehicle.CloseDoor(VehicleExtensions.Doors.Hood);
+                    Game.LogTrivial("YOBBINCALLOUTS: Closed the Hood");
+
                     if (DriverVehicleBlip.Exists()) DriverVehicleBlip.Scale = 0.8f;
                     TowTruckLogic();
                 }
