@@ -299,21 +299,6 @@ namespace YobbinCallouts
         }
 
         /// <summary>
-        /// will be finished later.
-        /// </summary>
-        /// <param name="ped"></param>
-        public static void PedInfo(Ped ped)
-        {
-            if (ped.Exists())
-            {
-                var name = Functions.GetPersonaForPed(ped).FullName;
-                var birthday = Functions.GetPersonaForPed(ped).Birthday;
-                var advisory = Functions.GetPersonaForPed(ped).AdvisoryText;
-            }
-            Game.DisplayNotification("3dtextures", "mpgroundlogo_cops", "", "", "");
-        }
-
-        /// <summary>
         /// assign a blip that will be attached to an entity.
         /// </summary>
         /// <param name="entity"></param>
@@ -370,7 +355,7 @@ namespace YobbinCallouts
                 Game.LogTrivial("YOBBINCALLOUTS: Spawn Point not found.");
                 locationReturned = false;
             }
-            else //test this (else wasn't here before)
+            else 
             {
                 SpawnPoint = (Vector3)closeLocations[monke.Next(0, closeLocations.Count)];
                 locationReturned = true;
