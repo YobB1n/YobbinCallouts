@@ -120,7 +120,7 @@ namespace YobbinCallouts.Callouts
                 Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INTIALIZATION==========");
             }
             int num = monke.Next(0, 101);
-            if(num <= 25)
+            if(num <= 10)
             {
                 FalseAlarm();
             }
