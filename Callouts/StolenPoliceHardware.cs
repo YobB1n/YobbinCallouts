@@ -5,6 +5,7 @@ using LSPD_First_Response.Mod.Callouts;
 using Rage.Native;
 using System.Linq;
 using System;
+using YobbinCallouts.Utilities;
 
 namespace YobbinCallouts.Callouts
 {
@@ -235,16 +236,7 @@ namespace YobbinCallouts.Callouts
                     {
                         Game.DisplayNotification("~b~Searching the Vehicle.");
                         //idk if this is necessary but I liked to check if all bones are valid
-                        if (SuspectVehicle.HasBone("door_dside_f") && SuspectVehicle.Doors[0].IsValid())
-                            SuspectVehicle.Doors[0].Open(false);
-                        if (SuspectVehicle.HasBone("door_pside_f") && SuspectVehicle.Doors[1].IsValid())
-                            SuspectVehicle.Doors[1].Open(false);
-                        if (SuspectVehicle.HasBone("door_dside_r") && SuspectVehicle.Doors[2].IsValid())
-                            SuspectVehicle.Doors[2].Open(false);
-                        if (SuspectVehicle.HasBone("door_pside_r") && SuspectVehicle.Doors[3].IsValid())
-                            SuspectVehicle.Doors[3].Open(false);
-                        if (SuspectVehicle.HasBone("boot") && SuspectVehicle.Doors[5].IsValid())
-                            SuspectVehicle.Doors[5].Open(false);
+                        SuspectVehicle.OpenDoorsForSearch();
 
                         GameFiber.Wait(500);
                         Game.LocalPlayer.Character.Tasks.GoStraightToPosition(SuspectVehicle.GetOffsetPositionRight(1.5f), 1f, SuspectVehicle.Heading - 90, 1f, -1).WaitForCompletion(500);
@@ -278,41 +270,7 @@ namespace YobbinCallouts.Callouts
                         GameFiber.Wait(2000);
                         LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
                         GameFiber.Wait(1500);
-                        if (SuspectVehicle.HasBone("door_dside_f"))
-                        {
-                            if (SuspectVehicle.Doors[0].IsValid())
-                            {
-                                SuspectVehicle.Doors[0].Close(false);
-                            }
-                        }
-                        if (SuspectVehicle.HasBone("door_pside_f"))
-                        {
-                            if (SuspectVehicle.Doors[1].IsValid())
-                            {
-                                SuspectVehicle.Doors[1].Close(false);
-                            }
-                        }
-                        if (SuspectVehicle.HasBone("door_dside_r"))
-                        {
-                            if (SuspectVehicle.Doors[2].IsValid())
-                            {
-                                SuspectVehicle.Doors[2].Close(false);
-                            }
-                        }
-                        if (SuspectVehicle.HasBone("door_pside_r"))
-                        {
-                            if (SuspectVehicle.Doors[3].IsValid())
-                            {
-                                SuspectVehicle.Doors[3].Close(false);
-                            }
-                        }
-                        if (SuspectVehicle.HasBone("boot"))
-                        {
-                            if (SuspectVehicle.Doors[5].IsValid())
-                            {
-                                SuspectVehicle.Doors[5].Close(false);
-                            }
-                        }
+                        SuspectVehicle.CloseDoorsForSearch();
                     }
                     GameFiber.Wait(1500);
                 }
