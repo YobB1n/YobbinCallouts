@@ -37,7 +37,7 @@ namespace YobbinCallouts.Callouts
          "~b~Nurse:~w~ We just had a patient escape who has a known history of serious mental health issues.",
          "~b~Nurse:~w~ They were saying some really concerning and threatening things before they escaped!",
          "~g~You:~w~ Do you know where they went?",
-         "~b~Nurse:~w~ I have no clue. You got to find them as soon as possible, for their safety and everyone elses!",
+         "~b~Nurse:~w~ I have no clue. You got to find them as soon as possible, for their safety and everyone else's!",
          "~g~You:~w~ Is there any information on the patient, or a description?",
          "~b~Nurse:~w~ Yes, I have some medical records right here, take them! This will explain their diagnoses too.",
         };
@@ -164,14 +164,14 @@ namespace YobbinCallouts.Callouts
             }
             catch (Exception e)
             {
-                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INTIALIZATION==========");
+                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INITIALIZATION==========");
                 Game.LogTrivial("IN: " + this);
                 string error = e.ToString();
                 Game.LogTrivial("ERROR: " + error);
                 Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
                 Game.DisplayNotification("Error: ~r~" + error);
                 Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
-                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INTIALIZATION==========");
+                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INITIALIZATION==========");
             }
             if (!CalloutRunning) { Callout(); }
             return base.OnCalloutAccepted();

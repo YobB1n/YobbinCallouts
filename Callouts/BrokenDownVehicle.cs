@@ -17,6 +17,8 @@ using Rage.Native;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using YobbinCallouts.Utilities;
+
 //using StopThePed.API;
 
 namespace YobbinCallouts.Callouts
@@ -155,7 +157,7 @@ namespace YobbinCallouts.Callouts
                 Game.LogTrivial("YOBBINCALLOUTS: Could Not Find Spawnpoint. Aborting Callout.");
                 return false;
             }
-            Game.LogTrivial("YOBBINCALLOUTS: Sucessfuly Found Spawn Point");
+            Game.LogTrivial("YOBBINCALLOUTS: Successfully Found Spawn Point");
             ShowCalloutAreaBlipBeforeAccepting(SpawnPoint, 75f);    //Callout Blip Circle with radius 70m
             AddMinimumDistanceCheck(50f, SpawnPoint);   //Player must be 50m or further away
 
@@ -331,7 +333,7 @@ namespace YobbinCallouts.Callouts
             {
                 Game.DisplayHelp("Press " + Config.MainInteractionKey + " to Call a ~b~Tow Truck.");
                 while (!Game.IsKeyDown(Config.MainInteractionKey) && DriverVehicle.Speed < 1f) { GameFiber.Wait(0); }
-                if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Requesting Tow Truck to Clear Disabled Veicle.");
+                if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Requesting Tow Truck to Clear Disabled Vehicle.");
                 Game.DisplaySubtitle("Hey Dispatch, We Need a Tow Truck ASAP, Vehicle Blocking the Road.", 3500);
                 Game.LocalPlayer.Character.Tasks.PlayAnimation("random@arrests", "generic_radio_chatter", -1, AnimationFlags.SecondaryTask | AnimationFlags.UpperBodyOnly).WaitForCompletion(4000);
                 GameFiber.Wait(3000);
@@ -449,11 +451,9 @@ namespace YobbinCallouts.Callouts
                 Game.LocalPlayer.Character.Heading = DriverVehicle.Heading - 180;
                 Game.LogTrivial("YOBBINCALLOUTS: Player Has Started Looking at Vehicle's Hood.");
                 //some task to open the hood
-                if (DriverVehicle.Doors[4].IsValid())
-                {
-                    DriverVehicle.Doors[4].Open(false);
-                    Game.LogTrivial("YOBBINCALLOUTS: Opened the Hood");
-                }
+                DriverVehicle.OpenDoor(VehicleExtensions.Doors.Hood);
+                Game.LogTrivial("YOBBINCALLOUTS: Opened the Hood");
+
                 GameFiber.Wait(1000);
                 Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to Look at the ~b~Engine.");
                 while (!Game.IsKeyDown(Config.MainInteractionKey)) GameFiber.Wait(0);
@@ -467,11 +467,8 @@ namespace YobbinCallouts.Callouts
                     GameFiber.Wait(1000);
                     Game.DisplaySubtitle("~g~You:~w~ Looks Like That Worked!", 3500);
                     Game.LogTrivial("YOBBINCALLOUTS: Player fixed le car");
-                    if (DriverVehicle.Doors[4].IsValid())
-                    {
-                        DriverVehicle.Doors[4].Close(false);
-                        Game.LogTrivial("YOBBINCALLOUTS: Closed the Hood");
-                    }
+                    DriverVehicle.CloseDoor(VehicleExtensions.Doors.Hood);
+                    Game.LogTrivial("YOBBINCALLOUTS: Closed the Hood");
                     Game.DisplayHelp("Inform the ~b~Driver.");
                     GameFiber.Wait(4500);
 
@@ -496,11 +493,9 @@ namespace YobbinCallouts.Callouts
                     GameFiber.Wait(1000);
                     Game.DisplaySubtitle("~g~You:~w~ Damn, Looks Like I Couldn't Get it Working.", 3500);
                     Game.LogTrivial("YOBBINCALLOUTS: Player did not fix le car");
-                    if (DriverVehicle.Doors[4].IsValid())
-                    {
-                        DriverVehicle.Doors[4].Close(false);
-                        Game.LogTrivial("YOBBINCALLOUTS: Closed the Hood");
-                    }
+                    DriverVehicle.CloseDoor(VehicleExtensions.Doors.Hood);
+                    Game.LogTrivial("YOBBINCALLOUTS: Closed the Hood");
+
                     if (DriverVehicleBlip.Exists()) DriverVehicleBlip.Scale = 0.8f;
                     TowTruckLogic();
                 }
@@ -644,9 +639,11 @@ namespace YobbinCallouts.Callouts
             GameFiber.Wait(750);
             Game.DisplaySubtitle("Holy Crap!", 1500);
             DriverVehicleBlip.Delete();
-            DriverBlip = new Blip(Driver);
-            DriverBlip.Scale = 0.8f;
-            DriverBlip.Color = Color.Blue;
+            DriverBlip = new Blip(Driver)
+            {
+                Scale = 0.8f,
+                Color = Color.Blue
+            };
             //
             GameFiber.Wait(1000);
             Game.DisplayNotification("~r~Fire Department~w~ is En Route!");

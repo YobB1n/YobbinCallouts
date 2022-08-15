@@ -1,5 +1,7 @@
 ﻿// YOBBINCALLOUTS CALL HANDLER
 // This class provides a variety of important helper functions for Callouts. Feel free to use with credit!
+// Refer to the "CallHandler" page in the GitHub wiki for more details.
+// When adding helper functions, please include a "///" description of what the function does. Thanks!
 // TO-DO: * MORE HOUSES; especially east vinewood
 //        * Refactor Store Handler
 // Thanks to ROHEAT THE GOAT!! :D
@@ -15,14 +17,16 @@ namespace YobbinCallouts
 {
     class CallHandler
     {
-        public static Vector3 SpawnPoint;
+        public static Vector3 SpawnPoint; //SpawnPoint that will be returned by GetSpawnPoint functions
         public static bool locationReturned = true; //if a location (house, hospital, store, etc) was returnred
         private static int count; //random counter for arrays
         private static string[] VehicleModels; //array of vehicle models for vehicle spawner
-        public static bool SoundPlayed; //if Sound is Played
         static Random monke = new Random();
+        
+        public static bool SoundPlayed; //if Sound is Played by a sound-related helper function
 
         //These are the animations for the Idle Actions (ped just standing around)
+        //2-dimensional arrays. First item = animation dictionary, Second = animation name
         //“amb@world_human_cop_idles”
         private static string[,] FemaleCopAnim = new string[,] {
             {"amb@world_human_cop_idles@female@base", "base"},
@@ -48,7 +52,7 @@ namespace YobbinCallouts
             {"amb@world_human_hang_out_street@female_arms_crossed@idle_a", "idle_b"},
             {"amb@world_human_hang_out_street@female_arms_crossed@idle_a", "idle_c"},
         };
-        //couldn't find as many good rando male idle animations sadge
+        //couldn't find as many good rando male idle animations sadge. Please add more if you find them
         private static string[,] MaleRandoAnim = new string[,] {
             {"amb@world_human_hang_out_street@male_a@base", "base"},
             {"amb@world_human_hang_out_street@male_b@base", "base"},
@@ -278,6 +282,7 @@ namespace YobbinCallouts
         /// <param name="Suspect"></param>
         public static void SuspectWait(Ped Suspect) //test this
         {
+            Game.LogTrivial("YOBBINCALLOUTS: Waiting the active GameFiber until the suspect is killed or arrested.");
             while (Suspect.Exists())
             {
                 GameFiber.Yield();
@@ -285,16 +290,19 @@ namespace YobbinCallouts
             }
             if (Suspect.IsAlive) //test all this (STP )
             {
+                Game.LogTrivial("YOBBINCALLOUTS: Suspect is alive and therefore under arrest.");
                 Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest.");
             }
             else
             {
+                Game.LogTrivial("YOBBINCALLOUTS: Suspect is dead.");
                 GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, Suspect is ~r~Dead.");
             }
             GameFiber.Wait(2000);
             Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
             GameFiber.Wait(2000);
         }
+
 
         /// <summary>
         /// assign a blip that will be attached to an entity.
@@ -364,6 +372,29 @@ namespace YobbinCallouts
         {
             int num = monke.Next(0, 2);
             if (num == 0) { return false; } else { return true; }
+         }
+
+        /// <summary>
+        /// Displays a notification with relevant vehicle information.
+        /// </summary>
+        /// <param name="vehicle"></param>
+        /// <param name="ped"></param>
+        /// <param name="pedstatus"></param>
+        //test this later
+        public static void VehicleInfo(Vehicle vehicle, Ped ped)
+        {
+            if (vehicle.Exists() && ped.Exists())
+            {
+                Functions.SetVehicleOwnerName(vehicle, Functions.GetPersonaForPed(ped).FullName);
+                var personaarray = new string[4];
+                personaarray[0] = "~n~~w~Registered to: ~y~" + Functions.GetPersonaForPed(ped).Forename;
+                personaarray[1] = "~n~~w~Ped Info: ~y~" + Functions.GetPersonaForPed(ped).WantedInformation;
+                personaarray[2] = "~n~~w~Plate: ~y~" + vehicle.LicensePlate;
+                personaarray[3] = "~n~~w~Color: ~y~" + vehicle.PrimaryColor.Name;
+                var persona = string.Concat(personaarray);
+                //test icon later
+                Game.DisplayNotification("mpcarhud", "leaderboard_car_colour_icon", "~g~Vehicle Description", "~b~" + vehicle.Model.Name, persona);
+            }
         }
     }
 }

@@ -82,7 +82,7 @@ namespace YobbinCallouts.Callouts
          "~g~You:~w~ You actually do, you're operating a vehicle on a public roadway, you must surrender your license and proof of insurance to law enforcement.",
          "~r~Suspect:~w~ I'm not driving, I'm travelling you stupid cop! Stop violating my rights and wasting my time!",
          "~g~You:~w~ Listen, you're going to either cooperate, or things are go to jail. Your decision.",
-         "~r~Suspect:~w~ I want your name and badge number officer. And get your supervisor out here too while you're at it. I want to file a formal complaing with your shitty department.",
+         "~r~Suspect:~w~ I want your name and badge number officer. And get your supervisor out here too while you're at it. I want to file a formal complaining with your shitty department.",
         };
         private readonly List<string> Scold1 = new List<string>()
         {

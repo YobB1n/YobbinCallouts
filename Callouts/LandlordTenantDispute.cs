@@ -32,7 +32,7 @@ namespace YobbinCallouts.Callouts
          "~b~Landlord:~w~ They were very upset by this, but I have a legitimate reason and have given them enough notice to get out.",
          "~b~Landlord:~w~ According to San Andreas State Law, They have 30 days notice to leave, which they have recieved.",
          "~g~You:~w~ Okay. Have you been able to enter the house?",
-         "~b~Landlord:~w~ No, Officer. I have a key, but they deadbolted the door from inside.",
+         "~b~Landlord:~w~ No, Officer. I have a key, but they dead-bolted the door from inside.",
          "~b~Landlord:~w~ I'm done wasting time with them! Please, get them off my property, Officer!",
         };
         private readonly List<string> AcceptSpeech = new List<string>()
@@ -106,14 +106,14 @@ namespace YobbinCallouts.Callouts
             }
             catch (Exception e)
             {
-                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INTIALIZATION==========");
+                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INITIALIZATION==========");
                 Game.LogTrivial("IN: " + this);
                 string error = e.ToString();
                 Game.LogTrivial("ERROR: " + error);
-                Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Chck Your ~g~Log File.~w~ Sorry for the Inconvenience!");
+                Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
                 Game.DisplayNotification("Error: ~r~" + error);
                 Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
-                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INTIALIZATION==========");
+                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INITIALIZATION==========");
             }
             if (!CalloutRunning) { Callout(); }
             return base.OnCalloutAccepted();
@@ -205,8 +205,8 @@ namespace YobbinCallouts.Callouts
                                             }
                                         }
                                     }
-                                    GameFiber.Wait(1500);
-                                    Game.DisplayHelp("Deal with the ~o~Landlord~w~ and ~r~Suspect~w~ as you see fit. Press ~b~"+Config.CalloutEndKey+" ~w~when done.");
+                                    GameFiber.Wait(2500);
+                                    Game.DisplayHelp("Deal with the ~o~Landlord~w~ and ~r~Tenant~w~ as you see fit. Press ~b~"+Config.CalloutEndKey+" ~w~when done.");
                                     while (!Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
                                     break;
                                 }
@@ -235,7 +235,7 @@ namespace YobbinCallouts.Callouts
                         Game.LogTrivial("IN: " + this);
                         string error = e.ToString();
                         Game.LogTrivial("ERROR: " + error);
-                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Chck Your ~g~Log File.~w~ Sorry for the Inconvenience!");
+                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
                         Game.DisplayNotification("Error: ~r~" + error);
                         Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
                         Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");

@@ -6,6 +6,7 @@ using LSPD_First_Response.Mod.API;
 using LSPD_First_Response.Mod.Callouts;
 using Rage.Native;
 using System;
+using YobbinCallouts.Utilities;
 
 namespace YobbinCallouts.Callouts
 {
@@ -376,13 +377,8 @@ namespace YobbinCallouts.Callouts
                     player.Character.Heading = player.Character.LastVehicle.Heading;
                     player.Character.Tasks.PlayAnimation("rcmepsilonism8", "bag_handler_grab_walk_left", 1, AnimationFlags.None);
                     GameFiber.Wait(1000);
-                    if (player.Character.LastVehicle.HasBone("boot"))
-                    {
-                        if (player.Character.LastVehicle.Doors[5].IsValid())
-                        {
-                            player.Character.LastVehicle.Doors[5].Open(false);
-                        }
-                    }
+                    player.Character.LastVehicle.OpenDoor(VehicleExtensions.Doors.Trunk);
+
                     player.Character.Inventory.GiveNewWeapon("WEAPON_FIREEXTINGUISHER", -1, true);
                     player.Character.IsFireProof = true;
                     player.Character.IsExplosionProof = true;
@@ -443,7 +439,7 @@ namespace YobbinCallouts.Callouts
                 }
                 catch (Exception)
                 {
-                    Game.LogTrivial("YOBBINCALLOUTS: Yobbincallouts Crash Prevented. InvalidHandableException.");
+                    Game.LogTrivial("YOBBINCALLOUTS: Yobbincallouts Crash Prevented. InvalidHandleableException.");
                     End();
                 }
                 GameFiber.Wait(2000);
@@ -463,15 +459,7 @@ namespace YobbinCallouts.Callouts
             if (CalloutRunning)
             {
                 if (player.Character.LastVehicle.Exists())
-                {
-                    if (player.Character.LastVehicle.HasBone("boot"))
-                    {
-                        if (player.Character.LastVehicle.Doors[5].IsValid())
-                        {
-                            player.Character.LastVehicle.Doors[5].Close(false);
-                        }
-                    }
-                }
+                    player.Character.LastVehicle.CloseDoor(VehicleExtensions.Doors.Trunk);
 
                 player.Character.IsFireProof = false;
                 player.Character.IsExplosionProof = false;

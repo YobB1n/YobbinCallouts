@@ -194,7 +194,7 @@ namespace YobbinCallouts.Callouts
             }
             try
             {
-                NativeFunction.Natives.GetClosestVehicleNodeWithHeading(SpawnPoint, out Vector3 nodePosition, out float heading, 1, 3.0f, 0);
+                NativeFunction.Natives.GetClosestVehicleNodeWithHeading(SpawnPoint, out Vector3 _, out float heading, 1, 3.0f, 0);
                 bool success = NativeFunction.Natives.xA0F8A7517A273C05<bool>(SpawnPoint, heading, out Vector3 outPosition);
                 if (success)
                 {
@@ -366,7 +366,7 @@ namespace YobbinCallouts.Callouts
                 }
                 catch (Rage.Exceptions.InvalidHandleableException)
                 {
-                    Game.LogTrivial("YOBBINCALLOUTS: Yobbincallouts Crash Prevented. InvalidHandableException.");
+                    Game.LogTrivial("YOBBINCALLOUTS: Yobbincallouts Crash Prevented. InvalidHandleableException.");
                     Game.DisplayNotification("~b~YobbinCallouts~r~ Crash~g~ Prevented.~w~ I Apologize for the ~y~Inconvenience.");
                     End();
                 }
