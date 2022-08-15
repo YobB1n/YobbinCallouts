@@ -44,8 +44,6 @@ namespace YobbinCallouts
             "Schizophrenia",
             "Social Anxiety Disorder",
             "Nosocomephobia(Fear of hospitals)"
-
-
         }; 
         private Persona pedPersona;
 
@@ -109,7 +107,6 @@ namespace YobbinCallouts
         public string ToString()    
         {
             return "~w~ Wanted Status: ~y~" + Wanted + "\n" + "~w~ Times Stopped: ~o~ " + TimesStopped + "\n" + "~w~ Medical History: ~r~" + ListToString(MedicalProblems);
-            //\n  ~w~Symptoms: ~r~ {4}"; if symptoms are needed
         }
 
 
