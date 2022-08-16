@@ -381,14 +381,14 @@ namespace YobbinCallouts
         /// <param name="ped"></param>
         /// <param name="pedstatus"></param>
         //test this later
-        public static void VehicleInfo(Vehicle vehicle, Ped ped)
+        public static void VehicleInfo(Vehicle vehicle, PedBackground ped)
         {
             if (vehicle.Exists() && ped.Exists())
             {
-                Functions.SetVehicleOwnerName(vehicle, Functions.GetPersonaForPed(ped).FullName);
+                Functions.SetVehicleOwnerName(vehicle, ped.FullName);
                 var personaarray = new string[4];
-                personaarray[0] = "~n~~w~Registered to: ~y~" + Functions.GetPersonaForPed(ped).Forename;
-                personaarray[1] = "~n~~w~Ped Info: ~y~" + Functions.GetPersonaForPed(ped).WantedInformation;
+                personaarray[0] = "~n~~w~Registered to: ~y~" + ped.Forename;
+                personaarray[1] = "~n~~w~Ped Info: ~y~" + ped.WantedInformation;
                 personaarray[2] = "~n~~w~Plate: ~y~" + vehicle.LicensePlate;
                 personaarray[3] = "~n~~w~Color: ~y~" + vehicle.PrimaryColor.Name;
                 var persona = string.Concat(personaarray);

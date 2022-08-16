@@ -2,18 +2,18 @@
 using LSPD_First_Response.Mod.API;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Collections;
 using LSPD_First_Response.Engine.Scripting.Entities;
 
 namespace YobbinCallouts
 {
-    class PedBackground
+    class PedBackground : Ped
     {
         //PED RELATED
-        public string fullName { get; private set; }
+        public string FullName { get; private set; }
         public string TimesStopped { get; private set; }
 
+        public WantedInformation WantedInformation { get; private set; }
+        public string Forename { get; private set; }
         public bool Wanted { get; private set; }
         public List<string> MedicalProblems { get; private set; }
         public string Gender { get; private set; }
@@ -47,24 +47,72 @@ namespace YobbinCallouts
         }; 
         private Persona pedPersona;
 
+
         /// <summary>
-        /// constructor..you know how those work catYes
+        /// constructors..you know how those work catYes
         /// </summary>
         /// <param name="ped"></param>
-        public PedBackground(Ped ped)
-        {
-            if (ped.Exists())
-            {
-                pedPersona = Functions.GetPersonaForPed(ped);
-                fullName = pedPersona.FullName;
-                TimesStopped = pedPersona.TimesStopped.ToString();
-                Wanted = pedPersona.Wanted;
-                Gender = pedPersona.Gender.ToString();
-                MedicalProblems = new List<string>();
+        /// 
 
-            }
-            
+        public PedBackground() : base()
+        {
+            pedPersona = Functions.GetPersonaForPed(this);
+            FullName = pedPersona.FullName;
+            Forename = pedPersona.Forename;
+            TimesStopped = pedPersona.TimesStopped.ToString();
+            Wanted = pedPersona.Wanted;
+            WantedInformation = pedPersona.WantedInformation;
+            Gender = pedPersona.Gender.ToString();
+            MedicalProblems = new List<string>();
         }
+        public PedBackground(Model modelName, Vector3 spawnPoint) :base(spawnPoint, modelName)
+        {
+            pedPersona = Functions.GetPersonaForPed(this);
+            FullName = pedPersona.FullName;
+            Forename = pedPersona.Forename;
+            TimesStopped = pedPersona.TimesStopped.ToString();
+            Wanted = pedPersona.Wanted;
+            WantedInformation = pedPersona.WantedInformation;
+            Gender = pedPersona.Gender.ToString();
+            MedicalProblems = new List<string>();
+        }
+        public PedBackground(Vector3 spawnPoint, float heading) : base(spawnPoint, heading)
+        {
+            pedPersona = Functions.GetPersonaForPed(this);
+            FullName = pedPersona.FullName;
+            Forename = pedPersona.Forename;
+            TimesStopped = pedPersona.TimesStopped.ToString();
+            Wanted = pedPersona.Wanted;
+            WantedInformation = pedPersona.WantedInformation;
+            Gender = pedPersona.Gender.ToString();
+            MedicalProblems = new List<string>();
+        }
+        public PedBackground(Vector3 spawnPoint, Model modelName, float heading) : base(modelName, spawnPoint, heading)
+        {
+            pedPersona = Functions.GetPersonaForPed(this);
+            FullName = pedPersona.FullName;
+            Forename = pedPersona.Forename;
+            TimesStopped = pedPersona.TimesStopped.ToString();
+            Wanted = pedPersona.Wanted;
+            WantedInformation = pedPersona.WantedInformation;
+            Gender = pedPersona.Gender.ToString();
+            MedicalProblems = new List<string>();
+        }
+        public PedBackground(Vector3 spawnPoint) : base(spawnPoint)
+        {
+            pedPersona = Functions.GetPersonaForPed(this);
+            FullName = pedPersona.FullName;
+            Forename = pedPersona.Forename;
+            TimesStopped = pedPersona.TimesStopped.ToString();
+            Wanted = pedPersona.Wanted;
+            WantedInformation = pedPersona.WantedInformation;
+            Gender = pedPersona.Gender.ToString();
+            MedicalProblems = new List<string>();
+        }
+
+
+
+        
         /// <summary>
         /// sets medical problems for escaped suspect using the commonMedicalProblems list of strings
         /// </summary>

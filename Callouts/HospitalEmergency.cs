@@ -13,7 +13,7 @@ namespace YobbinCallouts.Callouts
     {
         private Vector3 MainSpawnPoint;
 
-        private static Ped Suspect;
+        private static PedBackground Suspect;
         private Ped Nurse;
         private Ped Guard;
         private Ped Hostage;
@@ -156,7 +156,7 @@ namespace YobbinCallouts.Callouts
                     Guard.BlockPermanentEvents = true;
                     CallHandler.IdleAction(Guard, true);
 
-                    Suspect = new Ped(World.GetNextPositionOnStreet(MainSpawnPoint.Around(169))); //may reduce
+                    Suspect = new PedBackground(World.GetNextPositionOnStreet(MainSpawnPoint.Around(169))); //may reduce
                     Suspect.IsPersistent = true;
                     Suspect.BlockPermanentEvents = true;
                     Suspect.Tasks.Wander();
@@ -273,11 +273,10 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(1000);
                 document.Delete();
                 GameFiber.Wait(1000);
-                PedBackground background = new PedBackground(Suspect);
-                background.setMedicalProblemsForMentallyIllSuspect();
+                Suspect.setMedicalProblemsForMentallyIllSuspect();
                 //mpinventory -> drug_trafficking
                 //commonmenu -> shop_health_icon_b
-                Game.DisplayNotification("commonmenu", "shop_health_icon_b", "~g~Patient Information", "~b~" + background.fullName + " | " + background.Gender, background.ToString());
+                Game.DisplayNotification("commonmenu", "shop_health_icon_b", "~g~Patient Information", "~b~" + Suspect.FullName + " | " + Suspect.Gender, Suspect.ToString());
                 //Functions.DisplayPedId(Suspect, true); //test this
                 GameFiber.Wait(1500);
                 CallHandler.IdleAction(Nurse, false);
@@ -360,7 +359,7 @@ namespace YobbinCallouts.Callouts
                                 case 0:
                                     Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to Reason with the ~o~Patient.");
                                     HostageHold();
-                                    if (Suspect.IsAlive) Game.DisplaySubtitle("~g~You:~w~ " + Functions.GetPersonaForPed(Suspect).Forename + "! You don't have to do this! Let's talk this through!");
+                                    if (Suspect.IsAlive) Game.DisplaySubtitle("~g~You:~w~ " + Suspect.Forename + "! You don't have to do this! Let's talk this through!");
                                     else break;
                                     HostageHold();
                                     if (Suspect.IsAlive) Game.DisplaySubtitle(DialogueAdvance(Hostage2));
@@ -541,7 +540,7 @@ namespace YobbinCallouts.Callouts
         }
         //this helper returns a certain dialogue for the specific point in the callout as indicated by dialogue.
         //see the various String lists containing the dialogue for each point in the hostage situation.
-        private String DialogueAdvance(List<string> dialogue)
+        private string DialogueAdvance(List<string> dialogue)
         {
             System.Random twboop = new System.Random();
             int dialoguechosen = twboop.Next(0, dialogue.Count);
