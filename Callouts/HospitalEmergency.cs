@@ -13,7 +13,7 @@ namespace YobbinCallouts.Callouts
     {
         private Vector3 MainSpawnPoint;
 
-        private static PedBackground Suspect;
+        private static Citizen Suspect;
         private Ped Nurse;
         private Ped Guard;
         private Ped Hostage;
@@ -156,7 +156,7 @@ namespace YobbinCallouts.Callouts
                     Guard.BlockPermanentEvents = true;
                     CallHandler.IdleAction(Guard, true);
 
-                    Suspect = new PedBackground(World.GetNextPositionOnStreet(MainSpawnPoint.Around(169))); //may reduce
+                    Suspect = new Citizen(World.GetNextPositionOnStreet(MainSpawnPoint.Around(169))); //may reduce
                     Suspect.IsPersistent = true;
                     Suspect.BlockPermanentEvents = true;
                     Suspect.Tasks.Wander();

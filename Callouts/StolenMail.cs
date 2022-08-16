@@ -14,7 +14,7 @@ namespace YobbinCallouts.Callouts
     {
         private Vector3 MainSpawnPoint;
 
-        private Ped Suspect;
+        private Citizen Suspect;
         private Ped HouseOwner;
         Ped player = Game.LocalPlayer.Character;
         private Blip HouseOwnerBlip;
@@ -151,16 +151,15 @@ namespace YobbinCallouts.Callouts
                         HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
                         if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to speak with the ~b~Landlord.");
                         Vector3 SuspectSpawn = World.GetNextPositionOnStreet(player.Position.Around(550f));
-                        Suspect = new Ped(SuspectSpawn, 69);
+                        Suspect = new Citizen(SuspectSpawn, 69);
                         Suspect.IsPersistent = true;
                         Suspect.BlockPermanentEvents = true;
                         Suspect.Tasks.Wander();
                         CallHandler.Dialogue(HouseOwnerDialogue, HouseOwner);
-                        PedBackground SuspectPersona = new PedBackground(Suspect);
                         Game.DisplaySubtitle("You: Really, you cannot tell me anything about the suspect? I cannot guarantee I will be able to find him, but I will try my best.");
                         if (Config.DisplayHelp) { Game.DisplayNotification("Press " + InteractionKey + " to continue dialogue"); }
                         while (!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
-                        Game.DisplaySubtitle("Home Owner: Umm...the person ran off....before I could remember any of that. I think the person was " + SuspectPersona.Gender + " and was holding my mail while wandering off.");
+                        Game.DisplaySubtitle("Home Owner: Umm...the person ran off....before I could remember any of that. I think the person was " + Suspect.Gender + " and was holding my mail while wandering off.");
                         while (!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
                         Game.DisplaySubtitle("You: Ok. Will try my best. Thank you.");
                         SearchArea = new Blip(Suspect.Position.Around(15), 50);

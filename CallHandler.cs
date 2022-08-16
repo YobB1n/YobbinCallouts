@@ -381,7 +381,7 @@ namespace YobbinCallouts
         /// <param name="ped"></param>
         /// <param name="pedstatus"></param>
         //test this later
-        public static void VehicleInfo(Vehicle vehicle, PedBackground ped)
+        public static void VehicleInfo(Vehicle vehicle, Citizen ped)
         {
             if (vehicle.Exists() && ped.Exists())
             {

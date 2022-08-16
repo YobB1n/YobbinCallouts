@@ -6,7 +6,7 @@ using LSPD_First_Response.Engine.Scripting.Entities;
 
 namespace YobbinCallouts
 {
-    class PedBackground : Ped
+    class Citizen : Ped
     {
         //PED RELATED
         public string FullName { get; private set; }
@@ -54,7 +54,7 @@ namespace YobbinCallouts
         /// <param name="ped"></param>
         /// 
 
-        public PedBackground() : base()
+        public Citizen() : base()
         {
             pedPersona = Functions.GetPersonaForPed(this);
             FullName = pedPersona.FullName;
@@ -65,7 +65,7 @@ namespace YobbinCallouts
             Gender = pedPersona.Gender.ToString();
             MedicalProblems = new List<string>();
         }
-        public PedBackground(Model modelName, Vector3 spawnPoint) :base(spawnPoint, modelName)
+        public Citizen(Model modelName, Vector3 spawnPoint) :base(spawnPoint, modelName)
         {
             pedPersona = Functions.GetPersonaForPed(this);
             FullName = pedPersona.FullName;
@@ -76,7 +76,7 @@ namespace YobbinCallouts
             Gender = pedPersona.Gender.ToString();
             MedicalProblems = new List<string>();
         }
-        public PedBackground(Vector3 spawnPoint, float heading) : base(spawnPoint, heading)
+        public Citizen(Vector3 spawnPoint, float heading) : base(spawnPoint, heading)
         {
             pedPersona = Functions.GetPersonaForPed(this);
             FullName = pedPersona.FullName;
@@ -87,7 +87,7 @@ namespace YobbinCallouts
             Gender = pedPersona.Gender.ToString();
             MedicalProblems = new List<string>();
         }
-        public PedBackground(Vector3 spawnPoint, Model modelName, float heading) : base(modelName, spawnPoint, heading)
+        public Citizen(Vector3 spawnPoint, Model modelName, float heading) : base(modelName, spawnPoint, heading)
         {
             pedPersona = Functions.GetPersonaForPed(this);
             FullName = pedPersona.FullName;
@@ -98,7 +98,7 @@ namespace YobbinCallouts
             Gender = pedPersona.Gender.ToString();
             MedicalProblems = new List<string>();
         }
-        public PedBackground(Vector3 spawnPoint) : base(spawnPoint)
+        public Citizen(Vector3 spawnPoint) : base(spawnPoint)
         {
             pedPersona = Functions.GetPersonaForPed(this);
             FullName = pedPersona.FullName;
