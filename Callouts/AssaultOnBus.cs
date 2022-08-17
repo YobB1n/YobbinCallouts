@@ -390,7 +390,7 @@ namespace YobbinCallouts.Callouts
                 if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Victim was assaulted on the bus. Victim is assisting in finding the Suspect.");
 
                 while (!Game.LocalPlayer.Character.IsInAnyPoliceVehicle) { GameFiber.Wait(0); }
-                Game.DisplayHelp("~y~" + Config.Key1 + ": ~b~Tell the Driver to Enter the Passenger Seat. ~y~" + Config.Key2 + ":~b~ Tell the Driver to Enter the Rear Seat.");
+                Game.DisplayHelp("~y~" + Config.Key1 + ": ~b~Tell the Victim to Enter the Passenger Seat. ~y~" + Config.Key2 + ":~b~ Tell the Victim to Enter the Rear Seat.");
                 while (!Game.IsKeyDown(Config.Key1) && !Game.IsKeyDown(Config.Key2)) GameFiber.Wait(0); //might do an animation?
                 int SeatIndex;
                 if (Game.IsKeyDown(Config.Key1))

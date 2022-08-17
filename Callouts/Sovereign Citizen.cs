@@ -30,12 +30,9 @@ namespace YobbinCallouts.Callouts
         private int MainScenario;
 
         private string Zone;
-        private string[] Vehicles;
-        private string SuspectVehicleModel;
 
         private bool CalloutRunning = false;
 
-        private LHandle MainPursuit;
 
         private readonly List<string> OpeningDialogue1 = new List<string>()
         {
