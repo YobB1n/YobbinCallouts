@@ -21,6 +21,8 @@ namespace YobbinCallouts
         public static bool locationReturned = true; //if a location (house, hospital, store, etc) was returnred
         private static int count; //random counter for arrays
         private static string[] VehicleModels; //array of vehicle models for vehicle spawner
+        static Random monke = new Random();
+        
         public static bool SoundPlayed; //if Sound is Played by a sound-related helper function
 
         //These are the animations for the Idle Actions (ped just standing around)
@@ -139,14 +141,13 @@ namespace YobbinCallouts
                 {
                     if (ped.IsFemale)
                     {
-                        System.Random coco = new System.Random();
-                        int animation = coco.Next(0, FemaleCopAnim.Length / 2);
+                        int animation = monke.Next(0, FemaleCopAnim.Length / 2);
                         ped.Tasks.PlayAnimation(FemaleCopAnim[animation, 0], FemaleCopAnim[animation, 1], -1, AnimationFlags.Loop);
                     }
                     else
                     {
-                        System.Random coco = new System.Random();
-                        int animation = coco.Next(0, MaleCopAnim.Length / 2);
+                        
+                        int animation = monke.Next(0, MaleCopAnim.Length / 2);
                         //Game.LogTrivial("YOBBINCALLOUTS: There are "+MaleCopAnim.Length+"animations");
                         //Game.LogTrivial(MaleCopAnim[animation, 0]);
                         //Game.LogTrivial(MaleCopAnim[animation, 1]);
@@ -157,14 +158,14 @@ namespace YobbinCallouts
                 {
                     if (ped.IsFemale)
                     {
-                        System.Random coco = new System.Random();
-                        int animation = coco.Next(0, FemaleRandoAnim.Length / 2);
+                        
+                        int animation = monke.Next(0, FemaleRandoAnim.Length / 2);
                         ped.Tasks.PlayAnimation(FemaleRandoAnim[animation, 0], FemaleRandoAnim[animation, 1], -1, AnimationFlags.Loop);
                     }
                     else
                     {
-                        System.Random coco = new System.Random();
-                        int animation = coco.Next(0, MaleRandoAnim.Length / 2);
+                        
+                        int animation = monke.Next(0, MaleRandoAnim.Length / 2);
                         ped.Tasks.PlayAnimation(MaleRandoAnim[animation, 0], MaleRandoAnim[animation, 1], -1, AnimationFlags.Loop);
                     }
                 }
@@ -183,8 +184,7 @@ namespace YobbinCallouts
             "zion", "zion2", "baller", "baller2", "baller3", "cavalcade", "fq2", "granger", "gresley", "habanero", "huntley", "mesa", "radi", "rebla", "rocoto", "seminole", "serrano", "xls", "asea", "asterope",
             "emporor", "fugitive", "ingot", "intruder", "premier", "primo", "primo2", "regina", "stanier", "stratum", "surge", "tailgater", "washington", "bestiagts", "blista2", "buffalo", "schafter2", "euros",
             "sadler", "bison", "bison2", "bison3", "burrito", "burrito2", "minivan", "minivan2", "paradise", "pony"};
-            System.Random chez = new System.Random();
-            int model = chez.Next(0, VehicleModels.Length);
+            int model = monke.Next(0, VehicleModels.Length);
             Game.LogTrivial("YOBBINCALLOUTS: VEHICLESPAWNER: Vehicle Model is " + VehicleModels[model]);
             var veh = new Vehicle(VehicleModels[model], SpawnPoint, Heading);
             if(persistent) veh.IsPersistent = true; //vehicle is marked as persistent by default
@@ -271,8 +271,7 @@ namespace YobbinCallouts
         //just for my callouts, plays a doorbell sound.
         public static void Doorbell()
         {
-            System.Random chez = new System.Random();
-            int model = chez.Next(0, 3);
+            int model = monke.Next(0, 3);
             if (model == 0) PlaySound(@"lspdfr\audio\scanner\YobbinCallouts Audio\YC_DOORBELL1.wav");
             else if (model == 2) PlaySound(@"lspdfr\audio\scanner\YobbinCallouts Audio\YC_DOORBELL2.wav");
             else PlaySound(@"lspdfr\audio\scanner\YobbinCallouts Audio\YC_RINGDOORBELL.wav");
@@ -300,24 +299,10 @@ namespace YobbinCallouts
                 GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, Suspect is ~r~Dead.");
             }
             GameFiber.Wait(2000);
-            LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+            Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
             GameFiber.Wait(2000);
         }
 
-        /// <summary>
-        /// will be finished later by roheat the legend ;)
-        /// </summary>
-        /// <param name="ped"></param>
-        public static void PedInfo(Ped ped)
-        {
-            if (ped.Exists())
-            {
-                var name = Functions.GetPersonaForPed(ped).FullName;
-                var birthday = Functions.GetPersonaForPed(ped).Birthday;
-                var advisory = Functions.GetPersonaForPed(ped).AdvisoryText;
-            }
-            Game.DisplayNotification("3dtextures", "mpgroundlogo_cops", "", "", "");
-        }
 
         /// <summary>
         /// assign a blip that will be attached to an entity.
@@ -362,7 +347,6 @@ namespace YobbinCallouts
         public static void locationChooser(ArrayList list, float maxdistance = 600f, float mindistance = 25f)
         {
             ArrayList closeLocations = new ArrayList();
-            Random monke = new Random();
             for (int i = 1; i < list.Count; i++)
             {
                 float distance = Vector3.Distance(Game.LocalPlayer.Character.Position, (Vector3)list[i]);
@@ -376,13 +360,20 @@ namespace YobbinCallouts
                 Game.LogTrivial("YOBBINCALLOUTS: Spawn Point not found.");
                 locationReturned = false;
             }
-            else //test this (else wasn't here before)
+            else 
             {
                 SpawnPoint = (Vector3)closeLocations[monke.Next(0, closeLocations.Count)];
                 locationReturned = true;
                 Game.LogTrivial("YOBBINCALLOUTS: Spawn Point found successfully.");
             }
         }
+
+        public static bool FiftyFifty()
+        {
+            int num = monke.Next(0, 2);
+            if (num == 0) { return false; } else { return true; }
+         }
+
         /// <summary>
         /// Displays a notification with relevant vehicle information.
         /// </summary>
@@ -390,14 +381,14 @@ namespace YobbinCallouts
         /// <param name="ped"></param>
         /// <param name="pedstatus"></param>
         //test this later
-        public static void VehicleInfo(Vehicle vehicle, Ped ped)
+        public static void VehicleInfo(Vehicle vehicle, Citizen ped)
         {
             if (vehicle.Exists() && ped.Exists())
             {
-                Functions.SetVehicleOwnerName(vehicle, Functions.GetPersonaForPed(ped).FullName);
+                Functions.SetVehicleOwnerName(vehicle, ped.FullName);
                 var personaarray = new string[4];
-                personaarray[0] = "~n~~w~Registered to: ~y~" + Functions.GetPersonaForPed(ped).Forename;
-                personaarray[1] = "~n~~w~Ped Info: ~y~" + Functions.GetPersonaForPed(ped).WantedInformation;
+                personaarray[0] = "~n~~w~Registered to: ~y~" + ped.Forename;
+                personaarray[1] = "~n~~w~Ped Info: ~y~" + ped.WantedInformation;
                 personaarray[2] = "~n~~w~Plate: ~y~" + vehicle.LicensePlate;
                 personaarray[3] = "~n~~w~Color: ~y~" + vehicle.PrimaryColor.Name;
                 var persona = string.Concat(personaarray);
