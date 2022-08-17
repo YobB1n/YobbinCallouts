@@ -41,6 +41,29 @@ namespace YobbinCallouts.Callouts
          "~g~You:~w~ Sure, let's see what I can do here.",
          "~g~You:~w~ I understand, let me see if I can reason with them.",
         };
+        private readonly List<string> Deny1 = new List<string>()
+        {
+         "~g~You:~w~ It doesn't seem like there's much I can do for you here, I'm afraid.",
+         "~b~Landlord:~w~ What?! Why not? They're no longer welcome on my property. They're trespassing now!",
+         "~g~You:~w~ You're going to have to take this up with the housing board of San Andreas. If they side with you and the tenant still doesn't leave, then you can call us.",
+         "~b~Landlord:~w~ Unbelievable. I knew it was a waste of time calling you guys.",
+        };
+        private readonly List<string> Deny2 = new List<string>()
+        {
+         "~g~You:~w~ It doesn't seem like I have the authority to interfere in this situation, I'm afraid.",
+         "~b~Landlord:~w~ What makes you say that? They're trespassing on my property now, Officer! I don't want them living on my property anymore.",
+         "~g~You:~w~ You're going to have to take this up with the housing board of San Andreas. I don't have the authority to do anything more.",
+         "~b~Landlord:~w~ Unbelievable. It's always a waste of time calling you guys.",
+        };
+        private readonly List<string> Deny3 = new List<string>()
+        {
+         "~g~You:~w~ I'm afraid I don't have the authority to help you in this kind of a situation.",
+         "~b~Landlord:~w~ How so? They're trespassing on my property now, Officer! I don't want them living on my property anymore.",
+         "~g~You:~w~ You're going to have to call up the housing board of San Andreas. I don't have the authority to do anything more.",
+         "~b~Landlord:~w~ *Sigh* Okay Officer. Do you have their number?",
+         "~g~You:~w~ Yeah, you can reach them at 323-555-6969.",
+         "~b~Landlord:~w~ Alright, hopefully this turns out okay. Thanks for your help.",
+        };
         private readonly List<string> AttackSpeech = new List<string>()
         {
          "~b~Landlord:~w~ You piece of shit! Squatting on MY property for months on end!",
@@ -145,6 +168,7 @@ namespace YobbinCallouts.Callouts
                         if (OpeningDialogue == 0) CallHandler.Dialogue(LandlordOpening1, Landlord);
 
                         Game.DisplayHelp("~y~" + Config.Key1 + ":~b~ Okay, I'll talk to the Resident. ~y~" + Config.Key2 + ": ~b~I can't do that for you I'm afraid.");
+                        CallHandler.IdleAction(Landlord, false);
                         while (!Game.IsKeyDown(Config.Key1) && !Game.IsKeyDown(Config.Key2)) GameFiber.Wait(0); //might do an animation?
                         if (Game.IsKeyDown(Config.Key1)) //accept
                         {
@@ -153,13 +177,13 @@ namespace YobbinCallouts.Callouts
                             GameFiber.Wait(2500);
                             
                             HouseBlip = new Blip(MainSpawnPoint);
-                            HouseBlip.Color = Color.Teal;
-                            HouseBlip.Scale = 3;
+                            HouseBlip.Color = Color.Orange;
                             HouseBlip.Alpha = 0.69f;
 
                             if (Landlord.DistanceTo(MainSpawnPoint) > 8f) Landlord.Tasks.FollowNavigationMeshToPosition(MainSpawnPoint, player.Heading, 2.69f, 2f); //test this
                             while (player.DistanceTo(MainSpawnPoint) >= 3f) GameFiber.Wait(0);
                             Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to ~b~Ring~w~ the Doorbell.");
+                            while (!Game.IsKeyDown(Config.MainInteractionKey)) GameFiber.Wait(0);
                             CallHandler.Doorbell();
                             if (HouseBlip.Exists()) HouseBlip.Delete();
                             GameFiber.Wait(2500);
@@ -187,14 +211,14 @@ namespace YobbinCallouts.Callouts
                                     System.Random dialogue3 = new System.Random();
                                     Game.DisplaySubtitle(AttackSpeech[dialogue3.Next(0, AttackSpeech.Count)], 2000);
                                     GameFiber.Wait(r3.Next(500, 2000));
-                                    //Suspect.BlockPermanentEvents = false;
+                                    Suspect.BlockPermanentEvents = false; //test this (wasn't fighting before)
                                     Landlord.Tasks.FightAgainst(Suspect, -1);
                                     if (action == 1) Suspect.BlockPermanentEvents = false; //or flee
                                     else Suspect.Tasks.FightAgainst(Landlord, -1); //Tenant fights back
                                     LandlordBlip.Color = Color.Orange;
 
-                                    if(action == 1) CallHandler.SuspectWait(Landlord); 
-                                    else
+                                    if(action == 1) CallHandler.SuspectWait(Landlord);  //Suspect doesn't fight back
+                                    else //Suspect does fight back
                                     {
                                         while (Suspect.Exists() || Landlord.Exists())   //all this is a workaround for StopThePed
                                         {
@@ -206,6 +230,7 @@ namespace YobbinCallouts.Callouts
                                         }
                                     }
                                     GameFiber.Wait(2500);
+                                    //I might make the help message depend on if the landlord and/or tenants are arrested, but also might be too lazy to do that
                                     Game.DisplayHelp("Deal with the ~o~Landlord~w~ and ~r~Tenant~w~ as you see fit. Press ~b~"+Config.CalloutEndKey+" ~w~when done.");
                                     while (!Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
                                     break;
@@ -213,12 +238,18 @@ namespace YobbinCallouts.Callouts
                             }
                             else //does not cooperate
                             {
-
+                                //add new dialogue
                             }
                         }
                         else //decline
                         {
-
+                            int EndingDialogue = dialogue.Next(0, 3);
+                            if (EndingDialogue == 0) CallHandler.Dialogue(Deny1, Landlord);
+                            else if (EndingDialogue == 1) CallHandler.Dialogue(Deny2, Landlord);
+                            else CallHandler.Dialogue(Deny3, Landlord);
+                            Landlord.Dismiss();
+                            if (LandlordBlip.Exists()) LandlordBlip.Delete();
+                            break;
                         }
 
                         GameFiber.Wait(2000);

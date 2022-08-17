@@ -337,6 +337,7 @@ namespace YobbinCallouts.Callouts
 
                         if (Hostage.Exists() && Hostage.DistanceTo(Suspect) <= 20) //test distance
                         {
+                            Game.LogTrivial("YOBBINCALLOUTS: HOSTAGE SCENARIO STARTED");
                             Game.LogTrivial("YOBBINCALLOUTS: Hostage Location = " + Hostage.Position);
                             Hostage.IsPersistent = true; Hostage.BlockPermanentEvents = true;
                             //to-do: set hostage facial override (mood native)
@@ -440,6 +441,7 @@ namespace YobbinCallouts.Callouts
                         }
                         else
                         {
+                            Game.LogTrivial("YOBBINCALLOUTS: PURSUIT SCENARIO STARTED");
                             Pursuit();
                         }
                     }

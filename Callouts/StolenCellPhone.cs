@@ -379,12 +379,12 @@ namespace YobbinCallouts.Callouts
                 {
                     if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Continue Talking to the ~r~Suspect.");
                     CallHandler.Dialogue(SuspectCoopLetGo, Suspect);
-                    GameFiber.Wait(1500);
-                    SuspectBlip.Alpha = 0;
-                    if (SuspectBlip.Exists()) SuspectBlip.Delete(); //botched
-                    SuspectBlip.Alpha = 0f;
+                    GameFiber.Wait(1500);                   
                     Suspect.Tasks.ClearImmediately();
                     if (Suspect.IsAlive) Suspect.Dismiss();
+                    //Test this blip deletion
+                    SuspectBlip.Alpha = 0;
+                    if (SuspectBlip.Exists()) SuspectBlip.Delete(); //botched
                     WrapUp();
                 }
             }
@@ -402,7 +402,7 @@ namespace YobbinCallouts.Callouts
                 VictimBlip.IsFriendly = true;
                 VictimBlip.IsRouteEnabled = true;
                 VictimBlip.Scale = 0.75f;
-                while (player.DistanceTo(Victim) >= 5) GameFiber.Wait(0);
+                if(CalloutRunning) while (player.DistanceTo(Victim) >= 5) GameFiber.Wait(0); //test
                 CallHandler.Dialogue(VictimEnding1, Victim);
                 Phone = new Rage.Object("prop_npc_phone", Vector3.Zero);
                 Phone.IsPersistent = true;

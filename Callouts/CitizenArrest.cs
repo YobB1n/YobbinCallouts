@@ -1,4 +1,4 @@
-﻿//UNUSED
+﻿//This callout is a WIP**
 
 using System.Drawing;
 using Rage;
@@ -18,6 +18,7 @@ namespace YobbinCallouts.Callouts
         private Ped Suspect;
         private Ped Citizen;
         private Ped Victim;
+        Ped player = Game.LocalPlayer.Character;
 
         private Blip SuspectBlip;
         private Blip CitizenBlip;
@@ -32,9 +33,7 @@ namespace YobbinCallouts.Callouts
 
         private LHandle SuspectPursuit;
 
-        Ped player = Game.LocalPlayer.Character;
-
-        //All the dialogue for the callout. Haven't found a better way to store it yet, so this will have to do.
+        //Add more dialogue for each scenario(s)
         private readonly List<string> AssaultOpening = new List<string>()
         {
          "~p~Citizen:~w~ Hey Officer, I Just Performed a Citizen's Arrest on This Guy Right Here.",
@@ -75,21 +74,22 @@ namespace YobbinCallouts.Callouts
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Citizen Arrest Callout Start==========");
             System.Random r = new System.Random();
-            int Scenario = r.Next(0, 0);    //change
+            int Scenario = r.Next(0, 3); //change later
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is " + MainScenario + "");
-            if (MainScenario == 0) Crime = "Assault.";  //PUT PERIODS AT THE END OF CRIMES.
-            else Crime = "Theft.";
+            if (MainScenario == 0) Crime = "Assault.";  //PUT PERIODS AT THE END OF THESE CRIMES.
+            else if (MainScenario == 1) Crime = "Theft.";
+            else Crime = "Discharging a Firearm.";
 
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).RealAreaName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
-            MainSpawnPoint = World.GetNextPositionOnStreet(player.Position.Around(550f));
+            MainSpawnPoint = World.GetNextPositionOnStreet(player.Position.Around(569f));
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 75f);    //Callout Blip Circle with radius 50m
             AddMinimumDistanceCheck(25f, MainSpawnPoint);   //Player must be 25m or further away
             Functions.PlayScannerAudio("CITIZENS_REPORT CRIME_DISTURBING_THE_PEACE_01");    //Change
             CalloutMessage = "Citizen's Arrest";
             CalloutPosition = MainSpawnPoint;
-            CalloutAdvisory = "Caller is a Citizen Who Has Arrested a ~r~Suspect~w~ for " + Crime;
+            CalloutAdvisory = "Caller is a Citizen Who Has Arrested a Suspect for " + Crime;
             return base.OnBeforeCalloutDisplayed();
         }
         public override bool OnCalloutAccepted()
@@ -106,11 +106,12 @@ namespace YobbinCallouts.Callouts
                     Game.DisplayNotification("Respond ~r~Code 3.");
                 }
 
+                //Spawning all this shit
                 NativeFunction.Natives.GetClosestVehicleNodeWithHeading(MainSpawnPoint, out Vector3 nodePosition, out float heading, 1, 3.0f, 0);
                 SuspectModels = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
                 System.Random r2 = new System.Random();
                 int SuspectModel = r2.Next(0, SuspectModels.Length);
-                Suspect = new Ped(SuspectModels[SuspectModel], MainSpawnPoint, heading);
+                Suspect = new Ped(SuspectModels[SuspectModel], nodePosition, heading);
                 Suspect.IsPersistent = true;
                 Suspect.BlockPermanentEvents = true;
                 Functions.SetPedAsArrested(Suspect, true, false);
@@ -122,7 +123,7 @@ namespace YobbinCallouts.Callouts
                 Citizen.BlockPermanentEvents = true;
                 Citizen.Heading = Suspect.Heading - 180f;
 
-                var victimspawnpoint = World.GetNextPositionOnStreet(Suspect.Position.Around(15f));
+                var victimspawnpoint = World.GetNextPositionOnStreet(Suspect.Position.Around(10f));
                 NativeFunction.Natives.xA0F8A7517A273C05<bool>(victimspawnpoint, 0, out Vector3 outPosition);
 
                 Victim = new Ped(outPosition);
@@ -206,6 +207,10 @@ namespace YobbinCallouts.Callouts
         {
             base.Process();
         }
+        private void GunPoint()
+        {
+
+        }
         private void Assault()
         {
             CallHandler.IdleAction(Citizen, true);
@@ -217,7 +222,7 @@ namespace YobbinCallouts.Callouts
             CallHandler.IdleAction(Citizen, true);
 
             VictimBlip = Victim.AttachBlip();
-            VictimBlip.Scale = 0.7f;
+            VictimBlip.Scale = 0.69f;
             VictimBlip.IsFriendly = true;
 
             Game.DisplayHelp("Speak With the ~b~Victim.");

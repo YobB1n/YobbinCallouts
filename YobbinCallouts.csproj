@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2DD3A11E-3F0A-4324-8E9E-B3CE85718444}</ProjectGuid>
+    <ProjectGuid>{E0A00A46-1259-4C5C-BAB1-B70B6BC86375}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YobbinCallouts</RootNamespace>
@@ -33,11 +33,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CalloutInterface">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Grand Theft Auto V\plugins\LSPDFR\CalloutInterface.dll</HintPath>
+      <HintPath>C:\Steam\steamapps\common\Grand Theft Auto V\plugins\LSPDFR\CalloutInterface.dll</HintPath>
     </Reference>
     <Reference Include="LSPD First Response, Version=0.4.7800.3124, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Grand Theft Auto V\plugins\LSPD First Response.dll</HintPath>
+      <HintPath>C:\Steam\steamapps\common\Grand Theft Auto V\plugins\LSPD First Response.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -51,11 +51,11 @@
     </Reference>
     <Reference Include="RagePluginHookSDK, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\RAGEPluginHook_1_87_1293_16189_Release\SDK\RagePluginHookSDK.dll</HintPath>
+      <HintPath>C:\Users\matth\Downloads\RAGEPluginHook_1_86_1288_16169_Release (1)\SDK\RagePluginHookSDK.dll</HintPath>
     </Reference>
     <Reference Include="StopThePed, Version=4.9.4.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Grand Theft Auto V\plugins\LSPDFR\StopThePed.dll</HintPath>
+      <HintPath>C:\Steam\steamapps\common\Grand Theft Auto V\plugins\LSPDFR\StopThePed.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -97,6 +97,7 @@
     <Compile Include="EUPHelper.cs" />
     <Compile Include="InvestigationHandler.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
