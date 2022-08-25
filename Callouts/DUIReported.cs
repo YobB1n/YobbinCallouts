@@ -16,7 +16,7 @@ namespace YobbinCallouts.Callouts
     {
         private Vector3 MainSpawnPoint;
 
-        private Ped Suspect;
+        private Citizen Suspect;
         private Ped Suspect2;
         private Ped Witness;
         private Vehicle SuspectVehicle;
@@ -170,7 +170,7 @@ namespace YobbinCallouts.Callouts
                         return false;
                     }
                     //Instantiate the driver (suspect)
-                    Suspect = new Ped(MainSpawnPoint);
+                    Suspect = new Citizen(MainSpawnPoint);
                     Suspect.IsPersistent = true;
                     Suspect.BlockPermanentEvents = true;
                     //MAKE SUSPECT DRUNK WITH NATIVES
