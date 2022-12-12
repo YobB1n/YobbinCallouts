@@ -23,7 +23,7 @@ namespace YobbinCallouts.Callouts
         private Ped Witness;
         private LHandle MainPursuit;
         private Rage.Object Weapon;
-        public static string WeaponName; //not displaying properly in dialogue
+        public string WeaponName; //not displaying properly in dialogue
         public static string OriginalZone = "not far from here.";
 
         private int MainScenario;
@@ -158,7 +158,7 @@ namespace YobbinCallouts.Callouts
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Weapon Found Callout Start==========");
             System.Random r = new System.Random();
-            int Scenario = r.Next(0, 2); //scenario 2 is messed up, suspect invisible lol
+            int Scenario = r.Next(0, 2); //scenario 1 is messed up, suspect invisible lol
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario value is: " + MainScenario);
             var zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).RealAreaName;
@@ -346,11 +346,11 @@ namespace YobbinCallouts.Callouts
                 int WeaponModel = r3.Next(0, 5);    //Use Random Weapon generator
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect Weapon Model is " + WeaponModel);
 
-                if (WeaponModel == 0) Suspect.Inventory.GiveNewWeapon("WEAPON_ASSAULTRIFLE", -1, true);
-                else if (WeaponModel == 1) Suspect.Inventory.GiveNewWeapon("WEAPON_SMG", -1, true);
-                else if (WeaponModel == 2) Suspect.Inventory.GiveNewWeapon("WEAPON_APPISTOL", -1, true);
-                else if (WeaponModel == 3) Suspect.Inventory.GiveNewWeapon("WEAPON_MICROSMG", -1, true);
-                else if (WeaponModel == 4) Suspect.Inventory.GiveNewWeapon("WEAPON_COMPACTRIFLE", -1, true);
+                if (WeaponModel == 0) { Suspect.Inventory.GiveNewWeapon("WEAPON_ASSAULTRIFLE", -1, true); WeaponName = "Assault Rifle"; }
+                else if (WeaponModel == 1) { Suspect.Inventory.GiveNewWeapon("WEAPON_SMG", -1, true); WeaponName = "SMG"; }
+                else if (WeaponModel == 2) { Suspect.Inventory.GiveNewWeapon("WEAPON_APPISTOL", -1, true); WeaponName = "Pistol"; }
+                else if (WeaponModel == 3) { Suspect.Inventory.GiveNewWeapon("WEAPON_MICROSMG", -1, true); WeaponName = "SMG"; }
+                else if (WeaponModel == 4) { Suspect.Inventory.GiveNewWeapon("WEAPON_COMPACTRIFLE", -1, true); WeaponName = "Rifle"; }
 
                 if (MainScenario == 1) //vehicle
                 {
@@ -474,18 +474,18 @@ namespace YobbinCallouts.Callouts
                 {
                     House = CallHandler.SpawnPoint;
                     Game.LogTrivial("YOBBINCALLOUTS: House Found.");
-                    NativeFunction.Natives.xA0F8A7517A273C05<bool>(World.GetNextPositionOnStreet(House), 0, out Vector3 SuspectVehicleSpawnPoint);
-                    NativeFunction.Natives.GetClosestVehicleNodeWithHeading(SuspectVehicleSpawnPoint, out Vector3 nodePosition, out float heading, 1, 3.0f, 0);
-                    SuspectVehicle = CallHandler.SpawnVehicle(SuspectVehicleSpawnPoint, (int)heading);
-                    SuspectVehicle.IsPersistent = true;
-                    Suspect = SuspectVehicle.CreateRandomDriver();
-                    //maybe delete vehicle if spawn bad
+                    //NativeFunction.Natives.xA0F8A7517A273C05<bool>(World.GetNextPositionOnStreet(House), 0, out Vector3 SuspectVehicleSpawnPoint);
+                    //NativeFunction.Natives.GetClosestVehicleNodeWithHeading(SuspectVehicleSpawnPoint, out Vector3 nodePosition, out float heading, 1, 3.0f, 0);
+                    //SuspectVehicle = CallHandler.SpawnVehicle(SuspectVehicleSpawnPoint, (int)heading);
+                    //SuspectVehicle.IsPersistent = true;
+                    //Suspect = SuspectVehicle.CreateRandomDriver();
+
+                    Suspect = new Ped(House);
                     Suspect.IsPersistent = true; Suspect.BlockPermanentEvents = true;
-                    var SuspectName = Functions.GetVehicleOwnerName(SuspectVehicle); //might mix up gender idk
+                    var SuspectName = Functions.GetPersonaForPed(Suspect).FullName;
                     var Distance = Math.Round(Suspect.DistanceTo(player));
                     Game.DisplayNotification(WeaponName + " Serial ~r~" + WeaponSerial + " ~w~Registered to ~p~" + SuspectName + "~w~. Owner~w~ Lives in ~b~" + Functions.GetZoneAtPosition(House).RealAreaName + "~o~ " + Distance + " metres~w~ Away!");
                     if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, WeaponName + " Serial ~r~" + WeaponSerial + " ~w~Registered to ~p~" + SuspectName + "~w~. Owner~w~ Lives in ~b~" + Functions.GetZoneAtPosition(House).RealAreaName + "~o~ " + Distance + " metres~w~ Away!");
-                    Suspect.Tasks.LeaveVehicle(Suspect.CurrentVehicle, LeaveVehicleFlags.WarpOut);
                     Suspect.Position = House;
                     Suspect.IsVisible = false;
                     GameFiber.Wait(1500);

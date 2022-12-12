@@ -43,9 +43,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\CODES\Every Day Callouts\LSPDFR-EveryDay-Callouts-master\EveryDayCallouts\EveryDayCallouts\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
     </Reference>
-    <Reference Include="RAGENativeUI">
-      <HintPath>..\..\..\..\..\..\..\..\Steam\steamapps\common\Grand Theft Auto V\RAGENativeUI.dll</HintPath>
-    </Reference>
     <Reference Include="RagePluginHook, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\..\LSPDFR_049_7874_Manual_Install\RAGEPluginHook.exe</HintPath>
     </Reference>
@@ -91,6 +88,7 @@
     <Compile Include="Callouts\StolenPoliceHardware.cs" />
     <Compile Include="Callouts\TrafficBreak.cs" />
     <Compile Include="Callouts\WeaponFound.cs" />
+    <Compile Include="Citizen.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EndCalloutHandler.cs" />
     <Compile Include="CallHandler.cs" />
@@ -98,19 +96,21 @@
     <Compile Include="EUPHelper.cs" />
     <Compile Include="InvestigationHandler.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="PedBackground.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\VehicleExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="LICENSE" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

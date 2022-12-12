@@ -174,7 +174,7 @@ namespace YobbinCallouts.Callouts
                         {
                             System.Random dialogue1 = new System.Random();
                             Game.DisplaySubtitle(AcceptSpeech[dialogue1.Next(0, AcceptSpeech.Count)], 2500);
-                            GameFiber.Wait(2500);
+                            GameFiber.Wait(3000);
                             
                             HouseBlip = new Blip(MainSpawnPoint);
                             HouseBlip.Color = Color.Orange;
@@ -233,7 +233,6 @@ namespace YobbinCallouts.Callouts
                                     //I might make the help message depend on if the landlord and/or tenants are arrested, but also might be too lazy to do that
                                     Game.DisplayHelp("Deal with the ~o~Landlord~w~ and ~r~Tenant~w~ as you see fit. Press ~b~"+Config.CalloutEndKey+" ~w~when done.");
                                     while (!Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
-                                    break;
                                 }
                             }
                             else //does not cooperate
@@ -249,7 +248,6 @@ namespace YobbinCallouts.Callouts
                             else CallHandler.Dialogue(Deny3, Landlord);
                             Landlord.Dismiss();
                             if (LandlordBlip.Exists()) LandlordBlip.Delete();
-                            break;
                         }
 
                         GameFiber.Wait(2000);

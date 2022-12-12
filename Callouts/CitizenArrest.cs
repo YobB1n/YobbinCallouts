@@ -118,7 +118,7 @@ namespace YobbinCallouts.Callouts
                 Suspect.Tasks.StandStill(-1);
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect Spawned");
 
-                Citizen = new Ped(Suspect.GetOffsetPositionFront(2));
+                Citizen = new Citizen(Suspect.GetOffsetPositionFront(2));
                 Citizen.IsPersistent = true;
                 Citizen.BlockPermanentEvents = true;
                 Citizen.Heading = Suspect.Heading - 180f;

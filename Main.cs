@@ -16,7 +16,7 @@ namespace YobbinCallouts
     public class Main : Plugin
     {
         public static Version NewVersion = new Version();
-        public static Version curVersion = new Version("1.7.1");
+        public static Version curVersion = new Version("1.7.0");
         public static bool STP; //if STP is installed by the user
         public static bool CalloutInterface; //if Callout Interface is installed by the user
         public static bool UpToDate; //if the Plugin is updated.
@@ -147,12 +147,12 @@ namespace YobbinCallouts
             if (Config.StolenCellPhone || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.StolenCellPhone));
             if (Config.SovereignCitizen || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.SovereignCitizen));
             if (Config.ActiveShooter || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.ActiveShooter));
-            if (Config.CitizenArrest || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.CitizenArrest));
+            //if (Config.CitizenArrest || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.CitizenArrest));
             if (Config.HumanTrafficking || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.HumanTrafficking));
             //if (Config.Explosion || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.Explosion));
             if (Config.WeaponFound || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.WeaponFound));
             if (Config.HospitalEmergency || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.HospitalEmergency));
-            if (Config.DUIReported || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.DUIReported));
+            //if (Config.DUIReported || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.DUIReported));
             if (Config.LandlordTenantDispute || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.LandlordTenantDispute));
             Game.LogTrivial("Finished Registering Callouts.");
 

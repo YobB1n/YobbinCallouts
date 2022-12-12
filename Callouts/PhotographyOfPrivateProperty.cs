@@ -222,7 +222,7 @@ namespace YobbinCallouts.Callouts
         {
          "~g~You:~w~ So I spoke with the person, however they refused to leave unfortunately.",
          "~b~Caller:~w~ So there's nothing you can do about them taking pictures of my property without consent?",
-         "~g~You:~w~ Unfortunately no. They are legally allowed to take photos as long as they aren't trespassing.",
+         "~g~You:~w~ Unfortunately no. The first amendment allows them to take photos as long as they aren't trespassing.",
          "~b~Caller:~w~ Really? That seems unreasonable. They've been around here for hours and refuses to leave! What am I supposed to do?",
          "~g~You:~w~ If they trespass on your property, you can call us and we can have them trespassed.",
          "~g~You:~w~ However, as it stands there isn't anything else I can do, unfortunately.",

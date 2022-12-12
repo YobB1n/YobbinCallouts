@@ -13,7 +13,7 @@ namespace YobbinCallouts.Callouts
     {
         private Vector3 MainSpawnPoint;
 
-        private static Citizen Suspect;
+        private static Citizen Suspect; //Suspect is the only "Citizen" atm
         private Ped Nurse;
         private Ped Guard;
         private Ped Hostage;
@@ -276,9 +276,9 @@ namespace YobbinCallouts.Callouts
                 Suspect.setMedicalProblemsForMentallyIllSuspect();
                 //mpinventory -> drug_trafficking
                 //commonmenu -> shop_health_icon_b
-                Game.DisplayNotification("commonmenu", "shop_health_icon_b", "~g~Patient Information", "~b~" + Suspect.FullName + " | " + Suspect.Gender, Suspect.ToString());
+                Game.DisplayNotification("commonmenu", "shop_health_icon_b", "~g~Patient Information", "~b~" + Suspect.FullName + " | " + Suspect.Gender, Suspect.ToString()); //Thanks Roheat :D
                 //Functions.DisplayPedId(Suspect, true); //test this
-                GameFiber.Wait(1500);
+                GameFiber.Wait(3000);
                 CallHandler.IdleAction(Nurse, false);
                 if (NurseBlip.Exists()) NurseBlip.Delete();
                 SuspectSearch();
@@ -360,7 +360,7 @@ namespace YobbinCallouts.Callouts
                                 case 0:
                                     Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to Reason with the ~o~Patient.");
                                     HostageHold();
-                                    if (Suspect.IsAlive) Game.DisplaySubtitle("~g~You:~w~ " + Suspect.Forename + "! You don't have to do this! Let's talk this through!");
+                                    if (Suspect.IsAlive) Game.DisplaySubtitle("~g~You:~w~ " + Suspect.Forename + "! You don't have to do this! Let's talk this through!"); //was Hostage1 Dialogue
                                     else break;
                                     HostageHold();
                                     if (Suspect.IsAlive) Game.DisplaySubtitle(DialogueAdvance(Hostage2));

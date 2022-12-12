@@ -16,8 +16,7 @@ namespace YobbinCallouts.Callouts
     {
         private Vector3 MainSpawnPoint;
 
-        private Ped Suspect;
-        private Ped Suspect2;
+        private Citizen Suspect;
         private Ped Witness;
         private Vehicle SuspectVehicle;
         private Blip SuspectBlip;
@@ -113,7 +112,7 @@ namespace YobbinCallouts.Callouts
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: DUI Reported Callout Start==========");
             System.Random r = new System.Random();
-            int Scenario = r.Next(1, 2); //scenario 0 - suspect gone. scenario 1 - suspect still there CHANGE LATER!!
+            int Scenario = r.Next(1, 1); //scenario 0 - suspect gone. scenario 1 - suspect still there CHANGE LATER!!
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario value is: " + MainScenario);
 
@@ -170,7 +169,7 @@ namespace YobbinCallouts.Callouts
                         return false;
                     }
                     //Instantiate the driver (suspect)
-                    Suspect = new Ped(MainSpawnPoint);
+                    Suspect = new Citizen(MainSpawnPoint);
                     Suspect.IsPersistent = true;
                     Suspect.BlockPermanentEvents = true;
                     //MAKE SUSPECT DRUNK WITH NATIVES

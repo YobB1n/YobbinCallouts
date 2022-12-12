@@ -65,7 +65,7 @@ namespace YobbinCallouts
             Gender = pedPersona.Gender.ToString();
             MedicalProblems = new List<string>();
         }
-        public Citizen(Model modelName, Vector3 spawnPoint) :base(spawnPoint, modelName)
+        public Citizen(Model modelName, Vector3 spawnPoint) : base(spawnPoint, modelName)
         {
             pedPersona = Functions.GetPersonaForPed(this);
             FullName = pedPersona.FullName;
