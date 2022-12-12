@@ -154,6 +154,7 @@ namespace YobbinCallouts
             if (Config.HospitalEmergency || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.HospitalEmergency));
             //if (Config.DUIReported || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.DUIReported));
             if (Config.LandlordTenantDispute || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.LandlordTenantDispute));
+            if (Config.StolenMail || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.StolenMail));
             Game.LogTrivial("Finished Registering Callouts.");
 
             if (Config.RunInvestigations) //not for not sadge

@@ -483,7 +483,7 @@ namespace YobbinCallouts.Callouts
                     Game.DisplayHelp("Let the ~r~Patient ~w~Out of the Car.");
                     while (Suspect.IsInAnyVehicle(false)) GameFiber.Wait(0);
                 }
-                Nurse.Tasks.GoStraightToPosition(Suspect.GetOffsetPositionFront(1), 3f, Suspect.Heading, 1f, 4000).WaitForCompletion(4000);
+                Nurse.Tasks.GoStraightToPosition(Suspect.GetOffsetPositionFront(1f), 3f, Suspect.Heading, 1f, 4000).WaitForCompletion(4000);
                 //some frisking animation for nurse (idle, rest of callout)
                 Guard.Tasks.GoStraightToPosition(Nurse.GetOffsetPositionRight(2f), 2f, Nurse.Heading, 2f, 2500).WaitForCompletion(2500);
                 CallHandler.IdleAction(Nurse, false);

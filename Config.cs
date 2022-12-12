@@ -31,7 +31,7 @@ namespace YobbinCallouts
         public static readonly bool HospitalEmergency = INIFile.ReadBoolean("Callouts", "Hospital Emergency", true);
         public static readonly bool DUIReported = INIFile.ReadBoolean("Callouts", "DUI Reported", true);
         public static readonly bool LandlordTenantDispute = INIFile.ReadBoolean("Callouts", "Landlord-Tenant Dispute", true);
-
+        public static readonly bool StolenMail = INIFile.ReadBoolean("Callouts", "Stolen Mail", true);
         //All keys
         public static readonly Keys MainInteractionKey = INIFile.ReadEnum<Keys>("Keys", "Main Key", Keys.Y);
         public static readonly Keys CalloutEndKey = INIFile.ReadEnum<Keys>("Keys", "Callout End Key", Keys.End);

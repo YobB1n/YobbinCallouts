@@ -17,6 +17,7 @@ namespace YobbinCallouts.Callouts
         private Vector3 MainSpawnPoint;
 
         private Citizen Suspect;
+        private Ped Suspect2;
         private Ped Witness;
         private Vehicle SuspectVehicle;
         private Blip SuspectBlip;
@@ -112,7 +113,7 @@ namespace YobbinCallouts.Callouts
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: DUI Reported Callout Start==========");
             System.Random r = new System.Random();
-            int Scenario = r.Next(1, 1); //scenario 0 - suspect gone. scenario 1 - suspect still there CHANGE LATER!!
+            int Scenario = r.Next(1, 2); //scenario 0 - suspect gone. scenario 1 - suspect still there CHANGE LATER!!
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario value is: " + MainScenario);
 
