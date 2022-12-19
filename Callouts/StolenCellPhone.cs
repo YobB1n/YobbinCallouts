@@ -110,7 +110,7 @@ namespace YobbinCallouts.Callouts
             int Scenario = r.Next(0, 5);    //change later
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is Value is " + MainScenario);
-            Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).GameName;
+            Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).RealAreaName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
             CallHandler.locationChooser(CallHandler.HouseList);
             if (CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; }
@@ -379,9 +379,12 @@ namespace YobbinCallouts.Callouts
                 {
                     if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Continue Talking to the ~r~Suspect.");
                     CallHandler.Dialogue(SuspectCoopLetGo, Suspect);
-                    GameFiber.Wait(1500);                   
-                    Suspect.Tasks.ClearImmediately();
-                    if (Suspect.IsAlive) Suspect.Dismiss();
+                    GameFiber.Wait(1500);
+                    if (Suspect.Exists())
+                    {
+                        Suspect.Tasks.ClearImmediately();
+                        if (Suspect.IsAlive) Suspect.Dismiss();
+                    }
                     //Test this blip deletion
                     SuspectBlip.Alpha = 0;
                     if (SuspectBlip.Exists()) SuspectBlip.Delete(); //botched

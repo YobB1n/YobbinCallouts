@@ -396,5 +396,52 @@ namespace YobbinCallouts
                 Game.DisplayNotification("mpcarhud", "leaderboard_car_colour_icon", "~g~Vehicle Description", "~b~" + vehicle.Model.Name, persona);
             }
         }
+
+        /// <summary>
+        /// Displays a notification with relevant vehicle information.
+        /// </summary>
+        /// <param name="vehicle"></param>
+        /// <param name="ped"></param>
+        /// <param name="pedstatus"></param>
+        //test this later
+        public static bool CreatePursuit(LHandle pursuit, bool wait = true, bool audio = true, params Ped[] suspects)
+        {
+            pursuit = Functions.CreatePursuit();
+            Functions.SetPursuitIsActiveForPlayer(pursuit, true);
+
+            foreach (Ped Suspect in suspects)
+            {
+                Functions.AddPedToPursuit(pursuit, Suspect);
+            }
+
+            if (audio)
+            {
+                GameFiber.Wait(1500);
+                Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
+            }
+
+            if (wait && suspects.Length == 1)
+            {
+                Ped suspect = suspects[0];
+                while (Functions.IsPursuitStillRunning(pursuit)) { GameFiber.Wait(0); }
+                while (suspect.Exists())
+                {
+                    GameFiber.Yield();
+                    if (!suspect.Exists() || suspect.IsDead || Functions.IsPedArrested(suspect)) break;
+                }
+                if (suspect.IsAlive) //test all this (STP )
+                {
+                    Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Following the Pursuit.");
+                   //finish this
+                }
+                else
+                {
+                    GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Following the Pursuit.");
+                }
+                GameFiber.Wait(2000);
+                Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+            }
+        }
+        }
     }
 }
