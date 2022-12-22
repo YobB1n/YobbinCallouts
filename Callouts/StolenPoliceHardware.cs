@@ -137,31 +137,8 @@ namespace YobbinCallouts.Callouts
         {
             if (CalloutRunning)
             {
-                GameFiber.Wait(2000);
-                Game.DisplayNotification("Suspect is ~r~Evading!");
+                CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);
 
-                LSPD_First_Response.Mod.API.Functions.ForceEndCurrentPullover();
-                MainPursuit = LSPD_First_Response.Mod.API.Functions.CreatePursuit();
-                LSPD_First_Response.Mod.API.Functions.RequestBackup(Suspect.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
-                LSPD_First_Response.Mod.API.Functions.SetPursuitIsActiveForPlayer(MainPursuit, true);
-                LSPD_First_Response.Mod.API.Functions.AddPedToPursuit(MainPursuit, Suspect);
-                GameFiber.Wait(1500);
-                LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
-                while (LSPD_First_Response.Mod.API.Functions.IsPursuitStillRunning(MainPursuit)) { GameFiber.Wait(0); }
-                while (Suspect.Exists())
-                {
-                    GameFiber.Yield();
-                    if (!Suspect.Exists() || Suspect.IsDead || Functions.IsPedArrested(Suspect)) break;
-                }
-                if (Suspect.Exists())
-                {
-                    if (Functions.IsPedArrested(Suspect)) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Following the Pursuit."); }
-                    else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Following the Pursuit."); }
-                }
-                else
-                {
-                    GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Following the Pursuit.");
-                }
                 GameFiber.Wait(2000);
                 LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
                 GameFiber.Wait(2000);
@@ -330,19 +307,7 @@ namespace YobbinCallouts.Callouts
                         if (!Suspect.IsCuffed && !Functions.IsPedArrested(Suspect))
                         {
                             if (SuspectBlip.Exists()) { SuspectBlip.Delete(); }
-                            MainPursuit = LSPD_First_Response.Mod.API.Functions.CreatePursuit();
-                            LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
-                            LSPD_First_Response.Mod.API.Functions.RequestBackup(Suspect.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
-                            LSPD_First_Response.Mod.API.Functions.SetPursuitIsActiveForPlayer(MainPursuit, true);
-                            LSPD_First_Response.Mod.API.Functions.AddPedToPursuit(MainPursuit, Suspect);
-                            //while (Functions.IsPursuitStillRunning(MainPursuit)) { GameFiber.Wait(0); }
-                            while (LSPD_First_Response.Mod.API.Functions.IsPursuitStillRunning(MainPursuit) && Suspect.IsAlive && !Suspect.IsCuffed) { GameFiber.Wait(0); }
-                            while (Suspect.IsAlive && !Suspect.IsCuffed) { GameFiber.Wait(0); }
-                            if (Suspect.IsDead) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, Pursuit is Over. Suspect is ~r~Dead."); SuspectBlip.Delete(); }
-                            if (Suspect.IsCuffed) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, Pursuit is Over. Suspect is Under ~g~Arrest."); }
-                            GameFiber.Wait(2000);
-                            LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-                            GameFiber.Wait(2000);
+                            CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);
                         }
                         else
                         {

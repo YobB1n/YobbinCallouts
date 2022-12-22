@@ -405,29 +405,7 @@ namespace YobbinCallouts.Callouts
                 int SuspectAction = r.Next(0, 0);   //add more later
                 if (SuspectAction == 0)  //pursuit
                 {
-                    Game.LogTrivial("YOBBINCALLOUTS: Suspect Pursuit Started");
-                    Functions.ForceEndCurrentPullover();
-                    MainPursuit = LSPD_First_Response.Mod.API.Functions.CreatePursuit();
-                    LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
-                    Game.DisplayNotification("Suspect is ~r~Evading!");
-                    LSPD_First_Response.Mod.API.Functions.RequestBackup(player.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
-                    LSPD_First_Response.Mod.API.Functions.SetPursuitIsActiveForPlayer(MainPursuit, true);
-                    LSPD_First_Response.Mod.API.Functions.AddPedToPursuit(MainPursuit, Suspect);
-                    while (Functions.IsPursuitStillRunning(MainPursuit)) GameFiber.Wait(0);
-
-                    if (Suspect.Exists())
-                    {
-                        if (Functions.IsPedArrested(Suspect)) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ following the ~b~Pursuit."); }
-                        else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ following the ~b~Pursuit."); }
-                    }
-                    else
-                    {
-                        GameFiber.Wait(5000); Game.DisplayNotification("Dispatch, We are ~g~Code 4~w~. Pursuit ~b~Over.");
-                    }
-
-                    GameFiber.Wait(2000);
-                    LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-                    GameFiber.Wait(2000);
+                    CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);                   
                 }
             }
         }

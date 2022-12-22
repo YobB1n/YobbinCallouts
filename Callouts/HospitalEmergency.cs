@@ -17,7 +17,6 @@ namespace YobbinCallouts.Callouts
         private Ped Nurse;
         private Ped Guard;
         private Ped Hostage;
-        private Vehicle SuspectVehicle;
         private Blip SuspectBlip;
         private Blip NurseBlip;
         private Blip Area;
@@ -156,7 +155,7 @@ namespace YobbinCallouts.Callouts
                     Guard.BlockPermanentEvents = true;
                     CallHandler.IdleAction(Guard, true);
 
-                    Suspect = new Citizen(World.GetNextPositionOnStreet(MainSpawnPoint.Around(169))); //may reduce
+                    Suspect = new Citizen(World.GetNextPositionOnStreet(MainSpawnPoint.Around(200))); //may reduce
                     Suspect.IsPersistent = true;
                     Suspect.BlockPermanentEvents = true;
                     Suspect.Tasks.Wander();
@@ -345,6 +344,11 @@ namespace YobbinCallouts.Callouts
                             else if (WeaponModel == 3) Suspect.Inventory.GiveNewWeapon("WEAPON_MICROSMG", -1, true);
                             Game.DisplaySubtitle("~r~Patient:~w~ Don't come any closer, or they'll die!!");
                             //GameFiber.Wait(1000);
+
+                            //doesn't do anything lol
+                            //NativeFunction.Natives.TASK_TURN_PED_TO_FACE_ENTITY(Suspect, player, -1);
+                            //NativeFunction.Natives.TASK_TURN_PED_TO_FACE_ENTITY(Hostage, player, -1);
+
                             Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop", 1f, AnimationFlags.None).WaitForCompletion(500);
                             Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop_mrk", 1f, AnimationFlags.Loop);
                             HostageBlip = Hostage.AttachBlip();
@@ -435,7 +439,7 @@ namespace YobbinCallouts.Callouts
                         else
                         {
                             Game.LogTrivial("YOBBINCALLOUTS: PURSUIT SCENARIO STARTED");
-                            Pursuit();
+                            CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect); //test this
                         }
                     }
                     else
@@ -443,7 +447,7 @@ namespace YobbinCallouts.Callouts
                         Game.DisplayNotification("Dispatch, Suspect has been ~r~Killed.");
                     }
                 }
-                else Pursuit();
+                else CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect); //test this
             }
         }
         private void DriveBack()
@@ -496,6 +500,7 @@ namespace YobbinCallouts.Callouts
             }
         }
 
+        //unused atm
         private void Pursuit()
         {
             if (CalloutRunning)
@@ -529,6 +534,7 @@ namespace YobbinCallouts.Callouts
             }
         }
         //this helper is the logic the suspect is assigned in between dialogue advances in the hostage situation
+        //might want to abstract this
         private void HostageHold()
         {
             while (true)

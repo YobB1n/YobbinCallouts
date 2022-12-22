@@ -394,7 +394,7 @@ namespace YobbinCallouts.Callouts
 
                     System.Random monke = new System.Random();
                     int decision = monke.Next(0, 2);
-                    if (decision == 1) Pursuit();
+                    if (decision == 1) CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);
                     else
                     {
                         System.Random yuy = new System.Random();
@@ -567,7 +567,7 @@ namespace YobbinCallouts.Callouts
                         {
                             System.Random dec = new System.Random();
                             var action = dec.Next(0, 2);
-                            if (action == 0) Pursuit(); //flee
+                            if (action == 0) CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);  //flee
                             else //fight
                             {
                                 Game.LogTrivial("YOBBINCALLOUTS: Suspect Weapon Model is " + WeaponModel);
@@ -593,7 +593,7 @@ namespace YobbinCallouts.Callouts
                         CallHandler.Dialogue(SuspectFlees, Suspect);
                         System.Random dec = new System.Random();
                         var action = dec.Next(0, 2);
-                        if (action == 0) Pursuit(); //flee
+                        if (action == 0) CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);  //flee
                         else //fight
                         {
                             System.Random r = new System.Random();  //Instantiate Random Weapon  generator
@@ -682,7 +682,7 @@ namespace YobbinCallouts.Callouts
             System.Random r = new System.Random();
             int action = r.Next(0, 4);
             Game.LogTrivial("YOBBINCALLOUTS: SUSPECT FINAL ACTION IS..." + action);
-            if (action == 0) Pursuit();
+            if (action == 0) CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);
             else if (action == 1) //Shoot
             {
                 GameFiber.Wait(WaitTime);
@@ -732,41 +732,8 @@ namespace YobbinCallouts.Callouts
                         GameFiber.Wait(2000);
                         LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
                     }
-                    else Pursuit(); //late pursuit (action == 3)
+                    else CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);  //late pursuit (action == 3)
                 }
-            }
-        }
-        private void Pursuit()
-        {
-            if (CalloutRunning)
-            {
-                GameFiber.Wait(2000);
-                Game.DisplayNotification("Suspect is ~r~Evading!");
-
-                LSPD_First_Response.Mod.API.Functions.ForceEndCurrentPullover();
-                MainPursuit = LSPD_First_Response.Mod.API.Functions.CreatePursuit();
-                LSPD_First_Response.Mod.API.Functions.RequestBackup(Suspect.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
-                LSPD_First_Response.Mod.API.Functions.SetPursuitIsActiveForPlayer(MainPursuit, true);
-                LSPD_First_Response.Mod.API.Functions.AddPedToPursuit(MainPursuit, Suspect);
-                GameFiber.Wait(1500);
-                LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
-                while (LSPD_First_Response.Mod.API.Functions.IsPursuitStillRunning(MainPursuit)) { GameFiber.Wait(0); }
-                while (Suspect.Exists())
-                {
-                    GameFiber.Yield();
-                    if (!Suspect.Exists() || Suspect.IsDead || Functions.IsPedArrested(Suspect)) break;
-                }
-                if (Suspect.Exists())
-                {
-                    if (Functions.IsPedArrested(Suspect)) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Following the Pursuit."); }
-                    else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Following the Pursuit."); }
-                }
-                else
-                {
-                    GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Following the Pursuit.");
-                }
-                GameFiber.Wait(2000);
-                LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
             }
         }
     }

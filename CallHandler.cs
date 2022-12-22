@@ -22,7 +22,8 @@ namespace YobbinCallouts
         private static int count; //random counter for arrays
         private static string[] VehicleModels; //array of vehicle models for vehicle spawner
         static Random monke = new Random();
-        
+        public static bool arrested;
+
         public static bool SoundPlayed; //if Sound is Played by a sound-related helper function
 
         //These are the animations for the Idle Actions (ped just standing around)
@@ -146,7 +147,7 @@ namespace YobbinCallouts
                     }
                     else
                     {
-                        
+
                         int animation = monke.Next(0, MaleCopAnim.Length / 2);
                         //Game.LogTrivial("YOBBINCALLOUTS: There are "+MaleCopAnim.Length+"animations");
                         //Game.LogTrivial(MaleCopAnim[animation, 0]);
@@ -158,13 +159,13 @@ namespace YobbinCallouts
                 {
                     if (ped.IsFemale)
                     {
-                        
+
                         int animation = monke.Next(0, FemaleRandoAnim.Length / 2);
                         ped.Tasks.PlayAnimation(FemaleRandoAnim[animation, 0], FemaleRandoAnim[animation, 1], -1, AnimationFlags.Loop);
                     }
                     else
                     {
-                        
+
                         int animation = monke.Next(0, MaleRandoAnim.Length / 2);
                         ped.Tasks.PlayAnimation(MaleRandoAnim[animation, 0], MaleRandoAnim[animation, 1], -1, AnimationFlags.Loop);
                     }
@@ -187,7 +188,7 @@ namespace YobbinCallouts
             int model = monke.Next(0, VehicleModels.Length);
             Game.LogTrivial("YOBBINCALLOUTS: VEHICLESPAWNER: Vehicle Model is " + VehicleModels[model]);
             var veh = new Vehicle(VehicleModels[model], SpawnPoint, Heading);
-            if(persistent) veh.IsPersistent = true; //vehicle is marked as persistent by default
+            if (persistent) veh.IsPersistent = true; //vehicle is marked as persistent by default
             return veh;
         }
         /// <summary>
@@ -360,7 +361,7 @@ namespace YobbinCallouts
                 Game.LogTrivial("YOBBINCALLOUTS: Spawn Point not found.");
                 locationReturned = false;
             }
-            else 
+            else
             {
                 SpawnPoint = (Vector3)closeLocations[monke.Next(0, closeLocations.Count)];
                 locationReturned = true;
@@ -372,7 +373,7 @@ namespace YobbinCallouts
         {
             int num = monke.Next(0, 2);
             if (num == 0) { return false; } else { return true; }
-         }
+        }
 
         /// <summary>
         /// Displays a notification with relevant vehicle information.
@@ -398,50 +399,74 @@ namespace YobbinCallouts
         }
 
         /// <summary>
-        /// Displays a notification with relevant vehicle information.
+        /// Creates a pursuit with Suspects.
         /// </summary>
-        /// <param name="vehicle"></param>
-        /// <param name="ped"></param>
-        /// <param name="pedstatus"></param>
         //test this later
-        public static bool CreatePursuit(LHandle pursuit, bool wait = true, bool audio = true, params Ped[] suspects)
+        public static void CreatePursuit(LHandle pursuit, bool wait = true, bool audio = true, bool backup = false, params Ped[] suspects)
         {
-            pursuit = Functions.CreatePursuit();
-            Functions.SetPursuitIsActiveForPlayer(pursuit, true);
-
-            foreach (Ped Suspect in suspects)
+            try
             {
-                Functions.AddPedToPursuit(pursuit, Suspect);
-            }
+                Functions.ForceEndCurrentPullover();
+                pursuit = Functions.CreatePursuit();
+                Functions.SetPursuitIsActiveForPlayer(pursuit, true);
 
-            if (audio)
-            {
-                GameFiber.Wait(1500);
-                Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
-            }
-
-            if (wait && suspects.Length == 1)
-            {
-                Ped suspect = suspects[0];
-                while (Functions.IsPursuitStillRunning(pursuit)) { GameFiber.Wait(0); }
-                while (suspect.Exists())
+                foreach (Ped Suspect in suspects)
                 {
-                    GameFiber.Yield();
-                    if (!suspect.Exists() || suspect.IsDead || Functions.IsPedArrested(suspect)) break;
+                    Functions.AddPedToPursuit(pursuit, Suspect);
                 }
-                if (suspect.IsAlive) //test all this (STP )
+                Game.LogTrivial("YOBBINCALLOUTS: PURSUITHANDLER: Started Pursuit with " + suspects.Length + " Suspects.");
+
+                if (audio)
                 {
-                    Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Following the Pursuit.");
-                   //finish this
+                    GameFiber.Wait(1500);
+                    Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
+                    if (backup)
+                    {
+                        try { Functions.RequestBackup(Game.LocalPlayer.Character.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit); }
+                        catch { }
+                    }
+                }
+
+                if (wait && suspects.Length == 1)
+                {
+                    Ped suspect = suspects[0];
+                    while (Functions.IsPursuitStillRunning(pursuit)) { GameFiber.Wait(0); }
+                    while (suspect.Exists())
+                    {
+                        GameFiber.Yield();
+                        if (!suspect.Exists() || suspect.IsDead || Functions.IsPedArrested(suspect)) break;
+                    }
+                    if (suspect.IsAlive) //test all this (STP )
+                    {
+                        Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Following the Pursuit.");
+                        Game.LogTrivial("YOBBINCALLOUTS: PURSUITHANDLER: Suspect is under arrest.");
+                        arrested = true;
+                    }
+                    else
+                    {
+                        GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Following the Pursuit.");
+                        Game.LogTrivial("YOBBINCALLOUTS: PURSUITHANDLER: Suspect is killed.");
+                        arrested = false;
+                    }
+                    GameFiber.Wait(2000);
+                    Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                    GameFiber.Wait(1500);
                 }
                 else
                 {
-                    GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Following the Pursuit.");
+                    while (Functions.IsPursuitStillRunning(pursuit)) { GameFiber.Wait(0); }
                 }
-                GameFiber.Wait(2000);
-                Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                Game.LogTrivial("YOBBINCALLOUTS: PURSUITHANDLER: Pursuit over.");
+                Game.LogTrivial("YOBBINCALLOUTS: PURSUITHANDLER: Suspect is arrested: " + arrested);
             }
-        }
+            catch (Exception e)
+            {
+                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT - PURSUITHANDLER==========");
+                string error = e.ToString();
+                Game.LogTrivial("ERROR: " + error);
+                Game.LogTrivial("No Need to Report This Error if it Did not Result in an LSPDFR Crash.");
+                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT - PURSUITHANDLER==========");
+            }
         }
     }
 }

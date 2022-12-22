@@ -203,29 +203,7 @@ namespace YobbinCallouts.Callouts
                             Suspect.Tasks.AchieveHeading(player.Character.Heading - 180).WaitForCompletion(500);
                             if (Suspect.IsAlive)
                             {
-                                MainPursuit = Functions.CreatePursuit();
-                                Functions.SetPursuitIsActiveForPlayer(MainPursuit, true);
-                                Functions.AddPedToPursuit(MainPursuit, Suspect);
-                                Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
-                                try
-                                {
-                                    Functions.RequestBackup(Suspect.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
-                                    Game.LogTrivial("YOBBINCALLOUTS: Backup Dispatched");
-                                }
-                                catch (Exception e)
-                                {
-                                    Game.LogTrivial("YOBBINCALLOUTS: Error spawning Code 3 Backup. Most Likely User Error. ERROR - " + e);
-                                }
-                                while (LSPD_First_Response.Mod.API.Functions.IsPursuitStillRunning(MainPursuit)) { GameFiber.Wait(0); }
-                                if (Suspect.Exists())
-                                {
-                                    if (Functions.IsPedArrested(Suspect)) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Following the Pursuit."); }
-                                    else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Following the Pursuit."); }
-                                }
-                                else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Following the Pursuit."); }
-                                GameFiber.Wait(2000);
-                                Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-                                GameFiber.Wait(2000);
+                                CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);
                             }
                             Game.DisplayHelp("When You are Done ~y~Investigating, ~w~Press End to ~b~Finish the Callout.");
                             while (!Game.IsKeyDown(Config.CalloutEndKey)) { GameFiber.Wait(0); }

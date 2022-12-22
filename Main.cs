@@ -147,7 +147,7 @@ namespace YobbinCallouts
             if (Config.StolenCellPhone || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.StolenCellPhone));
             if (Config.SovereignCitizen || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.SovereignCitizen));
             if (Config.ActiveShooter || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.ActiveShooter));
-            //if (Config.CitizenArrest || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.CitizenArrest));
+            if (Config.CitizenArrest || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.CitizenArrest));
             if (Config.HumanTrafficking || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.HumanTrafficking));
             //if (Config.Explosion || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.Explosion));
             if (Config.WeaponFound || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.WeaponFound));
