@@ -150,7 +150,8 @@ namespace YobbinCallouts.Callouts
                     var GuardSpawnPoint = World.GetNextPositionOnStreet(Nurse.Position);
                     NativeFunction.Natives.xA0F8A7517A273C05<bool>(GuardSpawnPoint, 0, out Vector3 outPosition);
 
-                    Guard = new Ped("s_m_m_security_01", outPosition, Nurse.Heading - 180); //offset position
+                    if(CallHandler.FiftyFifty()) Guard = new Ped("s_m_m_security_01", outPosition, Nurse.Heading - 15); //offset position
+                    else Guard = new Ped("s_m_m_security_01", outPosition, Nurse.Heading + 15); //offset position
                     Guard.IsPersistent = true;
                     Guard.BlockPermanentEvents = true;
                     CallHandler.IdleAction(Guard, true);
@@ -287,7 +288,7 @@ namespace YobbinCallouts.Callouts
         {
             if (CalloutRunning)
             {
-                if (Config.DisplayHelp) Game.DisplayHelp("Start ~b~Searching~w~ for the Patient.");
+                if (Config.DisplayHelp) Game.DisplayHelp("Start ~o~Searching~w~ for the Patient.");
                 Area = new Blip(Suspect.Position.Around(5), 100f);
                 Area.Alpha = 0.69f;
                 Area.Color = Color.Orange;
@@ -345,23 +346,20 @@ namespace YobbinCallouts.Callouts
                             Game.DisplaySubtitle("~r~Patient:~w~ Don't come any closer, or they'll die!!");
                             //GameFiber.Wait(1000);
 
-                            //doesn't do anything lol
-                            //NativeFunction.Natives.TASK_TURN_PED_TO_FACE_ENTITY(Suspect, player, -1);
-                            //NativeFunction.Natives.TASK_TURN_PED_TO_FACE_ENTITY(Hostage, player, -1);
-
                             Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop", 1f, AnimationFlags.None).WaitForCompletion(500);
-                            Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop_mrk", 1f, AnimationFlags.Loop);
+                            Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop_mrk", 1f, AnimationFlags.Loop | AnimationFlags.SecondaryTask);
                             HostageBlip = Hostage.AttachBlip();
                             HostageBlip.IsFriendly = true;
                             HostageBlip.Scale = 0.69f;
                             if (Hostage.IsFemale) Hostage.Tasks.PlayAnimation("anim@move_hostages@female", "female_idle", 1f, AnimationFlags.Loop);
-                            else Hostage.Tasks.PlayAnimation("anim@move_hostages@male", "male_idle", 1f, AnimationFlags.Loop);
+                            else Hostage.Tasks.PlayAnimation("anim@move_hostages@male", "male_idle", 1f, AnimationFlags.Loop | AnimationFlags.SecondaryTask);
 
                             //This switch doesn't actually do anything, it's just a statement to break out of if the Suspect is killed prematurely in the hostage situation
                             var lewis = 0;
                             switch (lewis)
                             {
                                 case 0:
+                                    GameFiber.Wait(1000);
                                     Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to Reason with the ~o~Patient.");
                                     HostageHold();
                                     if (Suspect.IsAlive) Game.DisplaySubtitle("~g~You:~w~ " + Suspect.Forename + "! You don't have to do this! Let's talk this through!"); //was Hostage1 Dialogue
@@ -423,6 +421,7 @@ namespace YobbinCallouts.Callouts
                             //test vvv
                             if (HostageBlip.Exists()) HostageBlip.Delete();
                             if (Hostage.Exists() && Hostage.IsAlive) Hostage.Tasks.ReactAndFlee(player); //might remove
+                            Suspect.Tasks.PutHandsUp(5000, player);
                             if (Functions.IsPedArrested(Suspect) || Suspect.IsAlive)
                             {
                                 Game.DisplayNotification("Dispatch, we have taken the Patient into ~r~Custody.");
@@ -487,9 +486,9 @@ namespace YobbinCallouts.Callouts
                     Game.DisplayHelp("Let the ~r~Patient ~w~Out of the Car.");
                     while (Suspect.IsInAnyVehicle(false)) GameFiber.Wait(0);
                 }
-                Nurse.Tasks.GoStraightToPosition(Suspect.GetOffsetPositionFront(1f), 3f, Suspect.Heading, 1f, 4000).WaitForCompletion(4000);
+                Nurse.Tasks.GoStraightToPosition(Suspect.GetOffsetPositionFront(-1f), 3f, Suspect.Heading, 1f, 4000).WaitForCompletion(4000);
                 //some frisking animation for nurse (idle, rest of callout)
-                Guard.Tasks.GoStraightToPosition(Nurse.GetOffsetPositionRight(2f), 2f, Nurse.Heading, 2f, 2500).WaitForCompletion(2500);
+                //Guard.Tasks.GoStraightToPosition(Nurse.GetOffsetPositionRight(2f), 2f, Nurse.Heading, 2f, 2500).WaitForCompletion(2500);
                 CallHandler.IdleAction(Nurse, false);
                 CallHandler.IdleAction(Guard, true);
 

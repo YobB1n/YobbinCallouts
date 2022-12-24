@@ -411,12 +411,12 @@ namespace YobbinCallouts.Callouts
                         }
                         if (Suspect.Exists())
                         {
-                            if (Functions.IsPedArrested(Suspect)) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Following the Pursuit."); }
-                            else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Following the Pursuit."); }
+                            if (Functions.IsPedArrested(Suspect)) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~."); }
+                            else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~."); }
                         }
                         else
                         {
-                            GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Following the Pursuit.");
+                            GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest.");
                         }
                     }
                 }
@@ -458,7 +458,7 @@ namespace YobbinCallouts.Callouts
                 SuspectVehicle.IsPersistent = true;
                 Suspect = SuspectVehicle.CreateRandomDriver();
                 Suspect.IsPersistent = true; Suspect.BlockPermanentEvents = true;
-                var SuspectName = Functions.GetVehicleOwnerName(SuspectVehicle); //might mix up gender idk
+                var SuspectName = Functions.GetPersonaForPed(Suspect).FullName; //test this
                 var Distance = Math.Round(Suspect.DistanceTo(player));
                 Game.DisplayNotification(WeaponName + " Serial ~r~" + WeaponSerial + " ~w~Registered to ~p~" + SuspectName + "~w~. ~r~Suspect~w~ was Recently ~r~Located~o~ " + Distance + " metres~w~ Away!");
                 if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, WeaponName + " Serial ~r~" + WeaponSerial + " ~w~Registered to ~p~" + SuspectName + "~w~. ~r~Suspect~w~ was Recently ~r~Located~o~ " + Distance + " metres~w~ Away!");

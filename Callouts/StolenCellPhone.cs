@@ -263,12 +263,12 @@ namespace YobbinCallouts.Callouts
                 //Phone.IsVisible = false;
                 Suspect.Tasks.Wander();
 
-                CellPhoneAreaBlip = new Blip(Suspect.Position.Around(15), 50);
+                CellPhoneAreaBlip = new Blip(Suspect.Position.Around(15), 100);
                 CellPhoneAreaBlip.Color = Color.Yellow;
                 CellPhoneAreaBlip.Alpha = 0.67f;
                 CellPhoneAreaBlip.IsRouteEnabled = true;
 
-                while (player.DistanceTo(Suspect) >= 50) GameFiber.Wait(0);
+                if(Suspect.Exists()) while (player.DistanceTo(Suspect) >= 50) GameFiber.Wait(0);
                 Game.DisplayNotification("You are ~g~Close~w~ to the ~y~Phone!~w~ Enabling ~b~Fine Location~w~ Information.");
                 if (CellPhoneAreaBlip.Exists()) CellPhoneAreaBlip.Delete();
                 CellPhoneAreaBlip = Suspect.AttachBlip();
@@ -331,7 +331,8 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(2000);
                 Game.DisplayHelp("~y~" + Config.Key1 + ":~b~ Arrest the Suspect.~y~ " + Config.Key2 + ":~b~ Let the Suspect Off the Hook.");
                 while (!Game.IsKeyDown(Config.Key1) && !Game.IsKeyDown(Config.Key2)) GameFiber.Wait(0); //might do an animation?
-                if (Game.IsKeyDown(Config.Key1))
+                
+                if (Game.IsKeyDown(Config.Key1)) //arrest
                 {
                     if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Continue Talking to the ~r~Suspect.");
                     GameFiber.Yield();
@@ -342,20 +343,15 @@ namespace YobbinCallouts.Callouts
                     if (MainScenario == 4) { GameFiber.Wait(500); Runs(); }
                     else
                     {
-                        while (Suspect.Exists() && !Functions.IsPedArrested(Suspect) && Suspect.IsAlive) GameFiber.Wait(0);
-                        if (Suspect.Exists() && Functions.IsPedArrested(Suspect)) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, Suspect is Under ~g~Arrest."); }
-                        else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, Suspect is ~r~Dead."); }   //does not work with STP
-                        GameFiber.Wait(2000);
-                        Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-                        GameFiber.Wait(2000);
+                        CallHandler.SuspectWait(Suspect);
                         if (SuspectBlip.Exists()) SuspectBlip.Delete();
                         WrapUp();
                     }
                 }
-                else
+                else //let go
                 {
                     if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Continue Talking to the ~r~Suspect.");
-                    CallHandler.Dialogue(SuspectCoopLetGo, Suspect);
+                    if(Suspect.Exists()) CallHandler.Dialogue(SuspectCoopLetGo, Suspect);
                     GameFiber.Wait(1500);
                     if (Suspect.Exists())
                     {
@@ -363,7 +359,7 @@ namespace YobbinCallouts.Callouts
                         if (Suspect.IsAlive) Suspect.Dismiss();
                     }
                     //Test this blip deletion
-                    SuspectBlip.Alpha = 0;
+                    if(SuspectBlip.Exists()) SuspectBlip.Alpha = 0;
                     if (SuspectBlip.Exists()) SuspectBlip.Delete(); //botched
                     WrapUp();
                 }
@@ -383,6 +379,7 @@ namespace YobbinCallouts.Callouts
                 VictimBlip.IsRouteEnabled = true;
                 VictimBlip.Scale = 0.75f;
                 if(CalloutRunning) while (player.DistanceTo(Victim) >= 5) GameFiber.Wait(0); //test
+                if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Return the Phone ~b~Caller.");
                 CallHandler.Dialogue(VictimEnding1, Victim);
                 Phone = new Rage.Object("prop_npc_phone", Vector3.Zero);
                 Phone.IsPersistent = true;

@@ -147,7 +147,6 @@ namespace YobbinCallouts
                     }
                     else
                     {
-
                         int animation = monke.Next(0, MaleCopAnim.Length / 2);
                         //Game.LogTrivial("YOBBINCALLOUTS: There are "+MaleCopAnim.Length+"animations");
                         //Game.LogTrivial(MaleCopAnim[animation, 0]);
@@ -159,13 +158,11 @@ namespace YobbinCallouts
                 {
                     if (ped.IsFemale)
                     {
-
                         int animation = monke.Next(0, FemaleRandoAnim.Length / 2);
                         ped.Tasks.PlayAnimation(FemaleRandoAnim[animation, 0], FemaleRandoAnim[animation, 1], -1, AnimationFlags.Loop);
                     }
                     else
                     {
-
                         int animation = monke.Next(0, MaleRandoAnim.Length / 2);
                         ped.Tasks.PlayAnimation(MaleRandoAnim[animation, 0], MaleRandoAnim[animation, 1], -1, AnimationFlags.Loop);
                     }
@@ -366,6 +363,7 @@ namespace YobbinCallouts
                 SpawnPoint = (Vector3)closeLocations[monke.Next(0, closeLocations.Count)];
                 locationReturned = true;
                 Game.LogTrivial("YOBBINCALLOUTS: Spawn Point found successfully.");
+                Game.LogTrivial("YOBBINCALLOUTS: Spawn Point found at "+SpawnPoint+" in "+ Functions.GetZoneAtPosition(SpawnPoint).RealAreaName);
             }
         }
 

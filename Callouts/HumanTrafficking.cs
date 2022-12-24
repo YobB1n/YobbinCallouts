@@ -460,7 +460,7 @@ namespace YobbinCallouts.Callouts
                     if (SuspectBlip.Exists()) SuspectBlip.Delete();
                     Victim.Tasks.LeaveVehicle(SuspectVehicle, LeaveVehicleFlags.LeaveDoorOpen).WaitForCompletion();
                     Victim.Tasks.Cower(-1);
-                    Game.DisplayHelp("When Ready, Speak with the ~b~Victim.");
+                    Game.DisplayHelp("When Ready, Locate and Speak with the ~b~Victim.");
                     while (player.DistanceTo(Victim) >= 4) GameFiber.Wait(0);
                     Victim.Tasks.AchieveHeading(player.Heading - 180).WaitForCompletion(500);
 

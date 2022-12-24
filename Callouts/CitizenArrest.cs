@@ -74,7 +74,7 @@ namespace YobbinCallouts.Callouts
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Citizen Arrest Callout Start==========");
             System.Random r = new System.Random();
-            int Scenario = r.Next(0, 3); //change later
+            int Scenario = r.Next(0, 0); //change later
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is " + MainScenario + "");
             if (MainScenario == 0) Crime = "Assault.";  //PUT PERIODS AT THE END OF THESE CRIMES.
@@ -111,11 +111,11 @@ namespace YobbinCallouts.Callouts
                 SuspectModels = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
                 System.Random r2 = new System.Random();
                 int SuspectModel = r2.Next(0, SuspectModels.Length);
-                Suspect = new Ped(SuspectModels[SuspectModel], nodePosition, heading);
+                Suspect = new Ped(nodePosition, heading);
                 Suspect.IsPersistent = true;
                 Suspect.BlockPermanentEvents = true;
                 Functions.SetPedAsArrested(Suspect, true, false);
-                Suspect.Tasks.StandStill(-1);
+                //Suspect.Tasks.StandStill(-1);
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect Spawned");
 
                 Citizen = new Citizen(Suspect.GetOffsetPositionFront(2));
@@ -136,6 +136,13 @@ namespace YobbinCallouts.Callouts
                 AreaBlip.Alpha = 0.67f;
                 AreaBlip.IsRouteEnabled = true;
                 AreaBlip.Name = "Callout Location";
+
+                //this shouldn't be necessary but idk why it isn't working lol
+                if (!Suspect.Exists())
+                {
+                    Game.LogTrivial("YOBBINCALLOUTS: Suspect no longer valid, aborting...");
+                    return false;
+                }
             }
             catch (Exception e)
             {
@@ -174,9 +181,11 @@ namespace YobbinCallouts.Callouts
                     CitizenBlip.Color = Color.Purple;
                     NativeFunction.Natives.TASK_TURN_PED_TO_FACE_ENTITY(Citizen, player, -1);
 
-                    SuspectBlip = Suspect.AttachBlip();
-                    SuspectBlip.Scale = 0.7f;
-                    SuspectBlip.IsFriendly = false;
+                    //broken idk why
+                    //SuspectBlip = Suspect.AttachBlip();
+                    //SuspectBlip.Scale = 0.7f;
+                    //SuspectBlip.IsFriendly = false;
+                    CallHandler.AssignBlip(Suspect, Color.Red);
 
                     if (MainScenario == 0) Assault();
                     break;

@@ -8,7 +8,6 @@ using System.Net;
 using System.Threading;
 using LSPD_First_Response.Mod.API;
 using Rage;
-using System.Reflection;
 using System.Linq;
 
 namespace YobbinCallouts
@@ -20,6 +19,7 @@ namespace YobbinCallouts
         public static bool STP; //if STP is installed by the user
         public static bool CalloutInterface; //if Callout Interface is installed by the user
         public static bool UpToDate; //if the Plugin is updated.
+        public static bool Beta = false;
 
         public override void Initialize()
         {
@@ -78,6 +78,7 @@ namespace YobbinCallouts
                                 Game.LogTrivial("YOBBINCALLOUTS: DETECTED BETA RELEASE. DO NOT REDISTRIBUTE. PLEASE REPORT ALL ISSUES.");
                                 Game.DisplayNotification("YOBBINCALLOUTS: ~r~DETECTED BETA RELEASE. ~w~DO NOT REDISTRIBUTE. PLEASE REPORT ALL ISSUES.");
                                 UpToDate = true;
+                                Beta = true;
                             }
                             else
                             {
@@ -132,8 +133,9 @@ namespace YobbinCallouts
             }
 
             Game.LogTrivial("Please Join My Discord Server to Report Bugs/Improvements: https://discord.gg/Wj522qa5mT. Enjoy!");
-            Game.LogTrivial("Started Registering Callouts.");
             
+            //CALLOUTS
+            Game.LogTrivial("Started Registering Callouts.");            
             if (Config.BrokenDownVehicle || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.BrokenDownVehicle));
             if (Config.AssaultOnBus || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.AssaultOnBus));
             if (Config.TrafficBreak || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.TrafficBreak));
@@ -147,17 +149,25 @@ namespace YobbinCallouts
             if (Config.StolenCellPhone || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.StolenCellPhone));
             if (Config.SovereignCitizen || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.SovereignCitizen));
             if (Config.ActiveShooter || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.ActiveShooter));
-            if (Config.CitizenArrest || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.CitizenArrest));
             if (Config.HumanTrafficking || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.HumanTrafficking));
-            //if (Config.Explosion || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.Explosion));
             if (Config.WeaponFound || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.WeaponFound));
             if (Config.HospitalEmergency || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.HospitalEmergency));
-            //if (Config.DUIReported || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.DUIReported));
             if (Config.LandlordTenantDispute || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.LandlordTenantDispute));
-            if (Config.StolenMail || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.StolenMail));
             Game.LogTrivial("Finished Registering Callouts.");
 
-            if (Config.RunInvestigations) //not for not sadge
+            //BETA CALLOUTS
+            if (Beta)
+            {
+                Game.LogTrivial("Started Registering Beta Callouts.");
+                if (Config.CitizenArrest || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.CitizenArrest));
+                //if (Config.Explosion || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.Explosion));
+                if (Config.DUIReported || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.DUIReported));
+                if (Config.StolenMail || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.StolenMail));
+                Game.LogTrivial("Finished Registering Beta Callouts.");
+            }
+
+            //INVESTIGATIONS
+            if (Config.RunInvestigations) //not for now sadge
             {
                 Game.LogTrivial("Started Registering Investigations.");
                 //Functions.RegisterCallout(typeof(Callouts.StolenPoliceHardwareInvestigation)); (uncomment this)
