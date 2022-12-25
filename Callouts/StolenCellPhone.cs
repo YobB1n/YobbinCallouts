@@ -44,8 +44,8 @@ namespace YobbinCallouts.Callouts
         //All the dialogue for the callout. Haven't found a better way to store it yet, so this will have to do.
         private readonly List<string> OpeningDialogue1 = new List<string>()
         {
-         "~b~Caller:~w~ How are you doing, officer?",
-         "~g~You:~w~ Bot too bad, thanks. What's the issue here?",
+         "~b~Caller:~w~ How are you doing, Officer?",
+         "~g~You:~w~ Not too bad, thanks. What's the issue here?",
          "~b~Caller:~w~ Somebody stole my cell phone a few hours ago. I didn't see who took it, unfortunately.",
          "~b~Caller:~w~ However, they just turned it on, and it can be tracked using the phone's tracking app.",
          "~b~Caller:~w~ Would you be able to locate who took my phone? I really need it.",

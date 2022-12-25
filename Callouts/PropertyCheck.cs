@@ -290,19 +290,8 @@ namespace YobbinCallouts.Callouts
                                 if (MainScenario == 6) //cooperative fr
                                 {
                                     Suspect.Tasks.ClearImmediately();
-                                    while (Suspect.Exists() && !Functions.IsPedArrested(Suspect) && Suspect.IsAlive)
-                                    {
-                                        GameFiber.Yield();
-                                    }
-                                    if (Suspect.Exists())
-                                    {
-                                        if (Functions.IsPedArrested(Suspect) || Suspect.IsAlive) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest."); }
-                                        else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~."); }
-                                    }
-                                    else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~."); }
-                                    GameFiber.Wait(2000);
-                                    Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-                                    GameFiber.Wait(6000);
+                                    CallHandler.SuspectWait(Suspect);
+                                    GameFiber.Wait(3000);
                                     Game.DisplayHelp("When You are Done ~y~Investigating, ~w~Press End to ~b~Finish the Callout.");
                                     while (!Game.IsKeyDown(Config.CalloutEndKey)) { GameFiber.Wait(0); }
                                 }
@@ -330,28 +319,8 @@ namespace YobbinCallouts.Callouts
                                     else
                                     {
                                         Suspect.Tasks.FightAgainst(Game.LocalPlayer.Character, -1);
-                                        try
-                                        {
-                                            Functions.RequestBackup(Suspect.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
-                                            Game.LogTrivial("YOBBINCALLOUTS: Backup Dispatched");
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            Game.LogTrivial("YOBBINCALLOUTS: Error spawning Code 3 Backup. Most Likely User Error. ERROR - " + e);
-                                        }
-                                        while (Suspect.Exists() && !Functions.IsPedArrested(Suspect) && Suspect.IsAlive)
-                                        {
-                                            GameFiber.Yield();
-                                        }
-                                        if (Suspect.Exists())
-                                        {
-                                            if (Functions.IsPedArrested(Suspect) || Suspect.IsAlive) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Attempting to ~r~Assault an Officer."); }
-                                            else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ for ~r~Assaulting an Officer."); }
-                                        }
-                                        else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Attempting to ~r~Assault an Officer."); }
-                                        GameFiber.Wait(2000);
-                                        Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-                                        GameFiber.Wait(4000);
+                                        CallHandler.SuspectWait(Suspect);
+                                        GameFiber.Wait(3000);
                                         Game.DisplayHelp("When You are Done ~y~Investigating, ~w~Press End to ~b~Finish the Callout.");
                                         while (!Game.IsKeyDown(Config.CalloutEndKey)) { GameFiber.Wait(0); }
                                         Game.DisplayNotification("Dispatch, we are Code 4. We Have ~b~Secured~w~ the Property.");
