@@ -25,6 +25,7 @@ namespace YobbinCallouts.Callouts
         private Ped Officer;
         private Ped player = Game.LocalPlayer.Character;
         private Rage.Object Ticket;
+        private LHandle MainPursuit;
 
         private float VehicleHeading;
         private int MainScenario;
@@ -33,7 +34,7 @@ namespace YobbinCallouts.Callouts
 
         private bool CalloutRunning = false;
 
-
+        //DIALOGUE
         private readonly List<string> OpeningDialogue1 = new List<string>()
         {
          "~g~You:~w~ What's up dude, what seems to be the issue?",
@@ -190,7 +191,7 @@ namespace YobbinCallouts.Callouts
             Area.IsRouteEnabled = true;
 
             System.Random yuy = new System.Random();
-            int ScenarioChooser = yuy.Next(0, 2);
+            int ScenarioChooser = yuy.Next(0, 3);
             MainScenario = ScenarioChooser;
 
             if (CalloutRunning == false) { Callout(); }
@@ -373,7 +374,7 @@ namespace YobbinCallouts.Callouts
                     if (Game.IsKeyDown(Config.Key1)) Detain();
                     else Ticketed();
                 }
-                else  //refuses to roll window down
+                else if(MainScenario == 1) //refuses to roll window down
                 {
                     Game.DisplaySubtitle("~r~Suspect:~w~ I Will Not Follow Unlawful Commands Officer!", 3000);
                     GameFiber.Wait(3500);
@@ -395,6 +396,19 @@ namespace YobbinCallouts.Callouts
                     while (!Game.IsKeyDown(Config.Key1) && !Game.IsKeyDown(Config.Key2)) GameFiber.Wait(0); //might do an animation?
                     if (Game.IsKeyDown(Config.Key1)) Detain();
                     else Ticketed();
+                }
+                else //Pursuit (test this later)
+                {
+                    Game.LogTrivial("YOBBINCALLOUTS: Pursuit scenario activated.");
+                    Game.DisplaySubtitle("~r~Suspect:~w~ I Will Not Follow Unlawful Commands Officer!", 3000);
+                    GameFiber.Wait(CallHandler.RNG(0, 3000, 8000));
+
+                    if(Suspect.Exists() && !Functions.IsPedArrested(Suspect))
+                    {
+                        SuspectVehicle.IsDriveable = true;
+                        CallHandler.CreatePursuit(MainPursuit, true, false, Suspect);
+                        CallHandler.SuspectWait(Suspect);
+                    }
                 }
             }
         }

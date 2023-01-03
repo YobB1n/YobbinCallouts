@@ -15,7 +15,7 @@ namespace YobbinCallouts
     public class Main : Plugin
     {
         public static Version NewVersion = new Version();
-        public static Version curVersion = new Version("1.7.0");
+        public static Version curVersion = new Version("1.7.1");
         public static bool STP; //if STP is installed by the user
         public static bool CalloutInterface; //if Callout Interface is installed by the user
         public static bool UpToDate; //if the Plugin is updated.
@@ -34,7 +34,7 @@ namespace YobbinCallouts
         {
             if (OnDuty)
             {
-                int num = (int)Game.DisplayNotification("3dtextures", "mpgroundlogo_cops", "Yobbin Callouts", "~y~v."+curVersion+" ~b~by YobB1n", " ~g~Loaded Successfully. ~b~Enjoy!");
+                int num = (int)Game.DisplayNotification("3dtextures", "mpgroundlogo_cops", "Yobbin Callouts", "~y~v." + curVersion + " ~b~by YobB1n", " ~g~Loaded Successfully. ~b~Enjoy!");
                 GameFiber.StartNew(delegate
                 {
                     Game.LogTrivial("YOBBINCALLOUTS: Player Went on Duty. Checking for Updates.");
@@ -106,6 +106,8 @@ namespace YobbinCallouts
             Game.LogTrivial("==========YOBBINCALLOUTS INFORMATION==========");
             Game.LogTrivial("YobbinCallouts by YobB1n");
             Game.LogTrivial("Version " + curVersion + "");
+            Game.LogTrivial("https://yobbinmods.com");
+            Game.LogTrivial("Please Join My Discord Server to Report Bugs/Improvements: https://discord.gg/Wj522qa5mT. Enjoy!");
 
             if (Config.INIFile.Exists()) Game.LogTrivial("YobbinCallouts Config is Installed by User.");
             else Game.LogTrivial("YobbinCallouts Config is NOT Installed by User.");
@@ -132,10 +134,8 @@ namespace YobbinCallouts
                 CalloutInterface = false;
             }
 
-            Game.LogTrivial("Please Join My Discord Server to Report Bugs/Improvements: https://discord.gg/Wj522qa5mT. Enjoy!");
-            
             //CALLOUTS
-            Game.LogTrivial("Started Registering Callouts.");            
+            Game.LogTrivial("Started Registering Callouts.");
             if (Config.BrokenDownVehicle || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.BrokenDownVehicle));
             if (Config.AssaultOnBus || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.AssaultOnBus));
             if (Config.TrafficBreak || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.TrafficBreak));
@@ -156,15 +156,16 @@ namespace YobbinCallouts
             Game.LogTrivial("Finished Registering Callouts.");
 
             //BETA CALLOUTS
-            if (Beta)
-            {
-                Game.LogTrivial("Started Registering Beta Callouts.");
-                if (Config.CitizenArrest || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.CitizenArrest));
-                //if (Config.Explosion || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.Explosion));
-                if (Config.DUIReported || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.DUIReported));
-                if (Config.StolenMail || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.StolenMail));
-                Game.LogTrivial("Finished Registering Beta Callouts.");
-            }
+            //if (Beta)
+            //{
+            Game.LogTrivial("Started Registering Beta Callouts.");
+            if (Config.CitizenArrest || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.CitizenArrest));
+            if (Config.DUIReported || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.DUIReported));
+            //if (Config.StolenMail || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.StolenMail));
+            if (Config.PedestrianHitByVehicle || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.PedestrianHitByVehicle));
+            //if (Config.PersonWithWeapon || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.PersonWithWeapon));
+            Game.LogTrivial("Finished Registering Beta Callouts.");
+            //}
 
             //INVESTIGATIONS
             if (Config.RunInvestigations) //not for now sadge

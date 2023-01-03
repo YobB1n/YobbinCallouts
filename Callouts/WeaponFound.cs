@@ -481,7 +481,8 @@ namespace YobbinCallouts.Callouts
                     //Suspect = SuspectVehicle.CreateRandomDriver();
 
                     Suspect = new Ped(House);
-                    Suspect.IsPersistent = true; Suspect.BlockPermanentEvents = true;
+                    Suspect.BlockPermanentEvents = true;
+                    Suspect.IsPersistent = true; //perhaps an issue with marking persistent?
                     var SuspectName = Functions.GetPersonaForPed(Suspect).FullName;
                     var Distance = Math.Round(Suspect.DistanceTo(player));
                     Game.DisplayNotification(WeaponName + " Serial ~r~" + WeaponSerial + " ~w~Registered to ~p~" + SuspectName + "~w~. Owner~w~ Lives in ~b~" + Functions.GetZoneAtPosition(House).RealAreaName + "~o~ " + Distance + " metres~w~ Away!");
@@ -579,12 +580,7 @@ namespace YobbinCallouts.Callouts
                                 Game.LogTrivial("YOBBINCALLOUTS: Suspect fight.");
                                 Suspect.Tasks.FightAgainst(player, -1);
                                 //LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CRIME_ASSAULT_PEACE_OFFICER_01");
-                                LSPD_First_Response.Mod.API.Functions.RequestBackup(Suspect.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
-                                while (Suspect.Exists() && Suspect.IsAlive) GameFiber.Wait(0);
-                                if (Suspect.IsDead) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, Suspect Was ~r~Killed~w~ Trying to Assault an Officer."); SuspectBlip.Delete(); }
-                                else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, Suspect is Under ~g~Arrest~w~ For Trying to Assault an Officer."); }
-                                GameFiber.Wait(2000);
-                                LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                                CallHandler.SuspectWait(Suspect);
                             }
                         }
                     }
@@ -721,16 +717,7 @@ namespace YobbinCallouts.Callouts
                         if (LSPD_First_Response.Mod.API.Functions.IsPlayerPerformingPullover()) { LSPD_First_Response.Mod.API.Functions.ForceEndCurrentPullover(); }
                         GameFiber.Wait(2000);
                         LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CRIME_ASSAULT_PEACE_OFFICER_01");
-                        LSPD_First_Response.Mod.API.Functions.RequestBackup(Suspect.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
-                        while (Suspect.Exists())
-                        {
-                            GameFiber.Yield();
-                            if (!Suspect.Exists() || Suspect.IsDead || Functions.IsPedArrested(Suspect)) break;
-                        }
-                        if (Suspect.IsDead) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, Suspect Was ~r~Killed~w~ Trying to Assault an Officer."); SuspectBlip.Delete(); }
-                        if (Suspect.IsCuffed) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, Suspect is Under ~g~Arrest~w~ For Trying to Assault an Officer."); }
-                        GameFiber.Wait(2000);
-                        LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                        CallHandler.SuspectWait(Suspect);
                     }
                     else CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);  //late pursuit (action == 3)
                 }

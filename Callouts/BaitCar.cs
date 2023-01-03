@@ -292,7 +292,7 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(4000);                
                 if (Config.DisplayHelp) Game.DisplayHelp("Stay Outside the ~g~Green Circle~w~ to Avoid ~y~Detection.");
                 if (Rando1.Exists()) Rando1 = Suspect;
-                Suspect.Tasks.FollowNavigationMeshToPosition(BaitVehicle.GetOffsetPositionRight(2), BaitVehicle.Heading, 1.25f, 2, -1).WaitForCompletion();
+                Suspect.Tasks.FollowNavigationMeshToPosition(BaitVehicle.GetOffsetPositionRight(2), BaitVehicle.Heading, 1.25f, 2, -1).WaitForCompletion(); //apparently this crashed once but can't figure out why.
                 while (!BaitVehicle.HasDriver)
                 {
                     while (Peeps >= 0)

@@ -111,10 +111,11 @@ namespace YobbinCallouts.Callouts
                 SuspectModels = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
                 System.Random r2 = new System.Random();
                 int SuspectModel = r2.Next(0, SuspectModels.Length);
+
                 Suspect = new Ped(nodePosition, heading);
                 Suspect.IsPersistent = true;
                 Suspect.BlockPermanentEvents = true;
-                Functions.SetPedAsArrested(Suspect, true, false);
+                //Functions.SetPedAsArrested(Suspect, true, false);
                 //Suspect.Tasks.StandStill(-1);
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect Spawned");
 
@@ -222,6 +223,7 @@ namespace YobbinCallouts.Callouts
         }
         private void Assault()
         {
+            Functions.SetPedAsArrested(Suspect, true, false); //test this
             CallHandler.IdleAction(Citizen, true);
             while (player.DistanceTo(Citizen) >= 5) GameFiber.Wait(0);
             if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~p~Arresting Citizen.");
@@ -241,6 +243,7 @@ namespace YobbinCallouts.Callouts
             if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~b~Victim.");
             CallHandler.Dialogue(AssaultInvestigation, Victim);
 
+            Victim.Tasks.ClearImmediately();
             Victim.Dismiss(); if(VictimBlip.Exists()) VictimBlip.Delete();
             Citizen.Dismiss(); if (CitizenBlip.Exists()) CitizenBlip.Delete();
 
@@ -249,6 +252,7 @@ namespace YobbinCallouts.Callouts
             Functions.SetPedAsArrested(Suspect, true, true);
             while (!Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
             if (Suspect.Exists()) if (Suspect.IsAlive) Game.DisplayNotification("Dispatch, We Have ~b~Arrested~w~ the Suspect.");
+            if (SuspectBlip.Exists()) SuspectBlip.Delete();
         }
     }
 }

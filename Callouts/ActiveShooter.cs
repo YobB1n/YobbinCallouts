@@ -228,7 +228,7 @@ namespace YobbinCallouts.Callouts
                             //GameFiber.Wait(2500);
                             //Functions.RequestBackup(MainSpawnPoint, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
                             //Functions.RequestBackup(MainSpawnPoint, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.SwatTeam);
-                            while (Suspect.IsAlive && Suspect.Exists()) GameFiber.Wait(0);
+                            CallHandler.SuspectWait(Suspect); //should be good, double-check this
                             break;
                         }
                     }

@@ -187,7 +187,7 @@ namespace YobbinCallouts.Callouts
             DriverVehicle.EngineHealth = 0;
             DriverVehicle.IsDriveable = false;
             DriverVehicle.IsInvincible = true;
-            DriverVehicle.IndicatorLightsStatus = VehicleIndicatorLightsStatus.Both;
+            DriverVehicle.IndicatorLightsStatus = VehicleIndicatorLightsStatus.Both; //sometimes works sometimes doesnt
             Game.LogTrivial("YOBBINCALLOUTS: Driver Vehicle Spawned");
 
             Driver = DriverVehicle.CreateRandomDriver();

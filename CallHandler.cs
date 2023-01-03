@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Collections;
+using System.Linq;
 
 namespace YobbinCallouts
 {
@@ -98,6 +99,29 @@ namespace YobbinCallouts
             new Vector3(-3038f, 483.778f, 7.91f),
             new Vector3(-2545.63f, 2316.986f, 33.21579f),
     };
+
+        public static Color[] colors = new Color[]
+        {
+            Color.Brown,
+            Color.Red,
+            Color.DarkRed,
+            Color.Green,
+            Color.LightGreen,
+            Color.DarkGreen,
+            Color.Blue,
+            Color.LightBlue,
+            Color.SkyBlue,
+            Color.DarkBlue,
+            Color.Silver,
+            Color.Yellow,
+            Color.Orange,
+            Color.DarkOrange,
+            Color.Black,
+            Color.White,
+            Color.Gray,
+            Color.LightGray,
+            Color.DarkGray
+        };
 
         /// <summary>
         /// plays a dialgoue in a List<string> format. Optionally, specify a ped and animation to use while the dialogue is playing.
@@ -291,6 +315,11 @@ namespace YobbinCallouts
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect is alive and therefore under arrest.");
                 Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest.");
             }
+            else if (Suspect.Exists() && Functions.IsPedArrested(Suspect))
+            {
+                Game.LogTrivial("YOBBINCALLOUTS: Suspect is alive and therefore under arrest.");
+                Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest.");
+            }
             else
             {
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect is dead.");
@@ -350,7 +379,7 @@ namespace YobbinCallouts
                 float distance = Vector3.Distance(Game.LocalPlayer.Character.Position, (Vector3)list[i]);
                 if (distance <= maxdistance && distance >= mindistance)
                 {
-                    closeLocations.Add(list[i]);
+                    closeLocations.Add(list[i]); //kind of like b racket recursion lmao
                 }
             }
             if (closeLocations.Count == 0)
@@ -363,7 +392,7 @@ namespace YobbinCallouts
                 SpawnPoint = (Vector3)closeLocations[monke.Next(0, closeLocations.Count)];
                 locationReturned = true;
                 Game.LogTrivial("YOBBINCALLOUTS: Spawn Point found successfully.");
-                Game.LogTrivial("YOBBINCALLOUTS: Spawn Point found at "+SpawnPoint+" in "+ Functions.GetZoneAtPosition(SpawnPoint).RealAreaName);
+                Game.LogTrivial("YOBBINCALLOUTS: Spawn Point found at " + SpawnPoint + " in " + Functions.GetZoneAtPosition(SpawnPoint).RealAreaName);
             }
         }
 
@@ -371,6 +400,17 @@ namespace YobbinCallouts
         {
             int num = monke.Next(0, 2);
             if (num == 0) { return false; } else { return true; }
+        }
+
+        /// <summary>
+        /// Returns a random number out of options, or a random number between min and max if specified. Specifiy 0 in options to use RNG for min and max.
+        /// </summary>
+        public static int RNG(int options = 0, int min = 0, int max = 0)
+        {
+            if (min == 0 && max == 0) max = options;
+            int num = monke.Next(min, max);
+            Game.LogTrivial("YOBBINCALLOUTS: RNG value is " + num);
+            return num;
         }
 
         /// <summary>
@@ -399,25 +439,26 @@ namespace YobbinCallouts
         /// <summary>
         /// Creates a pursuit with Suspects.
         /// </summary>
-        //test this later
         public static void CreatePursuit(LHandle pursuit, bool wait = true, bool audio = true, bool backup = false, params Ped[] suspects)
         {
             try
             {
+                //none of these three lines should be problematic anymore
                 Functions.ForceEndCurrentPullover();
                 pursuit = Functions.CreatePursuit();
                 Functions.SetPursuitIsActiveForPlayer(pursuit, true);
 
                 foreach (Ped Suspect in suspects)
                 {
-                    Functions.AddPedToPursuit(pursuit, Suspect);
+                    if(Suspect.Exists()) Functions.AddPedToPursuit(pursuit, Suspect);
                 }
                 Game.LogTrivial("YOBBINCALLOUTS: PURSUITHANDLER: Started Pursuit with " + suspects.Length + " Suspects.");
 
                 if (audio)
                 {
                     GameFiber.Wait(1500);
-                    Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
+                    try { Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01"); }
+                    catch (System.Threading.ThreadAbortException) { Game.LogTrivial("YOBBINCALLOUTS: PURSUITHANDLER: UNABLE TO PLAY SOUND - THREADBORTEXCEPTION CAUGHT."); }
                     if (backup)
                     {
                         try { Functions.RequestBackup(Game.LocalPlayer.Character.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit); }
@@ -457,14 +498,35 @@ namespace YobbinCallouts
                 Game.LogTrivial("YOBBINCALLOUTS: PURSUITHANDLER: Pursuit over.");
                 Game.LogTrivial("YOBBINCALLOUTS: PURSUITHANDLER: Suspect is arrested: " + arrested);
             }
+            catch (System.Threading.ThreadAbortException e)
+            {
+                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT - PURSUITHANDLER THREADABORT==========");
+                string error = e.ToString();
+                Game.LogTrivial("ERROR: " + error);
+                Game.LogTrivial("No Need to Report This Error if it Did not Result in an LSPDFR Crash.");
+                Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT - PURSUITHANDLER THREADABORT==========");
+            }
             catch (Exception e)
             {
                 Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT - PURSUITHANDLER==========");
                 string error = e.ToString();
                 Game.LogTrivial("ERROR: " + error);
-                Game.LogTrivial("No Need to Report This Error if it Did not Result in an LSPDFR Crash.");
                 Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT - PURSUITHANDLER==========");
             }
+        }
+        //this function is stupid
+        /// <summary>
+        /// Gets a random vehicle colour, and sets the specified vehicle to that color. Very stupid function, make sure the vehicle is not within eyesight of the player lmao
+        /// </summary>
+        public static string GetSetVehicleColor(Vehicle vehicle)
+        {
+            Game.LogTrivial("YOBBINCALLOUTS: GETTING NAME OF COLOR.");
+            int colorno = monke.Next(0, colors.Length);
+            Game.LogTrivial("YOBBINCALLOUTS: VEHICLESPAWNER: Color is " + colors[colorno]);
+            if (vehicle.Exists()) vehicle.PrimaryColor = colors[colorno];
+            string VehicleColor = colors[colorno].Name.ToString();
+
+            return VehicleColor;
         }
     }
 }

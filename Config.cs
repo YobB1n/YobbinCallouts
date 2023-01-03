@@ -7,7 +7,6 @@ namespace YobbinCallouts
 {
     internal static class Config
     {
-
         public static readonly InitializationFile INIFile = new InitializationFile(@"Plugins\LSPDFR\YobbinCallouts.ini");
 
         //All Callouts
@@ -26,12 +25,14 @@ namespace YobbinCallouts
         public static readonly bool ActiveShooter = INIFile.ReadBoolean("Callouts", "Active Shooter", true);
         public static readonly bool CitizenArrest = INIFile.ReadBoolean("Callouts", "Citizen's Arrest", true);
         public static readonly bool HumanTrafficking = INIFile.ReadBoolean("Callouts", "Human Trafficking", true);
-        //public static readonly bool Explosion = INIFile.ReadBoolean("Callouts", "Explosion", true);
         public static readonly bool WeaponFound = INIFile.ReadBoolean("Callouts", "Weapon Found", true);
         public static readonly bool HospitalEmergency = INIFile.ReadBoolean("Callouts", "Hospital Emergency", true);
         public static readonly bool DUIReported = INIFile.ReadBoolean("Callouts", "DUI Reported", true);
         public static readonly bool LandlordTenantDispute = INIFile.ReadBoolean("Callouts", "Landlord-Tenant Dispute", true);
         public static readonly bool StolenMail = INIFile.ReadBoolean("Callouts", "Stolen Mail", true);
+        public static readonly bool PedestrianHitByVehicle = INIFile.ReadBoolean("Callouts", "Pedestrian Hit By Vehicle", true);
+        public static readonly bool PersonWithWeapon = INIFile.ReadBoolean("Callouts", "Person With a Weapon", true);
+
         //All keys
         public static readonly Keys MainInteractionKey = INIFile.ReadEnum<Keys>("Keys", "Main Key", Keys.Y);
         public static readonly Keys CalloutEndKey = INIFile.ReadEnum<Keys>("Keys", "Callout End Key", Keys.End);

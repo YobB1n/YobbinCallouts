@@ -19,7 +19,6 @@ using System.Collections;
 
 namespace YobbinCallouts.Callouts
 {
-
     [CalloutInfo("Assault On Bus", CalloutProbability.Medium)]
     public class AssaultOnBus : Callout
     {

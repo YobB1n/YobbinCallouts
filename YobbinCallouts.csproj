@@ -77,10 +77,11 @@
     <Compile Include="Callouts\AssaultOnBus.cs" />
     <Compile Include="Callouts\CitizenArrest.cs" />
     <Compile Include="Callouts\DUIReported.cs" />
-    <Compile Include="Callouts\Explosion.cs" />
     <Compile Include="Callouts\HospitalEmergency.cs" />
     <Compile Include="Callouts\HumanTrafficking.cs" />
     <Compile Include="Callouts\LandlordTenantDispute.cs" />
+    <Compile Include="Callouts\PedestrianHitByVehicle.cs" />
+    <Compile Include="Callouts\PersonWithWeapon.cs" />
     <Compile Include="Callouts\Sovereign Citizen.cs" />
     <Compile Include="Callouts\StolenCellPhone.cs" />
     <Compile Include="Callouts\PropertyCheck.cs" />
@@ -104,6 +105,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\HostageExtensions.cs" />
     <Compile Include="Utilities\VehicleExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
