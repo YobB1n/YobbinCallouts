@@ -1,4 +1,5 @@
 ﻿//This callout is a WIP**
+//TO-DO - double-check all scenarios and peaceful suspect arrest task (revert if doesn't work)
 
 using System.Drawing;
 using Rage;
@@ -10,7 +11,7 @@ using System;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Citizen Arrest", CalloutProbability.High)]
+    [CalloutInfo("Citizen's Arrest", CalloutProbability.High)]
     public class CitizenArrest : Callout
     {
         private Vector3 MainSpawnPoint;
@@ -30,51 +31,113 @@ namespace YobbinCallouts.Callouts
         private string Crime;
         private string[] SuspectModels; private string[] CitizenModels; private string[] VictimModels;
         private bool CalloutRunning;
+        private int theftspeech = 2;
 
         private LHandle SuspectPursuit;
 
-        //Add more dialogue for each scenario(s)
-        private readonly List<string> AssaultOpening = new List<string>()
+        //DIALOGUE VVvvVV DIALOGUE
+        private readonly List<string> AssaultOpening1 = new List<string>()
         {
-         "~p~Citizen:~w~ Hey Officer, I Just Performed a Citizen's Arrest on This Guy Right Here.",
+         "~p~Citizen:~w~ Hey Officer, I just performed a Citizen's Arrest on this guy right here.",
          "~g~You:~w~ Alright, Can You Tell Me What Happened?",
          "~p~Citizen:~w~ Yeah, I was Just Walking Down the Street When I Noticed These Two Getting into an Argument.",
          "~p~Citizen:~w~ Just as I was Walking Over There, He Started Punching Them. I Seperated the Two and Arrested This Guy.",
-         "~g~You:~w~ Alright, Let Me Go Speak With the Victim.",
+         "~g~You:~w~ Alright, let me finish up here and you should be good to go.",
         };
-        private readonly List<string> TheftOpening = new List<string>()
+        private readonly List<string> AssaultOpening2 = new List<string>()
         {
-         "~p~Citizen:~w~ Hello Officer, I Just Performed a Citizen's Arrest on This Guy Right Here.",
-         "~g~You:~w~ Can You Tell Me What Happened?",
-         "~p~Citizen:~w~ I was Just Walking Along When I Saw This Guy Running Down the Street.",
-         "~p~Citizen:~w~ The Victim Was Yelling That He Stole Thir Wallet so I Stopped and Arrested Him.",
-         "~g~You:~w~ Alright, Let Me Go Speak With the Victim.",
+         "~p~Citizen:~w~ Hello Officer, I just performed a Citizen's Arrest on this person right here!",
+         "~g~You:~w~ I see that. What happened?",
+         "~p~Citizen:~w~ I was going for a walk when I noticed these two arguing about something.",
+         "~p~Citizen:~w~ I wanted to break it up, but before I could the person I arrested started punching them.",
+         "~g~You:~w~ Gotcha. Anything else I should know?",
+         "~p~Citizen:~w~ I used to be a security guard, so it was a pretty straightforward detainment.",
+         "~g~You:~w~ Alright, thanks for the info.",
         };
-        private readonly List<string> AssaultInvestigation = new List<string>()
+        private readonly List<string> TheftOpening1 = new List<string>() //wallet
         {
-         "~g~You:~w~ Hello, Can You Tell Me What Happened Here?",
-         "~b~Victim:~w~ This Crazy Guy Bumped into me While We Were Waling Down the Street.",
-         "~b~Victim:~w~ I Told Him to Watch it, and He Immediately Took Offence and Started Shoving Me.",
-         "~b~Victim:~w~ I Tried to Walk Away to Diffuse the Situation, and then He Started Punching Me.",
-         "~b~Victim:~w~ Then This Person Stepped in and Tackled the Guy to the Ground and Tied Him Up Before You Guys Got Here.",
-         "~g~You:~w~ Do You Need Medical Attention?",
-         "~b~Victim:~w~ I'm Fine, Just Glad This Guy Got Subdued.",
-         "~g~You:~w~ Alright, I'll Process Him Then. You're Free to Go if You Don't Need Anything Else.",
+         "~p~Citizen:~w~ Hello Officer, I just performed a Citizen's Arrest on this guy right here.",
+         "~g~You:~w~ Can you tell me what happened?",
+         "~p~Citizen:~w~ I was just walking along when I saw this guy running down the street.",
+         "~p~Citizen:~w~ The victim was yelling that he stole their wallet so I stopped and arrested him.",
+         "~g~You:~w~ Alright, let me go speak with the victim.",
         };
-        private readonly List<string> TheftInvestigation = new List<string>()
+        private readonly List<string> TheftOpening2 = new List<string>() //bag
         {
-         "~p~Citizen:~w~ Hello Officer, I Just Performed a Citizen's Arrest on This Guy Right Here.",
-         "~g~You:~w~ Can You Tell Me What Happened?",
-         "~p~Citizen:~w~ I was Just Walking Along When I Saw This Guy Running Down the Street.",
-         "~p~Citizen:~w~ The Victim Was Yelling That He Stole Thir Wallet so I Stopped and Arrested Him.",
-         "~g~You:~w~ Alright, Let Me Go Speak With the Victim.",
+         "~p~Citizen:~w~ Hey Officer, I just did a Citizen's Arrest on this guy right here.",
+         "~g~You:~w~ I see that. What happened?",
+         "~p~Citizen:~w~ This guy came running around the corner with a person chasing him saying he stole their bag.",
+         "~p~Citizen:~w~ I caught up to the perp and took him down, tying his hands around his back.",
+         "~g~You:~w~ Gotcha, let me quickly talk to the victim and I'll get you on your way. Thanks for the help.",
+        };
+        private readonly List<string> GunPointOpening1 = new List<string>() //has CCW
+        {
+         "~p~Citizen:~w~ Thanks for the help Officer, that was definitely one sticky situation.",
+         "~g~You:~w~ I'll say. What happened?",
+         "~p~Citizen:~w~ This dude was on the street while I was walking by open carrying that firearm!",
+         "~p~Citizen:~w~ I wasn't gonna do anything until he started pointing it at people and vehicles.",
+         "~g~You:~w~ I see. Do you have a CCW?",
+         "~p~Citizen:~w~ I do Never thought I'd actually have to use it, glad I carry!",
+         "~g~You:~w~ Alright. Let me check in with the victim, and then you'll be free to go. Great work here.",
+        };
+        private readonly List<string> GunPointOpening2 = new List<string>() //iscop
+        {
+         "~p~Citizen:~w~ Thanks for the help Officer, that was really scary!",
+         "~g~You:~w~ I'll say. What happened?",
+         "~p~Citizen:~w~ This dude got out of his car and started walking down the street open-carrying that gun!",
+         "~p~Citizen:~w~ I kept an eye on him and held him at gunpoint when I saw him pointing the gun at cars and pedestrians.",
+         "~g~You:~w~ I see. Do you have a CCW?",
+         "~p~Citizen:~w~I do, and I'm also an off-duty Officer which is why I carry cuffs.",
+         "~g~You:~w~ Excellent. Let me check in with the victim, and then you'll be free to go. Great work here.",
+        };
+        private readonly List<string> AssaultInvestigation1 = new List<string>()
+        {
+         "~g~You:~w~ Hello, can you tell me what happened here?",
+         "~b~Victim:~w~ This crazy dude bumped into me while I was walking down the street!",
+         "~b~Victim:~w~ I told him to watch it, and he immediately took offence and started shoving me.",
+         "~b~Victim:~w~ I tried to walk away to diffuse the situation, and then he started punching me.",
+         "~b~Victim:~w~ Then this person stepped in and tackled the guy to the ground and tied him up before you guys hot here.",
+         "~g~You:~w~ Do you need medical attention?",
+         "~b~Victim:~w~ I'm fine, just glad this guy got subdued.",
+         "~g~You:~w~ Alright, I'll process him then. You're free to go if you don't need anything else.",
+        };
+        private readonly List<string> AssaultInvestigation2 = new List<string>()
+        {
+         "~g~You:~w~ Hey, are you alright? Do you need an ambulance?",
+         "~b~Victim:~w~ Hi Officer, I'm fine thanks, glad I didn't get badly injured!",
+         "~g~You:~w~ That makes two of us. What happened?",
+         "~b~Victim:~w~ This guy was walking down the street, agitated and possibly drunk or high.",
+         "~b~Victim:~w~ He kept muttering random words, and all of a sudden started punching me unprovoked.",
+         "~g~You:~w~ So there was no reason for the attack?",
+         "~b~Victim:~w~ No Officer, I had no idea what was heppning. Thankfully this person was able to help.",
+         "~g~You:~w~ Alright, I'll process him in then. You're free to go if you don't need anything else.",
+        };
+        private readonly List<string> TheftInvestigation1 = new List<string>() //wallet
+        {
+         "~b~Victim:~w~ Hey Officer, I hope you're gonna arrest that guy over there!",
+         "~g~You:~w~ It's looking like it. What happened?",
+         "~b~Victim:~w~ This guy was walking down the street, all of a sudden he reached into my pocket, grabbed my wallet and ran off!.",
+         "~b~Victim:~w~ Thankfully this kind person saw it happen and chased him, taking him down and getting my wallet back.",
+         "~g~You:~w~ I see. Would you like an ambulance? Are you hurt?",
+         "~b~Victim:~w~ I'm okay Officer, thanks.",
+         "~g~You:~w~ Alright, I'll process him in then. You're free to go if you don't need anything else.",
+        };
+        private readonly List<string> TheftInvestigation2 = new List<string>() //bag
+        {
+         "~g~You:~w~ Hey, are you okay? What happened?",
+         "~b~Victim:~w~ I was just walking minding my own business, when this guy comes up to me and steals my bag!!",
+         "~b~Victim:~w~ I tired to wrestle it away from him but he was too strong!",
+         "~b~Victim:~w~ Then this person came and tackled him, putting his hands behind his back and getting my bag back.",
+         "~g~You:~w~ Gotcha. Do you need anything else? An ambulance?",
+         "~b~Victim:~w~ I'm okay Officer, thanks.",
+         "~g~You:~w~ Alright, I'll take him to jail then. You're free to go! Glad you're alright.",
         };
 
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Citizen Arrest Callout Start==========");
             System.Random r = new System.Random();
-            int Scenario = r.Next(0, 0); //change later
+            int Scenario = r.Next(0, 3); //change later
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is " + MainScenario + "");
             if (MainScenario == 0) Crime = "Assault.";  //PUT PERIODS AT THE END OF THESE CRIMES.
@@ -108,11 +171,12 @@ namespace YobbinCallouts.Callouts
 
                 //Spawning all this shit
                 NativeFunction.Natives.GetClosestVehicleNodeWithHeading(MainSpawnPoint, out Vector3 nodePosition, out float heading, 1, 3.0f, 0);
+                NativeFunction.Natives.xA0F8A7517A273C05(nodePosition, 0, out Vector3 SuspectSpawn);
                 SuspectModels = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
                 System.Random r2 = new System.Random();
                 int SuspectModel = r2.Next(0, SuspectModels.Length);
 
-                Suspect = new Ped(nodePosition, heading);
+                Suspect = new Ped(SuspectSpawn, heading); //test new spawning -> good.
                 Suspect.IsPersistent = true;
                 Suspect.BlockPermanentEvents = true;
                 //Functions.SetPedAsArrested(Suspect, true, false);
@@ -133,12 +197,31 @@ namespace YobbinCallouts.Callouts
                 Victim.Tasks.Cower(-1);
 
                 AreaBlip = new Blip(Suspect.Position, 25);
-                AreaBlip.Color = Color.Yellow;
+                if (MainScenario <= 1) AreaBlip.Color = Color.Yellow;
+                else AreaBlip.Color = Color.Red; //red for gunpoint scenario
                 AreaBlip.Alpha = 0.67f;
                 AreaBlip.IsRouteEnabled = true;
                 AreaBlip.Name = "Callout Location";
 
-                //this shouldn't be necessary but idk why it isn't working lol
+                //Relationship Groups (double check)
+                Suspect.RelationshipGroup.SetRelationshipWith(Citizen.RelationshipGroup, Relationship.Hate);
+                Suspect.RelationshipGroup.SetRelationshipWith(player.RelationshipGroup, Relationship.Hate);
+
+                if (MainScenario == 2) //gunpoint scenario
+                {
+                    String[] weapons = {"WEAPON_PISTOL", "WEAPON_SMG", "WEAPON_APPISTOL", "WEAPON_MICROSMG", "WEAPON_HEAVYPISTOL" };
+                    System.Random r3 = new System.Random();  //Instantiate Random Weapon generator
+                    string SuspectWeaponModel = weapons[r3.Next(0, weapons.Length)];    //Use Random Weapon generator
+                    Game.LogTrivial("YOBBINCALLOUTS: Suspect Weapon Model is " + SuspectWeaponModel.Substring(7));
+                    string CtizenWeaponModel = weapons[r3.Next(0, weapons.Length)];    //Use Random Weapon generator
+                    Game.LogTrivial("YOBBINCALLOUTS: Citizen Weapon Model is " + CtizenWeaponModel.Substring(7));
+
+                    //I hate how the arguments for these two functions are reversed lmao
+                    Suspect.Tasks.PutHandsUp(-1, Citizen);
+                    Citizen.Tasks.AimWeaponAt(Suspect, -1);
+                }
+
+                //Shouldn't need this anymore but keeping it just in case.
                 if (!Suspect.Exists())
                 {
                     Game.LogTrivial("YOBBINCALLOUTS: Suspect no longer valid, aborting...");
@@ -176,19 +259,16 @@ namespace YobbinCallouts.Callouts
                     if (Game.IsKeyDown(Config.CalloutEndKey)) { EndCalloutHandler.CalloutForcedEnd = true; break; }
                     Game.LogTrivial("YOBBINCALLOUTS: Player Arrived on Scene.");
                     AreaBlip.Delete();
-                    Game.DisplayHelp("Speak With the ~p~Arresting Citizen.");
+                    if (MainScenario <= 1) Game.DisplayHelp("Speak With the ~p~Arresting Citizen.");
+                    else Game.DisplaySubtitle("~p~Citizen:~w~ Officer! Arrest him please! He was pointing a gun at people!");
                     CitizenBlip = Citizen.AttachBlip();
                     CitizenBlip.Scale = 0.7f;
                     CitizenBlip.Color = Color.Purple;
-                    NativeFunction.Natives.TASK_TURN_PED_TO_FACE_ENTITY(Citizen, player, -1);
-
-                    //broken idk why
-                    //SuspectBlip = Suspect.AttachBlip();
-                    //SuspectBlip.Scale = 0.7f;
-                    //SuspectBlip.IsFriendly = false;
+                    if(MainScenario <= 1) NativeFunction.Natives.TASK_TURN_PED_TO_FACE_ENTITY(Citizen, player, -1);
                     CallHandler.AssignBlip(Suspect, Color.Red);
 
-                    if (MainScenario == 0) Assault();
+                    if (MainScenario == 0 || MainScenario == 1) Peaceful();
+                    else GunPoint(); //MainScenario 2
                     break;
                 }
                 Game.LogTrivial("YOBBINCALLOUTS: Callout Finished, Ending...");
@@ -219,16 +299,65 @@ namespace YobbinCallouts.Callouts
         }
         private void GunPoint()
         {
+            if (Victim.Exists()) Victim.Tasks.ReactAndFlee(Suspect);
+            GameFiber.Wait(2000);
+            if (Config.DisplayHelp) Game.DisplayHelp("Arrest the ~r~Suspect.");
+
+            if(Suspect.Exists() && Suspect.IsAlive)
+            {
+                if (CallHandler.FiftyFifty()) //arrest
+                {
+                    Game.LogTrivial("YOBBINCALLOUTS: ARREST");
+                    CallHandler.SuspectWait(Suspect);
+                }
+                else //late shoot
+                {
+                    Game.LogTrivial("YOBBINCALLOUTS: LATE SHOOT");
+                    GameFiber.Wait(CallHandler.RNG(0, 2500, 6900));
+                    if (Suspect.Exists() && Suspect.IsAlive) Suspect.Tasks.FightAgainstClosestHatedTarget(-1);
+                    CallHandler.SuspectWait(Suspect);
+                }
+            }
+            else Game.LogTrivial("YOBBINCALLOUTS: SUSPECT KILLED EARLY");
+            //
+            GameFiber.Wait(4000);
+            Game.DisplayHelp("Secure the Scene, then Speak with the ~p~Citizen.");
+            while (player.DistanceTo(Citizen) >= 2.5f) GameFiber.Wait(0);
+            if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~p~Arresting Citizen.");
+            if (CallHandler.FiftyFifty())
+            {
+                //try to figure out how to set CCW
+                Game.LogTrivial("YOBBINCALLOUTS: CCW");
+                CallHandler.Dialogue(GunPointOpening1, Citizen);
+            }
+            else
+            {
+                Functions.SetPedAsCop(Citizen);
+                Game.LogTrivial("YOBBINCALLOUTS: COP");
+                CallHandler.Dialogue(GunPointOpening2, Citizen);
+
+            }
 
         }
-        private void Assault()
+        private void Peaceful()
         {
-            Functions.SetPedAsArrested(Suspect, true, false); //test this
+            //Functions.SetPedAsArrested(Suspect, true, false); //I know this works but suspect follows player around annoyingly
+            Functions.SetPedCuffedTask(Suspect, true); //test this workaround for above
+            Suspect.Tasks.StandStill(-1); //test this also
             CallHandler.IdleAction(Citizen, true);
             while (player.DistanceTo(Citizen) >= 5) GameFiber.Wait(0);
             if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~p~Arresting Citizen.");
 
-            CallHandler.Dialogue(AssaultOpening, Citizen);
+            if (MainScenario == 0)
+            {
+                if(CallHandler.FiftyFifty()) CallHandler.Dialogue(AssaultOpening1, Citizen);
+                else CallHandler.Dialogue(AssaultOpening2, Citizen);
+            }
+            else
+            {
+                if (CallHandler.FiftyFifty()) { theftspeech = 1; CallHandler.Dialogue(TheftOpening1, Citizen); }
+                else CallHandler.Dialogue(TheftOpening2, Citizen);;
+            }
             Citizen.Tasks.Clear();   //dismiss or nah?
             CallHandler.IdleAction(Citizen, true);
 
@@ -241,15 +370,25 @@ namespace YobbinCallouts.Callouts
 
             while (player.DistanceTo(Victim) >= 5) GameFiber.Wait(0);
             if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~b~Victim.");
-            CallHandler.Dialogue(AssaultInvestigation, Victim);
+            if (MainScenario == 0) //assault
+            {
+                if (CallHandler.FiftyFifty()) CallHandler.Dialogue(AssaultInvestigation1, Victim);
+                else CallHandler.Dialogue(AssaultInvestigation2, Victim);
+            }
+            else //theft
+            {
+                if (theftspeech == 1) CallHandler.Dialogue(TheftInvestigation1, Victim);
+                else CallHandler.Dialogue(TheftInvestigation2, Victim);
+            }
 
             Victim.Tasks.ClearImmediately();
+            GameFiber.Wait(2000); //wait before dismissing victim and arresting citizen
             Victim.Dismiss(); if(VictimBlip.Exists()) VictimBlip.Delete();
             Citizen.Dismiss(); if (CitizenBlip.Exists()) CitizenBlip.Delete();
 
             GameFiber.Wait(2000);
             Game.DisplayHelp("Deal With the ~r~Suspect. ~w~Press ~y~"+Config.CalloutEndKey+" ~w~When Finished.");
-            Functions.SetPedAsArrested(Suspect, true, true);
+            if(!Main.STP) Functions.SetPedAsArrested(Suspect, true, true);
             while (!Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
             if (Suspect.Exists()) if (Suspect.IsAlive) Game.DisplayNotification("Dispatch, We Have ~b~Arrested~w~ the Suspect.");
             if (SuspectBlip.Exists()) SuspectBlip.Delete();

@@ -236,15 +236,11 @@ namespace YobbinCallouts.Callouts
                     Victim.IsPersistent = true;
                     Victim.BlockPermanentEvents = true;
                     Victim.IsInvincible = true;
-                    VictimBlip = Victim.AttachBlip();
-                    VictimBlip.IsFriendly = true;
-                    VictimBlip.IsRouteEnabled = true;
-                    VictimBlip.Scale = 0.65f;
-                    VictimBlip.Name = "Victim";
+                    CallHandler.AssignBlip(Victim, Color.Blue, .65f, "Victim", true);
                     break;
                 case 1:
                     MainScenario = 1;
-                    Game.LogTrivial("YOBBINCALLOUTS: Assault on Bus Scenario 1 - Fare Evasion Chosen");
+                    Game.LogTrivial("YOBBINCALLOUTS: Assault on Bus Scenario 1 - Fare Evasion Chosen");                  
                     DriverBlip = Driver.AttachBlip();
                     DriverBlip.IsFriendly = true;
                     DriverBlip.Scale = 0.65f;
@@ -478,22 +474,7 @@ namespace YobbinCallouts.Callouts
                 if (SuspectAction == 0)
                 {
                     Game.DisplayHelp("Arrest the ~r~Suspect.");
-                    Suspect.Tasks.Clear();
-                    while (Suspect.Exists())
-                    {
-                        GameFiber.Yield();
-                        if (Suspect.IsDead || Functions.IsPedArrested(Suspect) || !Suspect.Exists()) break;
-                    }
-                    if (Suspect.Exists())
-                    {
-                        if (Functions.IsPedArrested(Suspect) || Suspect.IsAlive) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ for Assault."); }
-                        else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~."); }
-                    }
-                    else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~."); }
-
-                    GameFiber.Wait(2000);
-                    LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-                    GameFiber.Wait(2000);
+                    CallHandler.SuspectWait(Suspect);
                 }
                 else if (SuspectAction == 1) Fight();
                 else Flee();
@@ -508,19 +489,7 @@ namespace YobbinCallouts.Callouts
                 //Suspect.Inventory.GiveNewWeapon("WEAPON_KNIFE", -1, true);
                 GameFiber.Wait(500);
                 Suspect.Tasks.FightAgainst(Game.LocalPlayer.Character, -1);
-                while (Suspect.Exists() && !Functions.IsPedArrested(Suspect) && Suspect.IsAlive)
-                {
-                    GameFiber.Yield();
-                }
-                if (Suspect.Exists())
-                {
-                    if (Functions.IsPedArrested(Suspect) || Suspect.IsAlive) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Attempting to ~r~Assault an Officer."); }
-                    else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ for ~r~Assaulting an Officer."); }
-                }
-                else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Attempting to ~r~Assault an Officer."); }
-                GameFiber.Wait(2000);
-                Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-                GameFiber.Wait(2000);
+                CallHandler.SuspectWait(Suspect);
             }
         }
         private void Flee()

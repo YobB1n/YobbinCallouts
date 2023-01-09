@@ -171,7 +171,7 @@ namespace YobbinCallouts.Callouts
                 //instantiation logic
                 if (MainScenario == 0)
                 {
-                    Landlord = new Ped(MainSpawnPoint.Around(2)); //was Around2D
+                    Landlord = new Ped(MainSpawnPoint); //should fix invisible glitch
                     Landlord.IsPersistent = true;
                     Landlord.BlockPermanentEvents = true;
                     LandlordBlip = CallHandler.AssignBlip(Landlord, Color.Blue, .69f, "Caller", true);
@@ -234,13 +234,13 @@ namespace YobbinCallouts.Callouts
                             HouseBlip.Color = Color.Orange;
                             HouseBlip.Alpha = 0.69f;
 
-                            if (Landlord.DistanceTo(MainSpawnPoint) > 8f) Landlord.Tasks.FollowNavigationMeshToPosition(MainSpawnPoint, player.Heading, 2.69f, 2f); //test this
+                            if (Landlord.DistanceTo(MainSpawnPoint) > 8f) Landlord.Tasks.FollowNavigationMeshToPosition(MainSpawnPoint, player.Heading, 2.69f, 2f).WaitForCompletion(2000); //test this
                             while (player.DistanceTo(MainSpawnPoint) >= 3f) GameFiber.Wait(0);
                             Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to ~b~Ring~w~ the Doorbell.");
                             while (!Game.IsKeyDown(Config.MainInteractionKey)) GameFiber.Wait(0);
                             CallHandler.Doorbell();
                             if (HouseBlip.Exists()) HouseBlip.Delete();
-                            GameFiber.Wait(2500);
+                            GameFiber.Wait(3500);
 
                             System.Random dialogue2 = new System.Random();
                             int ReasonDialogue = dialogue2.Next(0, 0); //change later
@@ -249,8 +249,15 @@ namespace YobbinCallouts.Callouts
                             {
                                 if (ReasonDialogue == 0) CallHandler.Dialogue(SuspectCoop1);
                                 GameFiber.Wait(2000);
+                                //double check this
+                                Game.LocalPlayer.HasControl = false;
+                                Game.FadeScreenOut(1500, true);
                                 Suspect = new Ped(MainSpawnPoint, player.Heading - 180);
                                 SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, .69f, "Tenant");
+                                Suspect.Tasks.AchieveHeading(player.Heading - 180);
+                                GameFiber.Wait(1500);
+                                Game.FadeScreenIn(1500, true);
+                                Game.LocalPlayer.HasControl = true;
 
                                 System.Random r2 = new System.Random();
                                 int action = r2.Next(0, 4); //what happens to the tenant
@@ -352,6 +359,10 @@ namespace YobbinCallouts.Callouts
                     Game.LogTrivial("YOBBINCALLOUTS: Callout Finished, Ending...");
                     EndCalloutHandler.EndCallout();
                     End();
+                }
+                catch (System.Threading.ThreadAbortException)
+                {
+                    Game.LogTrivial("YOBBINCALLOUTS: THREADABORTEXCEPTION CAUGHT. Usually not a big deal, caused by another plugin/crash somewhere else.");
                 }
                 catch (Exception e)
                 {

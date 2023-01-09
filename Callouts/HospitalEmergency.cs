@@ -203,6 +203,10 @@ namespace YobbinCallouts.Callouts
                     EndCalloutHandler.EndCallout();
                     End();
                 }
+                catch (System.Threading.ThreadAbortException)
+                {
+                    Game.LogTrivial("YOBBINCALLOUTS: THREADABORTEXCEPTION CAUGHT. Usually not a big deal, caused by another plugin/crash somewhere else.");
+                }
                 catch (Exception e)
                 {
                     if (CalloutRunning)
@@ -336,9 +340,10 @@ namespace YobbinCallouts.Callouts
                             //to-do: set hostage facial override (mood native)
                             // Suspect.Tasks.GoStraightToPosition(Hostage.Position, 3f, Hostage.Heading, 1f, 5000).WaitForCompletion();
                             Suspect.Tasks.FollowNavigationMeshToPosition(Hostage.Position, Hostage.Heading, 5.5f, 1f).WaitForCompletion();
+                            Suspect.Tasks.AchieveHeading(player.Heading - 180).WaitForCompletion(69);
+                            Hostage.Tasks.AchieveHeading(player.Heading - 180).WaitForCompletion(69);
+                            Suspect.Position = Hostage.Position; //test this
                             Hostage.Position = Suspect.GetOffsetPosition(new Vector3(0f, 0.14445f, 0f));
-                            Suspect.Tasks.AchieveHeading(player.Heading - 180).WaitForCompletion(150);
-                            Hostage.Tasks.AchieveHeading(player.Heading - 180).WaitForCompletion(150);
                             System.Random rhcp = new System.Random();
                             int WeaponModel = rhcp.Next(1, 4);
                             Game.LogTrivial("YOBBINCALLOUTS: Suspect Weapon Model is " + WeaponModel);
@@ -348,6 +353,8 @@ namespace YobbinCallouts.Callouts
                             Game.DisplaySubtitle("~r~Patient:~w~ Don't come any closer, or they'll die!!");
                             //GameFiber.Wait(1000);
 
+                            //test this
+                            GameFiber.Wait(69);
                             Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop", 1f, AnimationFlags.None).WaitForCompletion(500);
                             Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop_mrk", 1f, AnimationFlags.Loop | AnimationFlags.SecondaryTask);
                             HostageBlip = Hostage.AttachBlip();
@@ -541,16 +548,8 @@ namespace YobbinCallouts.Callouts
             while (true)
             {
                 GameFiber.Yield();
-                //Suspect.Tasks.PlayAnimation(xyz) //causes the Ped to glitch when using STP surrender
-                //test these headings (can't seem to use entityface native for this)
-                Suspect.Tasks.AchieveHeading(player.Heading - 180).WaitForCompletion(150);
-                Hostage.Tasks.AchieveHeading(player.Heading - 180).WaitForCompletion(150);
 
-                Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop", 1f, AnimationFlags.None).WaitForCompletion(500);
-                Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop_mrk", 1f, AnimationFlags.Loop | AnimationFlags.SecondaryTask);
-                if (Hostage.IsFemale) Hostage.Tasks.PlayAnimation("anim@move_hostages@female", "female_idle", 1f, AnimationFlags.Loop);
-                else Hostage.Tasks.PlayAnimation("anim@move_hostages@male", "male_idle", 1f, AnimationFlags.Loop | AnimationFlags.SecondaryTask);
-                
+                //Suspect.Tasks.PlayAnimation(xyz) //causes the Ped to glitch when using STP surrender
                 if (Suspect.Tasks.CurrentTaskStatus == TaskStatus.Interrupted) Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop_mrk", 1f, AnimationFlags.Loop); //test this (does it override STP surrender?)
                 if (Suspect.IsDead || (Functions.IsPedArrested(Suspect)) || Hostage.IsDead) break;
                 if (Game.IsKeyDown(Config.MainInteractionKey)) break;

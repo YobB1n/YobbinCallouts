@@ -160,7 +160,7 @@ namespace YobbinCallouts
             //{
             Game.LogTrivial("Started Registering Beta Callouts.");
             if (Config.CitizenArrest || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.CitizenArrest));
-            if (Config.DUIReported || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.DUIReported));
+            //if (Config.DUIReported || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.DUIReported));
             //if (Config.StolenMail || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.StolenMail));
             if (Config.PedestrianHitByVehicle || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.PedestrianHitByVehicle));
             //if (Config.PersonWithWeapon || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.PersonWithWeapon));

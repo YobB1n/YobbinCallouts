@@ -403,21 +403,7 @@ namespace YobbinCallouts.Callouts
                     Victim.Tasks.ReactAndFlee(Suspect); //test this
                     Game.LogTrivial("YOBBINCALLOUTS: Suspect started assaulting victim.");
 
-                    while (Suspect.Exists() && Suspect.IsAlive && !Functions.IsPedArrested(Suspect)) GameFiber.Wait(0);
-                    //Suspect.Tasks.FightAgainstClosestHatedTarget(100);
-
-                    if (Suspect.Exists())
-                    {
-                        if (Functions.IsPedArrested(Suspect)) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ for ~r~Assault."); }
-                        else { GameFiber.Wait(2000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed."); }
-                    }
-                    else
-                    {
-                        GameFiber.Wait(2000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ for ~r~Assault.");
-                    }
-                    GameFiber.Wait(2000);
-                    LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-                    GameFiber.Wait(2000);
+                    CallHandler.SuspectWait(Suspect);
                 }
                 else //kidnapping
                 {
@@ -426,30 +412,9 @@ namespace YobbinCallouts.Callouts
                     if (Suspect.Exists() && Suspect.IsAlive)
                     {
                         Game.LogTrivial("YOBBINCALLOUTS: Suspect Pursuit Started");
-                        MainPursuit = LSPD_First_Response.Mod.API.Functions.CreatePursuit();
-                        LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
                         Game.DisplayNotification("Suspect is ~r~Evading~w~ with a ~o~Kidnapped~w~ Female!");
                         if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Suspect is ~r~Evading~w~ with a ~o~Kidnapped~w~ Female");
-                        LSPD_First_Response.Mod.API.Functions.RequestBackup(player.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
-                        LSPD_First_Response.Mod.API.Functions.SetPursuitIsActiveForPlayer(MainPursuit, true);
-                        LSPD_First_Response.Mod.API.Functions.AddPedToPursuit(MainPursuit, Suspect);
-                        //add victim vehicle cower animation(s)
-                        Victim.Tasks.PlayAnimation("veh@truck@ps@idle_panic", "sit", -1, AnimationFlags.Loop);
-                        while (Functions.IsPursuitStillRunning(MainPursuit)) GameFiber.Wait(0);
-
-                        if (Suspect.Exists())
-                        {
-                            if (Functions.IsPedArrested(Suspect)) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ following the ~b~Pursuit."); }
-                            else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ following the ~b~Pursuit."); }
-                        }
-                        else
-                        {
-                            GameFiber.Wait(5000); Game.DisplayNotification("Dispatch, We are ~g~Code 4~w~. Pursuit ~b~Over.");
-                        }
-
-                        GameFiber.Wait(2000);
-                        LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-                        GameFiber.Wait(2000);
+                        CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);                       
                     }
                 }
 
@@ -650,19 +615,7 @@ namespace YobbinCallouts.Callouts
                     LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CRIME_ASSAULT_PEACE_OFFICER_01");
                     LSPD_First_Response.Mod.API.Functions.RequestBackup(Suspect.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
 
-                    while (Suspect.Exists() && !Functions.IsPedArrested(Suspect) && Suspect.IsAlive)
-                    {
-                        GameFiber.Yield();
-                    }
-                    if (Suspect.Exists())
-                    {
-                        if (Functions.IsPedArrested(Suspect) || Suspect.IsAlive) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Attempting to ~r~Assault an Officer."); }
-                        else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ for ~r~Assaulting an Officer."); }
-                    }
-                    else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Attempting to ~r~Assault an Officer."); }
-                    GameFiber.Wait(2000);
-                    LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-                    GameFiber.Wait(2000);
+                    CallHandler.SuspectWait(Suspect);
                 }
             }
         }

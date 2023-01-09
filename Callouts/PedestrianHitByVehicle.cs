@@ -182,9 +182,7 @@ namespace YobbinCallouts.Callouts
                 }
                 catch (System.Threading.ThreadAbortException)
                 {
-                    Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
-                    Game.LogTrivial("==========Thread abort bullshit==========");
-                    Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
+                    Game.LogTrivial("YOBBINCALLOUTS: THREADABORTEXCEPTION CAUGHT. Usually not a big deal, caused by another plugin/crash somewhere else.");
                 }
                 catch (Exception e) //similar error catching to before
                 {

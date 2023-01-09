@@ -448,23 +448,7 @@ namespace YobbinCallouts.Callouts
         private void Detain()
         {
             Game.DisplayHelp("Arrest the ~r~Suspect.");
-            while (Suspect.Exists())
-            {
-                GameFiber.Yield();
-                if (Suspect.IsDead || Functions.IsPedArrested(Suspect) || !Suspect.Exists()) break;
-            }
-            if (Suspect.Exists())
-            {
-                if (Functions.IsPedArrested(Suspect)) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ for Obstruction."); }
-                else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is ~r~Dead."); }
-            }
-            else
-            {
-                GameFiber.Wait(5000); Game.DisplayNotification("Dispatch, We are ~g~Code 4~w~.");
-            }
-            GameFiber.Wait(2000);
-            LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-            GameFiber.Wait(2000);
+            CallHandler.SuspectWait(Suspect);
         }
     }
 }

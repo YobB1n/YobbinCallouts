@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Collections;
 using System.Linq;
+using Rage.Native;
 
 namespace YobbinCallouts
 {
@@ -134,6 +135,21 @@ namespace YobbinCallouts
         /// <param name="animflag"></param>
         public static void Dialogue(List<string> dialogue, Ped animped = null, String animdict = "missfbi3_party_d", String animname = "stand_talk_loop_a_male1", float animspeed = -1, AnimationFlags animflag = AnimationFlags.Loop)
         {
+            //test (in this if)
+            if (animped != null && animped.Exists())
+            {
+                animped.Tasks.AchieveHeading(Game.LocalPlayer.Character.Heading - 180).WaitForCompletion(500);
+                //if ((int)animped.Heading - 180.CompareTo((int)Game.LocalPlayer.Character.Heading) > 15)
+                //{
+                //    animped.Tasks.AchieveHeading(Game.LocalPlayer.Character.Heading - 180).WaitForCompletion(100);
+                //}
+                //else
+                //{
+                //    animped.Heading = Game.LocalPlayer.Character.Heading - 180;
+                //}
+                //GameFiber.Wait(69);
+            }
+
             count = 0;
             while (count < dialogue.Count)
             {

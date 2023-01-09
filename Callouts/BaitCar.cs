@@ -292,7 +292,12 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(4000);                
                 if (Config.DisplayHelp) Game.DisplayHelp("Stay Outside the ~g~Green Circle~w~ to Avoid ~y~Detection.");
                 if (Rando1.Exists()) Rando1 = Suspect;
-                Suspect.Tasks.FollowNavigationMeshToPosition(BaitVehicle.GetOffsetPositionRight(2), BaitVehicle.Heading, 1.25f, 2, -1).WaitForCompletion(); //apparently this crashed once but can't figure out why.
+                //NULLREFERENCE HERE VVvvVV (tryna fix with if/else)
+                if (Suspect.Exists()) Suspect.Tasks.FollowNavigationMeshToPosition(BaitVehicle.GetOffsetPositionRight(2), BaitVehicle.Heading, 1.25f, 2, -1).WaitForCompletion(); //apparently this crashed once but can't figure out why.
+                else
+                {
+                    SuspectRespawn();
+                }
                 while (!BaitVehicle.HasDriver)
                 {
                     while (Peeps >= 0)
@@ -477,15 +482,7 @@ namespace YobbinCallouts.Callouts
                             break;
                         }
                     }
-                    while (Functions.IsPursuitStillRunning(MainPursuit)) GameFiber.Wait(0);
-                    if (Suspect.Exists())
-                    {
-                        if (Functions.IsPedArrested(Suspect)) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Following the Pursuit."); }
-                        else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Following the Pursuit."); }
-                    }
-                    else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Following the Pursuit."); }
-                    GameFiber.Wait(2000);
-                    LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                    CallHandler.SuspectWait(Suspect);
                 }
                 //Game.DisplayHelp("Press End to ~b~Finish ~w~the Callout.");
                 if (Officer.Exists()) Officer.Delete(); //probably dont need this anymore
@@ -529,6 +526,21 @@ namespace YobbinCallouts.Callouts
             }
             Game.LogTrivial("YOBBINCALLOUTS: Finished Suspect "+PeepsSpawned+" Spawn");
             PeepsSpawned++;
+        }
+        private void SuspectRespawn() //test this
+        {
+            Game.LogTrivial("YOBBINCALLOUTS: Suspect does not exist for some reason. Attempting to use random ped.");
+            var Peds = player.GetNearbyPeds(15);
+
+            for (int i = 10; i < Peds.Length; i++) //test all this
+            {
+                GameFiber.Yield();
+                if (Peds[i].Exists() && !Peds[i].IsPlayer && !Peds[i].IsInAnyVehicle(false))
+                {
+                    Suspect = Peds[i];
+                    break;
+                }
+            }
         }
     }
 }

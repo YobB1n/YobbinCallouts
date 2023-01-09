@@ -139,7 +139,7 @@ namespace YobbinCallouts.Callouts
                 Suspect.BlockPermanentEvents = true;
                 Suspect.Inventory.GiveNewWeapon("WEAPON_CROWBAR", -1, true);
             }
-
+            
             if (Config.DisplayHelp == true) { Game.DisplayHelp("Go to the ~y~Property~w~ Shown on The Map to Investigate."); }
             if (CalloutRunning == false) Callout();
             return base.OnCalloutAccepted();
@@ -235,23 +235,12 @@ namespace YobbinCallouts.Callouts
                             }
 
                             Suspect.Tasks.FightAgainst(Game.LocalPlayer.Character);
-                            while (Suspect.Exists() && !Functions.IsPedArrested(Suspect) && Suspect.IsAlive)
-                            {
-                                GameFiber.Yield();
-                            }
-                            if (Suspect.Exists())
-                            {
-                                if (Functions.IsPedArrested(Suspect) || Suspect.IsAlive) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Attempting to ~r~Assault an Officer."); }
-                                else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ for ~r~Assaulting an Officer."); }
-                            }
-                            else { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect Was ~r~Killed~w~ Attempting to ~r~Assault an Officer."); }
-                            GameFiber.Wait(2000);
-                            Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                            CallHandler.SuspectWait(Suspect);
+
                             GameFiber.Wait(4500);
                             Game.DisplayHelp("When You are Done ~y~Investigating, ~w~Press End to ~b~Finish the Callout.");
-                            while (!Game.IsKeyDown(Config.CalloutEndKey)) { GameFiber.Wait(0); }
+                            while (!Game.IsKeyDown(Config.CalloutEndKey)) { GameFiber.Wait(0); } //potential crush here, but probably just lspdfr's fault
                             Game.DisplayNotification("Dispatch, we are Code 4. We Have ~b~Secured~w~ the Property.");
-
                             break;
                         }
                         else if (MainScenario >= 6)  //suspect cooperative
