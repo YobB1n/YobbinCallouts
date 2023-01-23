@@ -253,27 +253,57 @@ namespace YobbinCallouts.Callouts
             CalloutRunning = true;
             GameFiber.StartNew(delegate
             {
-                while (CalloutRunning)
+                try
                 {
-                    while (player.DistanceTo(Citizen) >= 25 && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
-                    if (Game.IsKeyDown(Config.CalloutEndKey)) { EndCalloutHandler.CalloutForcedEnd = true; break; }
-                    Game.LogTrivial("YOBBINCALLOUTS: Player Arrived on Scene.");
-                    AreaBlip.Delete();
-                    if (MainScenario <= 1) Game.DisplayHelp("Speak With the ~p~Arresting Citizen.");
-                    else Game.DisplaySubtitle("~p~Citizen:~w~ Officer! Arrest him please! He was pointing a gun at people!");
-                    CitizenBlip = Citizen.AttachBlip();
-                    CitizenBlip.Scale = 0.7f;
-                    CitizenBlip.Color = Color.Purple;
-                    if(MainScenario <= 1) NativeFunction.Natives.TASK_TURN_PED_TO_FACE_ENTITY(Citizen, player, -1);
-                    CallHandler.AssignBlip(Suspect, Color.Red);
+                    while (CalloutRunning)
+                    {
+                        while (player.DistanceTo(Citizen) >= 25 && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
+                        if (Game.IsKeyDown(Config.CalloutEndKey)) { EndCalloutHandler.CalloutForcedEnd = true; break; }
+                        Game.LogTrivial("YOBBINCALLOUTS: Player Arrived on Scene.");
+                        AreaBlip.Delete();
+                        if (MainScenario <= 1) Game.DisplayHelp("Speak With the ~p~Arresting Citizen.");
+                        else Game.DisplaySubtitle("~p~Citizen:~w~ Officer! Arrest him please! He was pointing a gun at people!");
+                        CitizenBlip = Citizen.AttachBlip();
+                        CitizenBlip.Scale = 0.7f;
+                        CitizenBlip.Color = Color.Purple;
+                        if (MainScenario <= 1) NativeFunction.Natives.TASK_TURN_PED_TO_FACE_ENTITY(Citizen, player, -1);
+                        CallHandler.AssignBlip(Suspect, Color.Red);
 
-                    if (MainScenario == 0 || MainScenario == 1) Peaceful();
-                    else GunPoint(); //MainScenario 2
-                    break;
+                        if (MainScenario == 0 || MainScenario == 1) Peaceful();
+                        else GunPoint(); //MainScenario 2
+                        break;
+                    }
+                    Game.LogTrivial("YOBBINCALLOUTS: Callout Finished, Ending...");
+                    EndCalloutHandler.EndCallout();
+                    End();
                 }
-                Game.LogTrivial("YOBBINCALLOUTS: Callout Finished, Ending...");
-                EndCalloutHandler.EndCallout();
-                End();
+                catch (System.Threading.ThreadAbortException)
+                {
+                    Game.LogTrivial("YOBBINCALLOUTS: THREADABORTEXCEPTION CAUGHT. Usually not a big deal, caused by another plugin/crash somewhere else.");
+                }
+                catch (Exception e)
+                {
+                    if (CalloutRunning)
+                    {
+                        Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
+                        Game.LogTrivial("IN: " + this);
+                        string error = e.ToString();
+                        Game.LogTrivial("ERROR: " + error);
+                        Game.DisplayNotification("There was an ~r~Error~w~ Caught with ~b~YobbinCallouts. ~w~Please Check Your ~g~Log File.~w~ Sorry for the Inconvenience!");
+                        Game.DisplayNotification("Error: ~r~" + error);
+                        Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
+                        Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT==========");
+                    }
+                    else
+                    {
+                        Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT - CALLOUT NO LONGER RUNNING==========");
+                        string error = e.ToString();
+                        Game.LogTrivial("ERROR: " + error);
+                        Game.LogTrivial("No Need to Report This Error if it Did not Result in an LSPDFR Crash.");
+                        Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT - CALLOUT NO LONGER RUNNING==========");
+                    }
+                    End();
+                }
             }
             );
         }

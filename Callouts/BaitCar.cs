@@ -179,6 +179,10 @@ namespace YobbinCallouts.Callouts
                     Game.LogTrivial("YOBBINCALLOUTS: Callout Finished, Ending...");
                     EndCalloutHandler.EndCallout();
                 }
+                catch (System.Threading.ThreadAbortException)
+                {
+                    Game.LogTrivial("YOBBINCALLOUTS: THREADABORTEXCEPTION CAUGHT. Usually not a big deal, caused by another plugin/crash somewhere else.");
+                }
                 catch (Exception e)
                 {
                     if (CalloutRunning)
@@ -538,6 +542,7 @@ namespace YobbinCallouts.Callouts
                 if (Peds[i].Exists() && !Peds[i].IsPlayer && !Peds[i].IsInAnyVehicle(false))
                 {
                     Suspect = Peds[i];
+                    Suspect.IsPersistent = true;
                     break;
                 }
             }
