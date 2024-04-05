@@ -1,4 +1,7 @@
 ﻿// This class provides compatibility with Opus' Callout Interface Plugin.
+using CalloutInterfaceAPI;
+using Rage;
+using LSPD_First_Response;
 
 namespace YobbinCallouts
 {
@@ -8,16 +11,17 @@ namespace YobbinCallouts
     internal static class CalloutInterfaceHandler
     {
         /// <summary>
-        /// Send details about the callout to the MDT.  Call this in OnCalloutDisplayed.
+        /// DEPRECATED REMOVE LATER
         /// </summary>
         /// <param name="sender">The originating callout.</param>
         /// <param name="priority">The priority of the callout (e.g. CODE 2, CODE 3).</param>
         /// <param name="agency">The agency that should be handling the callout (e.g. LSPD, LSSD).</param>
+        /// DEPRECATED REMOVE LATER
         public static void SendCalloutDetails(LSPD_First_Response.Mod.Callouts.Callout sender, string priority, string agency = "")
         {
             try
             {
-                CalloutInterface.API.Functions.SendCalloutDetails(sender, priority, agency);
+                //Functions.SendCalloutDetails(sender, priority, agency);
             }
             catch (System.Exception ex)
             {
@@ -34,11 +38,11 @@ namespace YobbinCallouts
         {
             try
             {
-                CalloutInterface.API.Functions.SendMessage(sender, message);
+                Functions.SendMessage(sender, message);
             }
-            catch (System.Exception ex)
+            catch (System.Exception e)
             {
-                // insert logging here
+                Game.LogTrivial("YOBBINCALLOUTS: ERROR WITH CALLOUTINTERFACE SENDMESSAGE.");   
             }
         }
     }

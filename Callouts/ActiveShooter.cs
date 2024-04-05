@@ -2,11 +2,13 @@
 using LSPD_First_Response.Mod.Callouts;
 using Rage;
 using System;
+using CalloutInterfaceAPI;
 
 namespace YobbinCallouts.Callouts
 {
+    [CalloutInterface("Active Shooter", CalloutProbability.Medium, "Active Shooter", "Code 99")] //test to see if this works without calloutinterface installed!!
     [CalloutInfo("Active Shooter", CalloutProbability.Medium)]
-    class ActiveShooter : Callout
+    public class ActiveShooter : Callout
     {
         private Vector3 MainSpawnPoint;
 
@@ -31,7 +33,7 @@ namespace YobbinCallouts.Callouts
             MainSpawnPoint = World.GetNextPositionOnStreet(player.Position.Around(600));
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 25f);
             AddMinimumDistanceCheck(60f, MainSpawnPoint);
-            Functions.PlayScannerAudio("ATTENTION_ALL_SWAT_UNITS_01 WE_HAVE_01 CRIME_ASSAULT_WITH_A_DEADLY_WEAPON_01 UNITS_RESPOND_CODE_99_01");
+            LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("ATTENTION_ALL_SWAT_UNITS_01 WE_HAVE_01 CRIME_ASSAULT_WITH_A_DEADLY_WEAPON_01 UNITS_RESPOND_CODE_99_01");
             CalloutMessage = "Active Shooter";
             CalloutPosition = MainSpawnPoint;
             if (MainScenario == 0) CalloutAdvisory = "Two Suspects are Reported ~r~Discharging a Firearm ~w~at Random from a Vehicle.";
@@ -45,7 +47,7 @@ namespace YobbinCallouts.Callouts
                 Game.LogTrivial("YOBBINCALLOUTS: Active Shooter Callout Accepted by User");
                 if (Main.CalloutInterface)
                 {
-                    CalloutInterfaceHandler.SendCalloutDetails(this, "CODE 99", "");
+                    //CalloutInterfaceHandler.SendCalloutDetails(this, "CODE 99", "");
                 }
                 else
                 {
@@ -198,7 +200,7 @@ namespace YobbinCallouts.Callouts
                             Suspect2.Tasks.FightAgainstClosestHatedTarget(WaitTime, -1);
 
                             Game.LogTrivial("YOBBINCALLOUTS: Suspect Pursuit Started");
-                            Functions.ForceEndCurrentPullover();
+                            LSPD_First_Response.Mod.API.Functions.ForceEndCurrentPullover();
                             MainPursuit = LSPD_First_Response.Mod.API.Functions.CreatePursuit();
                             LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
                             Game.DisplayNotification("Suspect is ~r~Evading!");
@@ -206,13 +208,13 @@ namespace YobbinCallouts.Callouts
                             LSPD_First_Response.Mod.API.Functions.SetPursuitIsActiveForPlayer(MainPursuit, true);
                             LSPD_First_Response.Mod.API.Functions.AddPedToPursuit(MainPursuit, Suspect);
                             LSPD_First_Response.Mod.API.Functions.AddPedToPursuit(MainPursuit, Suspect2);
-                            while (Functions.IsPursuitStillRunning(MainPursuit)) GameFiber.Wait(0);
+                            while (LSPD_First_Response.Mod.API.Functions.IsPursuitStillRunning(MainPursuit)) GameFiber.Wait(0);
                             while (Suspect.Exists() || Suspect2.Exists())
                             {
                                 GameFiber.Yield();
-                                if (!Suspect.Exists() || Suspect.IsDead || Functions.IsPedArrested(Suspect))
+                                if (!Suspect.Exists() || Suspect.IsDead || LSPD_First_Response.Mod.API.Functions.IsPedArrested(Suspect))
                                 {
-                                    if (!Suspect2.Exists() || Suspect2.IsDead || Functions.IsPedArrested(Suspect2)) break;
+                                    if (!Suspect2.Exists() || Suspect2.IsDead || LSPD_First_Response.Mod.API.Functions.IsPedArrested(Suspect2)) break;
                                 }
                             }
                             break;
@@ -278,7 +280,7 @@ namespace YobbinCallouts.Callouts
             if (CalloutRunning)
             {
                 Game.DisplayNotification("~g~Code 4~w~, return to patrol.");
-                Functions.PlayScannerAudio("ATTENTION_ALL_UNITS WE_ARE_CODE_4");
+                LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("ATTENTION_ALL_UNITS WE_ARE_CODE_4");
             }
             CalloutRunning = false;
             if (SuspectBlip.Exists()) { SuspectBlip.Delete(); }

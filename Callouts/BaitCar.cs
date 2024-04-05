@@ -22,20 +22,18 @@ namespace YobbinCallouts.Callouts
         private Blip OfficerBlip;
         private Blip BaitVehicleBlip;
 
-        private Ped Suspect;
-        private Ped Rando1;
-        private Ped Rando2;
-        private Ped Rando3;
+        public Ped Suspect;
+        public Ped Rando1;
+        public Ped Rando2;
+        public Ped Rando3;
         private Ped Officer;
         private Ped MainSuspect;
         Ped player = Game.LocalPlayer.Character;
 
         private int MainScenario;
-        private int WaitTime;
         private int Peeps;
         private int PeepsSpawned = 1;
         private bool CalloutRunning = false;
-        private bool HighCrime = false;
 
         private string Zone;
 
@@ -43,12 +41,7 @@ namespace YobbinCallouts.Callouts
 
         private Vehicle BaitVehicle;
         private Vehicle OfficerVehicle;
-
-        private Vehicle PlayerVehicle;
-        private uint VehicleHash;
         private float VehicleHeading;
-        private float BaitCarHeading;
-        private int SuspectModel;
 
         //DIALOGUE
         private readonly List<string> OpeningDialogue1 = new List<string>()
@@ -178,6 +171,7 @@ namespace YobbinCallouts.Callouts
                     }
                     Game.LogTrivial("YOBBINCALLOUTS: Callout Finished, Ending...");
                     EndCalloutHandler.EndCallout();
+                    End();
                 }
                 catch (Exception e)
                 {
@@ -273,12 +267,13 @@ namespace YobbinCallouts.Callouts
             {
                 while (!Game.IsKeyDown(Config.MainInteractionKey)) GameFiber.Wait(0);
                 Random r = new Random();
-                Peeps = r.Next(0, 3);
-                if (Peeps == 0) SpawnSuspects();
-                if (Peeps == 1) SpawnSuspects();
-                if (Peeps == 2) SpawnSuspects();
+                Peeps = r.Next(1, 4);
+                //if (Peeps == 0) SpawnSuspects();
+                //if (Peeps == 1) SpawnSuspects();
+                //if (Peeps == 2) SpawnSuspects();
+                SpawnSuspects();
                 Game.LogTrivial("YOBBINCALLOUTS: Finished Spawning Suspects.");
-                Game.LogTrivial("YOBBINCALLOUTS: There will be "+Peeps+" Suspects Before one Enters the Bait Car.");
+                Game.LogTrivial("YOBBINCALLOUTS: There will be " + Peeps + " Suspects Before one Enters the Bait Car.");
                 Game.LogTrivial("YOBBINCALLOUTS: Starting Bait Car Event.");
                 Game.DisplayNotification("Dispatch, We are Starting the ~b~Bait Car.");
                 if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Bait Car Operation Started");
@@ -289,38 +284,44 @@ namespace YobbinCallouts.Callouts
                 OfficerBlip.Alpha = 0.5f;
                 OfficerBlip.Color = Color.Green;
                 OfficerBlip.Name = "Detection Radius";
-                GameFiber.Wait(4000);                
+                GameFiber.Wait(4000);
                 if (Config.DisplayHelp) Game.DisplayHelp("Stay Outside the ~g~Green Circle~w~ to Avoid ~y~Detection.");
-                if (Rando1.Exists()) Rando1 = Suspect;
-                //NULLREFERENCE HERE VVvvVV (tryna fix with if/else)
-                if (Suspect.Exists()) Suspect.Tasks.FollowNavigationMeshToPosition(BaitVehicle.GetOffsetPositionRight(2), BaitVehicle.Heading, 1.25f, 2, -1).WaitForCompletion(); //apparently this crashed once but can't figure out why.
-                else
-                {
-                    SuspectRespawn();
-                }
+
+                // if (Suspect.Exists()) Suspect.Delete(); //test this...
+                // if (Rando1.Exists()) Suspect = Rando1;
+                // NULLREFERENCE HERE VVvvVV(tryna fix with if/else)
+                //if (Rando1.Exists()) Rando1.Tasks.FollowNavigationMeshToPosition(BaitVehicle.GetOffsetPositionRight(2), BaitVehicle.Heading, 1.25f, 2, -1).WaitForCompletion(); //apparently this crashed once but can't figure out why.
+                //else
+                //{
+                //    SuspectRespawn();
+                //}
                 while (!BaitVehicle.HasDriver)
                 {
-                    while (Peeps >= 0)
+                    while (Peeps >= 1)
                     {
                         Game.LogTrivial("YOBBINCALLOUTS: First Suspect Event Started");
-                        Suspect.Tasks.ClearImmediately();
-                        Suspect.Tasks.AchieveHeading(BaitVehicle.Heading + 90).WaitForCompletion(500);
-                        Suspect.Tasks.PlayAnimation("missarmenian2lamar_idles", "idle_look_behind_left", 1, AnimationFlags.None).WaitForCompletion(1500);
-                        Suspect.Tasks.PlayAnimation("missarmenian2lamar_idles", "idle_look_behind_right", 1, AnimationFlags.None).WaitForCompletion(1500);
+                        Rando1.IsVisible = true;
+                        Rando1.IsInvincible = false;
+                        if (Rando1.Exists()) Rando1.Tasks.FollowNavigationMeshToPosition(BaitVehicle.GetOffsetPositionRight(2), BaitVehicle.Heading, 1.25f, 2, -1).WaitForCompletion(); //apparently this crashed once but can't figure out why.
+                        Rando1.Tasks.ClearImmediately();
+                        Rando1.Tasks.AchieveHeading(BaitVehicle.Heading + 90).WaitForCompletion(500);
+                        Rando1.Tasks.PlayAnimation("missarmenian2lamar_idles", "idle_look_behind_left", 1, AnimationFlags.None).WaitForCompletion(1500);
+                        Rando1.Tasks.PlayAnimation("missarmenian2lamar_idles", "idle_look_behind_right", 1, AnimationFlags.None).WaitForCompletion(1500);
                         if (player.DistanceTo(BaitVehicle) >= 50)
                         {
-                            if (Peeps == 0)
+                            if (Peeps == 1)
                             {
-                                Suspect.Tasks.EnterVehicle(BaitVehicle, -1).WaitForCompletion();
+                                Rando1.Tasks.EnterVehicle(BaitVehicle, -1).WaitForCompletion();
                                 Game.LogTrivial("YOBBINCALLOUTS: First Suspect Entered Vehicle");
                                 break;
                                 //peeps = 0;
                             }
-                            else { Game.LogTrivial("YOBBINCALLOUTS: First Suspect Did Not Enter Vehicle"); Suspect.Dismiss(); break; }
+                            else { Game.LogTrivial("YOBBINCALLOUTS: First Suspect Did Not Enter Vehicle"); Rando1.Dismiss(); break; }
                         }
                         else
                         {
-                            if (Suspect.Exists()) Suspect.Dismiss();
+                            Peeps = Peeps + 1;
+                            if (Rando1.Exists()) Rando1.Dismiss();
                             GameFiber.Wait(2000);
                             Game.DisplayHelp("You're ~r~Too Close~w~ to the ~g~Bait Car.~w~ Find a ~b~Discrete Location~w~ Further Away.");
                             Game.LogTrivial("YOBBINCALLOUTS: Player too Close to First Suspect.");
@@ -329,10 +330,11 @@ namespace YobbinCallouts.Callouts
                         }
                     }
                     if (BaitVehicle.HasDriver) break;
-                    while (Peeps >= 1)
+                    while (Peeps >= 2)
                     {
                         Game.LogTrivial("YOBBINCALLOUTS: Second Suspect Event Started");
                         Rando2.IsVisible = true;
+                        Rando2.IsInvincible = false;
                         Rando2.Tasks.FollowNavigationMeshToPosition(BaitVehicle.GetOffsetPositionRight(2), BaitVehicle.Heading, 1.25f, 2, -1).WaitForCompletion();
                         Rando2.Tasks.ClearImmediately();
                         Rando2.Tasks.AchieveHeading(BaitVehicle.Heading + 90).WaitForCompletion(500);
@@ -340,7 +342,7 @@ namespace YobbinCallouts.Callouts
                         Rando2.Tasks.PlayAnimation("missarmenian2lamar_idles", "idle_look_behind_right", 1, AnimationFlags.None).WaitForCompletion(1500);
                         if (player.DistanceTo(BaitVehicle) >= 50)
                         {
-                            if (Peeps == 1 || Peeps == 2)
+                            if (Peeps <= 2)
                             {
                                 Rando2.Tasks.EnterVehicle(BaitVehicle, -1).WaitForCompletion();
                                 Game.LogTrivial("YOBBINCALLOUTS: Second Suspect Entered Vehicle");
@@ -351,6 +353,7 @@ namespace YobbinCallouts.Callouts
                         }
                         else
                         {
+                            Peeps = Peeps + 1;
                             if (Rando2.Exists()) Rando2.Dismiss();
                             GameFiber.Wait(2000);
                             Game.DisplayHelp("You're ~r~Too Close~w~ to the ~g~Bait Car.~w~ Find a ~b~Discrete Location~w~ Further Away.");
@@ -360,7 +363,7 @@ namespace YobbinCallouts.Callouts
                         }
                     }
                     if (BaitVehicle.HasDriver) break;
-                    if (Peeps >= 2)
+                    if (Peeps >= 3)
                     {
                         Game.LogTrivial("YOBBINCALLOUTS: Third and Final Suspect Event Started");
                         Rando2.Tasks.ClearImmediately();
@@ -372,6 +375,7 @@ namespace YobbinCallouts.Callouts
                         Game.DisplayHelp("Keep Monitoring the ~g~Bait Car.~w~ Parking the Car in ~o~High Crime~w~ Areas Will ~b~Increase~w~ the Chance of a ~o~Hit.");
                         GameFiber.Wait(1500);
                         Rando3.IsVisible = true;
+                        Rando3.IsInvincible = false;
                         Rando3.Tasks.FollowNavigationMeshToPosition(BaitVehicle.GetOffsetPositionRight(2), BaitVehicle.Heading, 1.25f, 2, -1).WaitForCompletion();
                         SuspectBlip = Rando3.AttachBlip();
                         SuspectBlip.IsFriendly = false;
@@ -420,9 +424,9 @@ namespace YobbinCallouts.Callouts
                 BaitVehicleBlip.Delete();
                 OfficerBlip.Delete();
                 //GameFiber.Wait(2000);
-                if (Peeps == 0) MainSuspect = Suspect;
-                else if (Peeps == 1) MainSuspect = Rando1;
+                if (Peeps == 1) MainSuspect = Rando1; //test this
                 else if (Peeps == 2) MainSuspect = Rando2;
+                else if (Peeps == 3) MainSuspect = Rando3; //increased by 1
                 SuspectBlip = MainSuspect.AttachBlip();
                 SuspectBlip.IsFriendly = false;
                 SuspectBlip.Scale = 0.75f;
@@ -482,7 +486,7 @@ namespace YobbinCallouts.Callouts
                             break;
                         }
                     }
-                    CallHandler.SuspectWait(Suspect);
+                    CallHandler.SuspectWait(MainSuspect);
                 }
                 //Game.DisplayHelp("Press End to ~b~Finish ~w~the Callout.");
                 if (Officer.Exists()) Officer.Delete(); //probably dont need this anymore
@@ -491,32 +495,36 @@ namespace YobbinCallouts.Callouts
         }
         private void SpawnSuspects()
         {
-            Game.LogTrivial("YOBBINCALLOUTS: Started Suspect "+PeepsSpawned+" Spawn");
+            Game.LogTrivial("YOBBINCALLOUTS: Started Suspect " + PeepsSpawned + " Spawn");
             var Peds = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
             System.Random r2 = new System.Random();
             try
             {
-                Ped tempsuspect;
-                if (PeepsSpawned == 1)
-                {
-                    NativeFunction.Natives.xA0F8A7517A273C05<Vector3>(World.GetNextPositionOnStreet(player.Position.Around(45)), 360, out Vector3 suspectspawn);
-                    tempsuspect = new Ped(Peds[r2.Next(0, Peds.Length)], suspectspawn, 69);
-                }
-                else if (PeepsSpawned == 2)
-                {
-                    tempsuspect = new Ped(Peds[r2.Next(0, Peds.Length)], Rando1.Position.Around(25), 69);
-                }
-                else
-                {
-                    tempsuspect = new Ped(Peds[r2.Next(0, Peds.Length)], Rando2.Position.Around(15), 69);
-                }
-                tempsuspect.IsPersistent = true;
-                tempsuspect.BlockPermanentEvents = true;
-                tempsuspect.IsVisible = false;
-                tempsuspect.Tasks.Wander();
-                if (PeepsSpawned == 1) Rando1 = tempsuspect;
-                else if (PeepsSpawned == 2) Rando2 = tempsuspect;
-                else Rando3 = tempsuspect;
+                // float bearing = (BaitVehicle.Heading - player.CurrentVehicle.Heading);
+                // ensure ped spawns dont occur in players FOV
+
+                NativeFunction.Natives.xA0F8A7517A273C05<Vector3>(World.GetNextPositionOnStreet(player.Position.Around(45)), 360, out Vector3 suspectspawn);
+                Rando1 = new Ped(Peds[r2.Next(0, Peds.Length)], suspectspawn, 69);
+                Rando1.IsPersistent = true;
+                Rando1.BlockPermanentEvents = true;
+                Rando1.IsVisible = false;
+                Rando1.IsInvincible = true;
+                Rando1.Tasks.Wander();
+
+                Rando2 = new Ped(Peds[r2.Next(0, Peds.Length)], Rando1.Position.Around(15), 69);
+                Rando2.IsPersistent = true;
+                Rando2.BlockPermanentEvents = true;
+                Rando2.IsVisible = false;
+                Rando2.IsInvincible = true;
+                Rando2.Tasks.Wander();
+
+                Rando3 = new Ped(Peds[r2.Next(0, Peds.Length)], Rando1.Position.Around(15), 69);
+                Rando3.IsPersistent = true;
+                Rando3.BlockPermanentEvents = true;
+                Rando3.IsVisible = false;
+                Rando3.IsInvincible = true;
+                Rando3.Tasks.Wander();
+
             }
             catch (Rage.Exceptions.InvalidHandleableException) //this is a fairly common error that I can't seem to find a solution for.
             {
@@ -524,8 +532,7 @@ namespace YobbinCallouts.Callouts
                 Game.DisplayNotification("~b~YobbinCallouts~r~ Crash~g~ Prevented.~w~ I Apologize for the ~y~Inconvenience.");
                 End();
             }
-            Game.LogTrivial("YOBBINCALLOUTS: Finished Suspect "+PeepsSpawned+" Spawn");
-            PeepsSpawned++;
+            Game.LogTrivial("YOBBINCALLOUTS: Finished Spawning " + PeepsSpawned + " Suspects");
         }
         private void SuspectRespawn() //test this
         {

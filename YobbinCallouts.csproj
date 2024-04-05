@@ -32,12 +32,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CalloutInterface">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Grand Theft Auto V\plugins\LSPDFR\CalloutInterface.dll</HintPath>
+    <Reference Include="CalloutInterfaceAPI">
+      <HintPath>C:\Users\matth\Downloads\CalloutInterfaceAPI\CalloutInterfaceAPI.dll</HintPath>
     </Reference>
-    <Reference Include="LSPD First Response, Version=0.4.7800.3124, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="LSPD First Response, Version=0.4.8242.35949, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Grand Theft Auto V\plugins\LSPD First Response.dll</HintPath>
+      <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Grand Theft Auto V\plugins\LSPD First Response.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
