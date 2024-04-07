@@ -32,8 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CalloutInterfaceAPI">
-      <HintPath>C:\Users\matth\Downloads\CalloutInterfaceAPI\CalloutInterfaceAPI.dll</HintPath>
+    <Reference Include="CalloutInterfaceAPI, Version=1.0.3.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\matth\Downloads\CalloutInterface-1.4.1 (1)\Grand Theft Auto V\CalloutInterfaceAPI.dll</HintPath>
     </Reference>
     <Reference Include="LSPD First Response, Version=0.4.8242.35949, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -66,6 +67,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="UltimateBackup">
+      <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Grand Theft Auto V\plugins\LSPDFR\UltimateBackup.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CalloutInterfaceHandler.cs" />

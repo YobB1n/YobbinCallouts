@@ -215,10 +215,11 @@ namespace YobbinCallouts.Callouts
                 {
                     System.Random r = new System.Random();
                     int WeaponType = r.Next(0, 4);
-                    if (WeaponType == 0) { Weapon = new Rage.Object("w_pi_appistol", World.GetNextPositionOnStreet(Witness.Position)); WeaponName = "AP Pistol"; }
-                    else if (WeaponType == 1) { Weapon = new Rage.Object("w_pi_combatpistol", World.GetNextPositionOnStreet(Witness.Position)); WeaponName = "Combat Pistol"; }
-                    else if (WeaponType == 2) { Weapon = new Rage.Object("w_pi_heavypistol", World.GetNextPositionOnStreet(Witness.Position)); WeaponName = "Heavy Pistol"; }
-                    else if (WeaponType == 3) { Weapon = new Rage.Object("w_pi_pistol", World.GetNextPositionOnStreet(Witness.Position)); WeaponName = "Pistol"; }
+                    if (WeaponType == 0) { Weapon = new Rage.Object("w_pi_appistol", World.GetNextPositionOnStreet(Witness.Position)){ IsPersistent = true }; WeaponName = "AP Pistol"; }
+                    else if (WeaponType == 1) { Weapon = new Rage.Object("w_pi_combatpistol", World.GetNextPositionOnStreet(Witness.Position)) { IsPersistent = true }; WeaponName = "Combat Pistol"; }
+                    else if (WeaponType == 2) { Weapon = new Rage.Object("w_pi_heavypistol", World.GetNextPositionOnStreet(Witness.Position)) { IsPersistent = true }; WeaponName = "Heavy Pistol"; }
+                    else if (WeaponType == 3) { Weapon = new Rage.Object("w_pi_pistol", World.GetNextPositionOnStreet(Witness.Position)) { IsPersistent = true }; WeaponName = "Pistol"; }
+                    if (Weapon.Exists()) Weapon.Rotation = new Rotator(0, 90, 0);    
                 }
                 //else //melee
                 //{
@@ -230,7 +231,7 @@ namespace YobbinCallouts.Callouts
                 //    else if (WeaponType == 3) { Weapon = new Rage.Object("prop_cs_bowie_knife", World.GetNextPositionOnStreet(Witness.Position)); WeaponName = "Bowie Knife"; }
                 //}
                 Game.LogTrivial("YOBBINCALLOUTS: Weapon is " + WeaponName);
-                Weapon.IsPersistent = true;
+                GameFiber.Wait(1000);
             }
             catch (Exception e)
             {

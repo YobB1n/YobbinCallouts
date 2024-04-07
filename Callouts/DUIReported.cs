@@ -177,20 +177,22 @@ namespace YobbinCallouts.Callouts
                     NativeFunction.Natives.SET_​PED_​IS_​DRUNK(Suspect, true);
 
                     if (MainScenario == 0) Witness = new Ped(MainSpawnPoint);
-                    else Witness = new Ped(Suspect.GetOffsetPosition(Suspect.Position.Around(3f)));
+                    else Witness = new Ped(MainSpawnPoint.Around(2));
                     Witness.IsPersistent = true;
                     Witness.BlockPermanentEvents = true;
-                    WitnessBlip = CallHandler.AssignBlip(Witness, Color.Blue, 0.69f, "Witness", true);
+                    WitnessBlip = CallHandler.AssignBlip(Witness, Color.Blue, 0.69f, "Witness", true);                    
                 }
                 if (MainScenario == 0) //suspect gone
                 {
                     Suspect.WarpIntoVehicle(SuspectVehicle, -1);
+                    Witness.Tasks.PlayAnimation("random@domestic", "f_distressed_loop", -1, AnimationFlags.Loop);
                     //test: leave suspect doing nothing for now
                 }
                 else //suspect on scene
                 {
                     SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, 0.69f, "Suspect", true);
                     Witness.Heading = Suspect.Heading - 180;
+                    Witness.Tasks.PlayAnimation("random@domestic", "balcony_fight_idle_male", -1, AnimationFlags.Loop);
                     //MAKE SUSPECT DRUNK WITH NATIVES, ARGUE WITH WITNESS TASK ANIMATION
                     //ARGUE WITH SUSPECT TASK
                 }
@@ -244,13 +246,13 @@ namespace YobbinCallouts.Callouts
                             //...
                         }
                         else //on scene
-                        {
+                        {                          
                             if (Config.DisplayHelp) Game.DisplayHelp("~b~Investigate~w~ the Situation.");
                             if (Suspect.IsMale) Game.DisplaySubtitle("~b~Caller:~w~ You can't drive bro! I won't let you get in that car!", 2500);
                             else Game.DisplaySubtitle("~b~Caller:~w~ You can't drive miss! I won't let you get in that car!", 2500);
                             GameFiber.Wait(2500);
                             System.Random monke = new System.Random();
-                            int speechtowait = monke.Next(1, 6);
+                            int speechtowait = monke.Next(1, 5);
 
                             //argument between the two peds starts now. After a certain point the suspect leaves to hop in the car.
                             int useless = 0;
@@ -271,8 +273,9 @@ namespace YobbinCallouts.Callouts
                                     GameFiber.Wait(2500);
                                     break;
                             }
-
-                            if (Functions.IsPedStoppedByPlayer(Suspect))  //test this
+                            //change logic to after
+                            //=========THIS IS WHAT I NEED TO WORK ON BUT TOO LAZY RN===========
+                            if (Functions.IsPedStoppedByPlayer(Suspect) || Functions.IsPedArrested(Suspect))  //test this
                             {
 
                                 //dialogue
@@ -300,7 +303,7 @@ namespace YobbinCallouts.Callouts
 
                             Suspect.Tasks.FollowNavigationMeshToPosition(SuspectVehicle.Position, SuspectVehicle.Heading - 90, 5f, 1f, -1).WaitForCompletion();
                             Suspect.Tasks.EnterVehicle(SuspectVehicle, -1).WaitForCompletion();
-                            Suspect.Tasks.CruiseWithVehicle(20f, VehicleDrivingFlags.AllowWrongWay | VehicleDrivingFlags.DriveAroundVehicles);
+                            Suspect.Tasks.CruiseWithVehicle(SuspectVehicle, 20f, VehicleDrivingFlags.AllowWrongWay | VehicleDrivingFlags.DriveAroundVehicles);
                             Game.DisplayHelp("Stop the ~r~Suspect.");
                             while (!Functions.IsPlayerPerformingPullover()) GameFiber.Wait(0);                           
                             Pursuit();

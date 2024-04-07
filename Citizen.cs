@@ -154,7 +154,7 @@ namespace YobbinCallouts
         override
         public string ToString()    
         {
-            return "~w~ Wanted Status: ~y~" + Wanted + "\n" + "~w~ Times Stopped: ~o~ " + TimesStopped + "\n" + "~w~ Medical History: ~r~" + ListToString(MedicalProblems);
+            return "~w~ Wanted Status: ~y~" + Wanted + "\n" + "~w~ Times Stopped: ~o~ " + TimesStopped + "\n" + "~w~ Medical Flags: ~r~" + "Recent Medical Perscriptions";
         }
 
 

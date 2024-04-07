@@ -20,7 +20,7 @@ namespace YobbinCallouts
     class CallHandler
     {
         public static Vector3 SpawnPoint; //SpawnPoint that will be returned by GetSpawnPoint functions
-        public static bool locationReturned = true; //if a location (house, hospital, store, etc) was returnred
+        public static bool locationReturned = true; //if a location (house, hospital, store, etc) was returned
         private static int count; //random counter for arrays
         private static string[] VehicleModels; //array of vehicle models for vehicle spawner
         static Random monke = new Random();
@@ -77,6 +77,11 @@ namespace YobbinCallouts
         public static ArrayList HospitalList = new ArrayList() { new Vector3(361.0359f, -585.4946f, 28.8267f), new Vector3(356.689f, -597.6279f, 28.78184f), new Vector3(-449.401f, -347.7617f, 34.50174f),
         new Vector3(-447.8303f, -334.3066f, 34.50184f), new Vector3(295.7652f, -1447.524f, 29.966f), new Vector3(341.2158f, -1398.245f, 32.50923f), new Vector3(1838.992f, 3673.217f, 34.27671f),
         new Vector3(1815.018f, 3679.552f, 34.27674f), new Vector3(-247.249f, 6330.457f, 32.42619f), new Vector3(1152.5f, -1526.501f, 34.84344f), new Vector3(1161.176f, -1536.283f, 39.39494f)};
+
+        //Arraylist of all the police stations all around the map
+        public static ArrayList PoliceStationList = new ArrayList() { new Vector3(638.5f, 1.75f, 82.8f), new Vector3(826.8f, -1290f, 28.24f), new Vector3(-561.65f, -131.65f, 38.21f),
+        new Vector3(-1108.18f, -845.18f, 19.32f),new Vector3(450.0654f, -993.0596f, 30f),new Vector3(360.97f, -1584.70f, 29.29f),new Vector3(1848.73f, 3689.98f, 34.27f),new Vector3(-448.22f, 6008.23f, 31.72f),
+        new Vector3(379.31f, 792.06f, 190.41f),new Vector3(-864.61f, -2408.92f, 14.03f),new Vector3(1846.49f, 2585.95f, 45.67f)};
 
         //Arraylist of stores/gas stations all around the map
         public static ArrayList StoreList = new ArrayList()
@@ -395,7 +400,7 @@ namespace YobbinCallouts
                 float distance = Vector3.Distance(Game.LocalPlayer.Character.Position, (Vector3)list[i]);
                 if (distance <= maxdistance && distance >= mindistance)
                 {
-                    closeLocations.Add(list[i]); //kind of like b racket recursion lmao
+                    closeLocations.Add(list[i]); //kind of like bs racket recursion lmao
                 }
             }
             if (closeLocations.Count == 0)

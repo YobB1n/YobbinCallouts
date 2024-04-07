@@ -7,6 +7,7 @@ using LSPD_First_Response.Mod.Callouts;
 using Rage.Native;
 using System;
 using YobbinCallouts.Utilities;
+using UltimateBackup;
 
 namespace YobbinCallouts.Callouts
 {
@@ -253,8 +254,15 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(1000);
                 if (Config.CallFD)
                 {
-                    try { Functions.RequestBackup(VictimVehicle.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.Firetruck); }
-                    catch (System.NullReferenceException) { Game.LogTrivial("YOBBINCALLOUTS: Error Spawning LSPDFR Fire Truck."); }
+                    if (Main.UB) //test this
+                    {
+                        UltimateBackup.API.Functions.callFireDepartment();
+                    }
+                    else
+                    {
+                        try { Functions.RequestBackup(VictimVehicle.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.Firetruck); }
+                        catch (System.NullReferenceException) { Game.LogTrivial("YOBBINCALLOUTS: Error Spawning LSPDFR Fire Truck."); }
+                    }
                     Game.DisplayNotification("~r~Fire Department~w~ is En Route!");
                     Game.LogTrivial("YOBBINCALLOUTS: Fire Department Has Been Called");
                 }

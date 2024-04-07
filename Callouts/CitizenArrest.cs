@@ -137,7 +137,7 @@ namespace YobbinCallouts.Callouts
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Citizen Arrest Callout Start==========");
             System.Random r = new System.Random();
-            int Scenario = r.Next(0, 3); //change later
+            int Scenario = r.Next(0, 1); //changed to scenario 2
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is " + MainScenario + "");
             if (MainScenario == 0) Crime = "Assault.";  //PUT PERIODS AT THE END OF THESE CRIMES.
@@ -206,6 +206,7 @@ namespace YobbinCallouts.Callouts
                 //Relationship Groups (double check)
                 Suspect.RelationshipGroup.SetRelationshipWith(Citizen.RelationshipGroup, Relationship.Hate);
                 Suspect.RelationshipGroup.SetRelationshipWith(player.RelationshipGroup, Relationship.Hate);
+                Citizen.RelationshipGroup.SetRelationshipWith(player.RelationshipGroup, Relationship.Companion);
 
                 if (MainScenario == 2) //gunpoint scenario
                 {
@@ -265,7 +266,7 @@ namespace YobbinCallouts.Callouts
                     CitizenBlip.Scale = 0.7f;
                     CitizenBlip.Color = Color.Purple;
                     if(MainScenario <= 1) NativeFunction.Natives.TASK_TURN_PED_TO_FACE_ENTITY(Citizen, player, -1);
-                    CallHandler.AssignBlip(Suspect, Color.Red);
+                    SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, 0.7f);
 
                     if (MainScenario == 0 || MainScenario == 1) Peaceful();
                     else GunPoint(); //MainScenario 2
@@ -288,7 +289,6 @@ namespace YobbinCallouts.Callouts
             if (VictimBlip.Exists()) { VictimBlip.Delete(); }
             if (CitizenBlip.Exists()) { CitizenBlip.Delete(); }
             if (Citizen.Exists()) Citizen.Delete(); 
-            if (SuspectBlip.Exists()) { SuspectBlip.Delete(); }
             if (AreaBlip.Exists()) { AreaBlip.Delete(); }
             Functions.PlayScannerAudio("ATTENTION_ALL_UNITS WE_ARE_CODE_4");
             Game.LogTrivial("YOBBINCALLOUTS: Citizen Arrest Callout Finished Cleaning Up.");
@@ -299,6 +299,10 @@ namespace YobbinCallouts.Callouts
         }
         private void GunPoint()
         {
+            //test if this works...
+            Suspect.Tasks.PutHandsUp(-1, Citizen);
+            Citizen.Tasks.AimWeaponAt(Suspect, -1);
+
             if (Victim.Exists()) Victim.Tasks.ReactAndFlee(Suspect);
             GameFiber.Wait(2000);
             if (Config.DisplayHelp) Game.DisplayHelp("Arrest the ~r~Suspect.");
@@ -335,9 +339,11 @@ namespace YobbinCallouts.Callouts
                 Functions.SetPedAsCop(Citizen);
                 Game.LogTrivial("YOBBINCALLOUTS: COP");
                 CallHandler.Dialogue(GunPointOpening2, Citizen);
-
             }
-
+            GameFiber.Wait(2000);
+            if (Citizen.Exists()) Citizen.Dismiss();
+            Game.DisplayHelp("Deal With the ~r~Suspect. ~w~Press ~y~" + Config.CalloutEndKey + " ~w~When Finished.");
+            while (!Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
         }
         private void Peaceful()
         {

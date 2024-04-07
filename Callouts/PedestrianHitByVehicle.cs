@@ -336,10 +336,7 @@ namespace YobbinCallouts.Callouts
                 {
                     CalloutInterfaceHandler.SendMessage(this, "Caller spotted the suspect driving recklessly, updating map.");
                 }
-                else
-                {
-                    Game.DisplayNotification("~b~Update:~w~ A Caller Has ~y~Spotted~w~ the ~r~Suspect~w~ Driving Recklessly. ~g~Updating Map.");    //fix this, too hard to see suspect. maybe remind them what the car looks like.
-                }
+                Game.DisplayNotification("~b~Update:~w~ A Caller Has ~y~Spotted~w~ the ~r~Suspect~w~ Driving Recklessly. ~g~Updating Map.");    //fix this, too hard to see suspect. maybe remind them what the car looks like.
                 GameFiber.Wait(1000);
 
                 while (player.DistanceTo(Suspect) >= 25) GameFiber.Wait(0);

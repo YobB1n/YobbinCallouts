@@ -17,6 +17,7 @@ namespace YobbinCallouts
         public static Version NewVersion = new Version();
         public static Version curVersion = new Version("1.7.1");
         public static bool STP; //if STP is installed by the user
+        public static bool UB; //if UB is installed by the user
         public static bool CalloutInterface; //if Callout Interface is installed by the user
         public static bool UpToDate; //if the Plugin is updated.
         public static bool Beta = false;
@@ -123,6 +124,17 @@ namespace YobbinCallouts
                 STP = false;
             }
 
+            if (Functions.GetAllUserPlugins().ToList().Any(a => a != null && a.FullName.Contains("UltimateBackup")) == true)
+            {
+                Game.LogTrivial("UltimateBackup is Installed by User.");
+                UB = true;
+            }
+            else
+            {
+                Game.LogTrivial("UltimateBackup is NOT Installed by User.");
+                UB = false;
+            }
+
             if (Functions.GetAllUserPlugins().ToList().Any(a => a != null && a.FullName.Contains("CalloutInterface")) == true)
             {
                 Game.LogTrivial("CalloutInterface is Installed by User.");
@@ -133,7 +145,6 @@ namespace YobbinCallouts
                 Game.LogTrivial("CalloutInterface is NOT Installed by User.");
                 CalloutInterface = false;
             }
-
             //CALLOUTS
             Game.LogTrivial("Started Registering Callouts.");
             if (Config.BrokenDownVehicle || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.BrokenDownVehicle));
