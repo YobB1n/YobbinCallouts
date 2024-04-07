@@ -166,6 +166,10 @@ namespace YobbinCallouts.Callouts
                         FindSuspect();
                     }
                 }
+                catch (System.Threading.ThreadAbortException)
+                {
+                    Game.LogTrivial("YOBBINCALLOUTS: THREADABORTEXCEPTION CAUGHT. Usually not a big deal, caused by another plugin/crash somewhere else.");
+                }
                 catch (Exception e)
                 {
                     if (CalloutRunning)
