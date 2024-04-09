@@ -7,7 +7,6 @@ using LSPD_First_Response.Mod.Callouts;
 using Rage.Native;
 using System;
 using YobbinCallouts.Utilities;
-using UltimateBackup;
 
 namespace YobbinCallouts.Callouts
 {
@@ -130,7 +129,7 @@ namespace YobbinCallouts.Callouts
                 SuspectHeading = VictimVehicle.Heading + 90;
                 House = VictimVehicle.AttachBlip();
                 House.IsFriendly = false;
-                if(House.Exists()) House.IsRouteEnabled = true;
+                if (House.Exists()) House.IsRouteEnabled = true;
             }
             if (MainScenario < 3)   //suspect on scene
             {
@@ -240,7 +239,7 @@ namespace YobbinCallouts.Callouts
                 SuspectBlip.IsFriendly = false;
                 SuspectBlip.Scale = 0.75f;
                 SuspectBlip.Name = "Suspect";
-                if(House.Exists()) House.IsRouteEnabled = false;
+                if (House.Exists()) House.IsRouteEnabled = false;
                 while (player.Character.DistanceTo(Suspect) >= 20f)
                 {
                     Suspect.Tasks.PlayAnimation("weapon@w_sp_jerrycan", "fire", -1, AnimationFlags.None);
@@ -258,15 +257,15 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(1000);
                 if (Config.CallFD)
                 {
-                    if (Main.UB) //test this
-                    {
-                        UltimateBackup.API.Functions.callFireDepartment();
-                    }
-                    else
-                    {
-                        try { Functions.RequestBackup(VictimVehicle.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.Firetruck); }
-                        catch (System.NullReferenceException) { Game.LogTrivial("YOBBINCALLOUTS: Error Spawning LSPDFR Fire Truck."); }
-                    }
+                    //if (Main.UB) //test this
+                    //{
+                    //    UltimateBackupHelper.callFireDepartment();
+                    //}
+                    //else
+                    //{
+                    try { Functions.RequestBackup(VictimVehicle.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.Firetruck); }
+                    catch (System.NullReferenceException) { Game.LogTrivial("YOBBINCALLOUTS: Error Spawning LSPDFR Fire Truck."); }
+
                     Game.DisplayNotification("~r~Fire Department~w~ is En Route!");
                     Game.LogTrivial("YOBBINCALLOUTS: Fire Department Has Been Called");
                 }
@@ -325,7 +324,7 @@ namespace YobbinCallouts.Callouts
         {
             if (CalloutRunning)
             {
-               if(House.Exists()) House.IsRouteEnabled = false;
+                if (House.Exists()) House.IsRouteEnabled = false;
                 VictimBlip = Victim.AttachBlip();
                 VictimBlip.IsFriendly = true;
                 VictimBlip.Scale = 0.75f;
@@ -466,7 +465,7 @@ namespace YobbinCallouts.Callouts
                 SuspectArea = new Blip(Suspect.Position.Around(15), 150);
                 SuspectArea.Color = Color.Orange;
                 SuspectArea.Alpha = 0.5f;
-                if(SuspectArea.Exists()) SuspectArea.IsRouteEnabled = true;
+                if (SuspectArea.Exists()) SuspectArea.IsRouteEnabled = true;
                 Suspect.Tasks.Wander();
                 GameFiber.Wait(1500);
                 Game.DisplayHelp("Start ~o~Searching~w~ for the ~r~Suspect.");

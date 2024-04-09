@@ -172,7 +172,7 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(2000);
                 LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
                 GameFiber.Wait(2000);
-                if (!Main.STP) Game.DisplayHelp("Press 'Y' to Search the ~r~Vehicle~w~ for any Other ~r~Stolen Police Hardware.");
+                if (!Main.STP) Game.DisplayHelp("Press ~y~'Y'~w~ to Search the ~o~Vehicle~w~ for any Other ~r~Stolen Police Hardware.");
                 else Game.DisplayHelp("Use ~b~Stop the Ped~w~ to Search the ~r~Vehicle~w~ for any Other ~r~Stolen Police Hardware.");
                 SearchVehicle();
             }

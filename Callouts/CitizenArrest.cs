@@ -137,7 +137,7 @@ namespace YobbinCallouts.Callouts
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Citizen Arrest Callout Start==========");
             System.Random r = new System.Random();
-            int Scenario = r.Next(0, 1); //changed to scenario 2
+            int Scenario = r.Next(0, 2); //changed to scenario 2
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is " + MainScenario + "");
             if (MainScenario == 0) Crime = "Assault.";  //PUT PERIODS AT THE END OF THESE CRIMES.

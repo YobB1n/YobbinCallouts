@@ -4,11 +4,10 @@ using Rage;
 using System;
 using CalloutInterfaceAPI;
 using Rage.Native;
-using UltimateBackup;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInterface("Active Shooter", CalloutProbability.Medium, "Active Shooter", "Code 99")] //test to see if this works without calloutinterface installed!!
+    // [CalloutInterface("Active Shooter", CalloutProbability.Medium, "Active Shooter", "Code 99")] //test to see if this works without calloutinterface installed!!
     [CalloutInfo("Active Shooter", CalloutProbability.High)]
     public class ActiveShooter : Callout
     {
@@ -38,9 +37,12 @@ namespace YobbinCallouts.Callouts
         public static Vector3 AttackLocation;
 
         //last element [4] is the type of facility each organization will target
+        public static string[] models;
+        public static string[] gangmodels = new string[] { "g_f_y_vagos_01", "g_m_y_mexgoon_01", "g_m_y_mexgang_01" };
+        public static string[] armedmodels = new string[] {"s_m_y_blackops_01", "s_m_y_blackops_02", "s_m_y_blackops_03" };
         public static string[] OrganizationMessage;
-        public static string[] ArmedAlliance = new string[] { "Weapons aquisition", "grow our weapons stockpile", "arm our members", "access more weapons", "police station" };
-        public static string[] FreedomFighters = new string[] { "Eliminate the government", "disarm the police state", "dismantle the police", "overthrow the government", "police station" };
+        public static string[] Vagos = new string[] { "Weapons aquisition", "grow our weapons stockpile", "arm our members", "access more weapons", "police station" };
+        public static string[] BillsMafia = new string[] { "Eliminate the government", "disarm the police state", "dismantle the police", "overthrow the government", "police station" };
         public static string[] NewOrder = new string[] { "establish new rule", "dismantle the system", "send a message", "damage the system", "hospital" };
 
         public override bool OnBeforeCalloutDisplayed()
@@ -83,7 +85,7 @@ namespace YobbinCallouts.Callouts
                 {
                     Suspect = new Ped(MainSpawnPoint)
                     {
-                        Health = 150,
+                        Health = 125,
                         Armor = 200,
                         BlockPermanentEvents = true,
                         IsPersistent = true
@@ -190,10 +192,16 @@ namespace YobbinCallouts.Callouts
                         }
                         else
                         {
+                            //Echo's nerdy AI shit >=}
+                            Rage.Native.NativeFunction.Natives.SET_COMBAT_FLOAT(Suspect, 6, 0.6f);
+                            Rage.Native.NativeFunction.Natives.SET_PED_COMBAT_RANGE(Suspect, 1);
+                            Rage.Native.NativeFunction.Natives.SET_PED_COMBAT_ATTRIBUTES(Suspect, 24, true);
+                            Rage.Native.NativeFunction.Natives.SET_PED_COMBAT_ATTRIBUTES(Suspect, 35, true);
+                            Rage.Native.NativeFunction.Natives.SET_PED_COMBAT_ATTRIBUTES(Suspect, 43, true);
+
+
                             Suspect.Tasks.FightAgainstClosestHatedTarget(WaitTime, -1);
-                            Suspect.IsInvincible = false;
-                            SuspectBlip.IsRouteEnabled = false;
-                            SuspectBlip.Flash(500, -1);
+                            Suspect.IsInvincible = false;     
                             //Suspect.Health = 300;
                             //LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CRIME_OFFICER_IN_NEED_OF_ASSISTANCE_02 CRIME_SHOTS_FIRED_AT_AN_OFFICER_01");
                             //Game.DisplayNotification("Dispatch, We Need Backup ASAP, Heavy ~r~Gunfire!");
@@ -201,6 +209,8 @@ namespace YobbinCallouts.Callouts
                             //Functions.RequestBackup(MainSpawnPoint, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
                             //Functions.RequestBackup(MainSpawnPoint, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.SwatTeam);
                             CallHandler.SuspectWait(Suspect); //should be good, double-check this
+                            if(SuspectBlip.Exists()) SuspectBlip.IsRouteEnabled = false;
+                            if (SuspectBlip.Exists()) SuspectBlip.Flash(500, -1);
 
                             //In case player too far away from an attack location...
                             CallHandler.locationChooser(CallHandler.PoliceStationList, 1600, 125);
@@ -208,7 +218,10 @@ namespace YobbinCallouts.Callouts
                             {
                                 CallHandler.locationChooser(CallHandler.HospitalList, 1600, 125);
                                 //ADD OPTION TO SKIP THIS?
-                                if (CallHandler.locationReturned) Terrorist();
+                                if (CallHandler.locationReturned)
+                                {
+                                    Terrorist();
+                                }
                                 else
                                 {
                                     Game.LogTrivial("YOBBINCALLOUTS: NO HOSPITAL ATTACK LOCATION FOUND, ENDING CALLOUT.");
@@ -276,16 +289,16 @@ namespace YobbinCallouts.Callouts
 
             int orgchoice = CallHandler.RNG(3);
             OrganizationName = Organizations[orgchoice];
-            if (orgchoice == 0) OrganizationMessage = ArmedAlliance;
-            else if (orgchoice == 1) OrganizationMessage = FreedomFighters;
+            if (orgchoice == 0) OrganizationMessage = Vagos;
+            else if (orgchoice == 1) OrganizationMessage = BillsMafia;
             else OrganizationMessage = NewOrder;
 
-            if (orgchoice <= 1)
+            if (orgchoice <= 1) //choose a police station
             {
                 CallHandler.locationChooser(CallHandler.PoliceStationList, 1600, 125);
                 AttackLocation = CallHandler.SpawnPoint;
             }
-            else
+            else //choose a hospital
             {
                 CallHandler.locationChooser(CallHandler.HospitalList, 1600, 125);
                 AttackLocation = CallHandler.SpawnPoint;
@@ -295,124 +308,141 @@ namespace YobbinCallouts.Callouts
 
             Game.LogTrivial("YOBBINCALLOUTS: ORGANIZATION IS " + orgchoice + ", " + OrganizationName);
             // element [4] in OrganizationMessage is the name of the target.
-            Game.DisplayNotification("Thank you for your sacrifice to the ~o~Cause~w~, to " + OrganizationMessage[CallHandler.RNG(3)] + ". You are an important part of ~r~" + OrganizationName + "~w~." +
+            Game.DisplayNotification("commonmenu", "shop_gunclub_icon_b", "Note", "You found a note on the suspect","Thank you for your sacrifice to our cause, to ~o~" + OrganizationMessage[CallHandler.RNG(3)] + ". You are an important part of the ~r~" + OrganizationName + "~w~." +
                 " While the cops are busy over there, we'll hit the " + OrganizationMessage[4] + " in ~o~" + LSPD_First_Response.Mod.API.Functions.GetZoneAtPosition(AttackLocation).RealAreaName + "~w~!");
             GameFiber.Wait(6500);
             Game.DisplaySubtitle("~g~You:~w~ Shit. Dispatch, we've got another attack planned by the ~r~" + OrganizationName + "~w~!! It's at the ~b~" + OrganizationMessage[4] + "~w~ in ~o~"
                 + LSPD_First_Response.Mod.API.Functions.GetZoneAtPosition(AttackLocation).RealAreaName + "~w~!");
             GameFiber.Wait(4000);
             LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-            GameFiber.Wait(2500);
-            AreaBlip = new Blip(AttackLocation, 125f);
-            AreaBlip.Color = System.Drawing.Color.Red; AreaBlip.Alpha = 0.69f; AreaBlip.IsRouteEnabled = true; AreaBlip.Name = "Planned Attack Location";
-            Game.DisplayHelp("Get to the ~r~Attack Location~w~ as soon as possible!");
-            if (SuspectBlip.Exists()) SuspectBlip.StopFlashing();
-            if (SuspectBlip.Exists()) SuspectBlip.Delete();
-
+            GameFiber.Wait(2000);
             LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("ATTENTION_ALL_SWAT_UNITS_01 WE_HAVE_01 CRIME_TERRORIST_ACTIVITY_01 CRIME_ASSAULT_WITH_A_DEADLY_WEAPON_01 UNITS_RESPOND_CODE_99_01"); //update
-            if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "ALL UNITS: POTENTIAL TERRORIST ATTACK REPORTED AT THE " + OrganizationMessage[4] + " in or near " + LSPD_First_Response.Mod.API.Functions.GetZoneAtPosition(AttackLocation).RealAreaName);
+            if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "ALL UNITS: Potential Terrorist Attack Reported " + OrganizationMessage[4] + " in or near " + LSPD_First_Response.Mod.API.Functions.GetZoneAtPosition(AttackLocation).RealAreaName);
             if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "ALL UNITS RESPOND CODE 99 - USE EXTREME CAUTION. SWAT UNITS HAVE BEEN DISPATCHED.");
 
-            LSPD_First_Response.Mod.API.Functions.RequestBackup(World.GetNextPositionOnStreet(AttackLocation.Around(15)), LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.SwatTeam);
-            LSPD_First_Response.Mod.API.Functions.RequestBackup(World.GetNextPositionOnStreet(AttackLocation.Around(15)), LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
+            Game.DisplayHelp("If you would like to respond to the ~r~Attack, ~w~press ~y~" + Config.MainInteractionKey + "~w~. Otherwise, press ~r~" + Config.CalloutEndKey + "~w~ to finish the callout.");
+            while (!Game.IsKeyDown(Config.MainInteractionKey) && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
 
-            while (player.DistanceTo(AttackLocation) >= 125f) GameFiber.Wait(0);
-            Game.DisplayHelp("Search the ~r~Area~w~ for any ~o~Suspicious Activity.");
-
-            if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Intel obtained - attackers are likely driving a utility van. Potentially a " + SuspectVehicle.Model.Name);
-            else Game.DisplayNotification("~g~Dispatch:~w~ Intel obtained - attackers are likely driving a ~o~utility van~w~. Potentially a ~r~" + SuspectVehicle.Model.Name);
-            //ONE SCENARIO FOR NOW, WILL ADD MORE LATER   
-
-            //edge case tests for this scenario - kill certain combinations of enemies earlier...
-            
-            //Game.LogTrivial("YOBBINCALLOUTS: WAITING " + WaitTime / 1000 + " SECONDS OR UNTIL PLAYER FINDS SUSPECTS");
-            //suspect2 is driver
-            //while (player.DistanceTo(SuspectVehicle) >= 20f && Suspect2.Exists() && Suspect2.IsAlive && !player.IsShooting) //test this
-            //{
-            //    if (player.DistanceTo(SuspectVehicle) <= 20f || !Suspect2.Exists() || !Suspect2.IsAlive || player.IsShooting) break;
-            //    GameFiber.Wait(WaitTime / 2);
-            //    Game.DisplayNotification("~g~Dispatch:~w~ Intel obtained - attackers are likely driving a ~o~utility van~w~. Potentially a ~r~" + SuspectVehicle.Model.Name);
-            //    GameFiber.Wait(WaitTime / 2);
-            //    Game.LogTrivial("YOBBINCALLOUTS: STARTED ATTACK...");
-            //    break;
-            //}
-            //rng for attack   
-            if (CallHandler.FiftyFifty()) //test this scenario...
+            //execute rest of terrorist scenario
+            if (Game.IsKeyDown(Config.MainInteractionKey))
             {
-                Game.LogTrivial("SUSPECT DRIVING TO LOCATION 5 SECONDS");
-                Suspect2.Tasks.DriveToPosition(AttackLocation, 20f, VehicleDrivingFlags.DriveAroundVehicles | VehicleDrivingFlags.DriveAroundPeds |VehicleDrivingFlags.Emergency | VehicleDrivingFlags.AllowWrongWay).WaitForCompletion(5000);
-            }
-            else
-            {
-                Game.LogTrivial("SUSPECT WAITING");
-                while (player.DistanceTo(SuspectVehicle) >= 25f && Suspect2.Exists() && Suspect2.IsAlive && !player.IsShooting && !player.IsAiming) GameFiber.Wait(0);
-            }
+                AreaBlip = new Blip(AttackLocation, 125f);
+                AreaBlip.Color = System.Drawing.Color.Red; AreaBlip.Alpha = 0.69f; AreaBlip.IsRouteEnabled = true; AreaBlip.Name = "Planned Attack Location";
+                Game.DisplayHelp("Get to the ~r~Attack Location~w~ as soon as possible!");
+                if (SuspectBlip.Exists()) SuspectBlip.StopFlashing();
+                if (SuspectBlip.Exists()) SuspectBlip.Delete();    
 
-            SuspectBlip = CallHandler.AssignBlip(SuspectVehicle, System.Drawing.Color.Red, 1, "Attack Vehicle", false);
-            //add this for more peeps later
-            Suspect2.Tasks.LeaveVehicle(SuspectVehicle, LeaveVehicleFlags.None).WaitForCompletion();
-            SuspectBlip2 = CallHandler.AssignBlip(Suspect2, System.Drawing.Color.Red, 0.5f);
-            Suspect2.Tasks.FightAgainstClosestHatedTarget(50, -1);
-            //Suspect2.IsInvincible = false;
-            Suspect3.Tasks.LeaveVehicle(SuspectVehicle, LeaveVehicleFlags.None).WaitForCompletion();
-            SuspectBlip3 = CallHandler.AssignBlip(Suspect3, System.Drawing.Color.Red, 0.5f);
-            Suspect3.Tasks.FightAgainstClosestHatedTarget(50, -1);
-            Suspect4.Tasks.LeaveVehicle(SuspectVehicle, LeaveVehicleFlags.None).WaitForCompletion();
-            SuspectBlip4 = CallHandler.AssignBlip(Suspect4, System.Drawing.Color.Red, 0.5f);
-            Suspect4.Tasks.FightAgainstClosestHatedTarget(50, -1);
-            if (AreaBlip.Exists()) AreaBlip.Delete();
-            if (Main.UB)
-            {
-                UltimateBackup.API.Functions.callCode3SwatBackup(false, false);
-            }
-            //Suspect.Health = 300;
-            //LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CRIME_OFFICER_IN_NEED_OF_ASSISTANCE_02 CRIME_SHOTS_FIRED_AT_AN_OFFICER_01");
-            //Game.DisplayNotification("Dispatch, We Need Backup ASAP, Heavy ~r~Gunfire!");
+                //this calls backup to original attack location not terrorist location so disabling it for now...
+                //if (Main.UB)
+                //{
+                //    UltimateBackupHelper.callCode3Backup();
+                //    UltimateBackupHelper.callCode3SwatBackup(false, false);
+                //}
+                //else
+                //{
+                    LSPD_First_Response.Mod.API.Functions.RequestBackup(World.GetNextPositionOnStreet(AttackLocation.Around(15)), LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.SwatTeam);
+                    LSPD_First_Response.Mod.API.Functions.RequestBackup(World.GetNextPositionOnStreet(AttackLocation.Around(15)), LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
+                //}
 
-            //test this
-            Game.LogTrivial("YOBBINCALLOUTS: Waiting for battle end.");
-            while (Suspect2.Exists() || Suspect3.Exists() || Suspect4.Exists())
-            {
-                GameFiber.Yield();
-                if (!Suspect2.Exists() || Suspect2.IsDead || LSPD_First_Response.Mod.API.Functions.IsPedArrested(Suspect2))
+                while (player.DistanceTo(AttackLocation) >= 125f) GameFiber.Wait(0);
+                Game.DisplayHelp("Search the ~r~Area~w~ for any ~o~Suspicious Activity.");
+
+                if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Intel obtained - attackers are likely driving a utility van. Potentially a " + SuspectVehicle.Model.Name);
+                Game.DisplayNotification("~g~Dispatch:~w~ Intel obtained - attackers are likely driving a ~o~utility van~w~. Potentially a ~r~" + SuspectVehicle.Model.Name);
+                //ONE SCENARIO FOR NOW, WILL ADD MORE LATER   
+
+                //edge case tests for this scenario - kill certain combinations of enemies earlier...
+
+                //Game.LogTrivial("YOBBINCALLOUTS: WAITING " + WaitTime / 1000 + " SECONDS OR UNTIL PLAYER FINDS SUSPECTS");
+                //suspect2 is driver
+                //while (player.DistanceTo(SuspectVehicle) >= 20f && Suspect2.Exists() && Suspect2.IsAlive && !player.IsShooting) //test this
+                //{
+                //    if (player.DistanceTo(SuspectVehicle) <= 20f || !Suspect2.Exists() || !Suspect2.IsAlive || player.IsShooting) break;
+                //    GameFiber.Wait(WaitTime / 2);
+                //    Game.DisplayNotification("~g~Dispatch:~w~ Intel obtained - attackers are likely driving a ~o~utility van~w~. Potentially a ~r~" + SuspectVehicle.Model.Name);
+                //    GameFiber.Wait(WaitTime / 2);
+                //    Game.LogTrivial("YOBBINCALLOUTS: STARTED ATTACK...");
+                //    break;
+                //}
+                //rng for attack   
+                if (CallHandler.FiftyFifty()) //test this scenario...
                 {
-                    if (!Suspect3.Exists() || Suspect3.IsDead || LSPD_First_Response.Mod.API.Functions.IsPedArrested(Suspect3))
+                    Game.LogTrivial("SUSPECT DRIVING TO LOCATION 5 SECONDS");
+                    Suspect2.Tasks.DriveToPosition(AttackLocation, 20f, VehicleDrivingFlags.DriveAroundVehicles | VehicleDrivingFlags.DriveAroundPeds | VehicleDrivingFlags.Emergency | VehicleDrivingFlags.AllowWrongWay).WaitForCompletion(5000);
+                }
+                else
+                {
+                    Game.LogTrivial("SUSPECT WAITING");
+                    while (player.DistanceTo(SuspectVehicle) >= 25f && Suspect2.Exists() && Suspect2.IsAlive && !player.IsShooting && !player.IsAiming) GameFiber.Wait(0);
+                }
+
+                SuspectBlip = CallHandler.AssignBlip(SuspectVehicle, System.Drawing.Color.Red, 1, "Attack Vehicle", false);
+                //add this for more peeps later
+                Suspect2.Tasks.LeaveVehicle(SuspectVehicle, LeaveVehicleFlags.None).WaitForCompletion();
+                SuspectBlip2 = CallHandler.AssignBlip(Suspect2, System.Drawing.Color.Red, 0.5f);
+                Suspect2.Tasks.FightAgainstClosestHatedTarget(50, -1);
+                //Suspect2.IsInvincible = false;
+                Suspect3.Tasks.LeaveVehicle(SuspectVehicle, LeaveVehicleFlags.None).WaitForCompletion();
+                SuspectBlip3 = CallHandler.AssignBlip(Suspect3, System.Drawing.Color.Red, 0.5f);
+                Suspect3.Tasks.FightAgainstClosestHatedTarget(50, -1);
+                Suspect4.Tasks.LeaveVehicle(SuspectVehicle, LeaveVehicleFlags.None).WaitForCompletion();
+                SuspectBlip4 = CallHandler.AssignBlip(Suspect4, System.Drawing.Color.Red, 0.5f);
+                Suspect4.Tasks.FightAgainstClosestHatedTarget(50, -1);
+                if (AreaBlip.Exists()) AreaBlip.Delete();
+                //if (Main.UB)
+                //{
+                //    UltimateBackupHelper.callCode3SwatBackup(false, false);
+                //}
+                //Suspect.Health = 300;
+                //LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("CRIME_OFFICER_IN_NEED_OF_ASSISTANCE_02 CRIME_SHOTS_FIRED_AT_AN_OFFICER_01");
+                //Game.DisplayNotification("Dispatch, We Need Backup ASAP, Heavy ~r~Gunfire!");
+
+                //test this
+                Game.LogTrivial("YOBBINCALLOUTS: Waiting for battle end.");
+                while (Suspect2.Exists() || Suspect3.Exists() || Suspect4.Exists())
+                {
+                    GameFiber.Yield();
+                    if (!Suspect2.Exists() || Suspect2.IsDead || LSPD_First_Response.Mod.API.Functions.IsPedArrested(Suspect2))
                     {
-                        if (!Suspect4.Exists() || Suspect4.IsDead || LSPD_First_Response.Mod.API.Functions.IsPedArrested(Suspect4))
+                        if (!Suspect3.Exists() || Suspect3.IsDead || LSPD_First_Response.Mod.API.Functions.IsPedArrested(Suspect3))
                         {
-                            break;
+                            if (!Suspect4.Exists() || Suspect4.IsDead || LSPD_First_Response.Mod.API.Functions.IsPedArrested(Suspect4))
+                            {
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            SuspectVehicle.EngineHealth = 0f;
-            GameFiber.Wait(2500);
-            Game.DisplayNotification("Dispatch, multiple suspects have been killed in the ~r~Attack.");
-            GameFiber.Wait(2500);
-            LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-            
-            GameFiber.Wait(CallHandler.RNG(0, 7000, 12000));
-            if (CallHandler.FiftyFifty() && SuspectVehicle.Exists()) //bomb
-            {
-                Game.LogTrivial("YOBBINCALLOUTS: BOMB AFTER SHOOTING");
-                SuspectVehicle.IsOnFire = true;
-                int timetoexplode = CallHandler.RNG(0, 6500, 10000);
-                SuspectVehicle.AlarmTimeLeft = TimeSpan.FromMilliseconds(timetoexplode);
-                GameFiber.Wait(1500);
-                Game.DisplaySubtitle("~g~You:~w~ Why did the alarm start sounding?! ~r~Everyone get away from the van!!", 3000);
-                GameFiber.Wait(timetoexplode);
-                SuspectVehicle.Explode();
-                if (Config.CallFD)
+                SuspectVehicle.EngineHealth = 0f;
+                GameFiber.Wait(2500);
+                Game.DisplayNotification("Dispatch, multiple suspects have been killed in the ~r~Attack.");
+                GameFiber.Wait(2500);
+                LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+
+                GameFiber.Wait(CallHandler.RNG(0, 7000, 12000));
+                if (CallHandler.FiftyFifty() && SuspectVehicle.Exists()) //bomb
                 {
-                    try { LSPD_First_Response.Mod.API.Functions.RequestBackup(SuspectVehicle.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.Firetruck); }
-                    catch (System.NullReferenceException) { Game.LogTrivial("YOBBINCALLOUTS: Error Spawning LSPDFR Fire Truck."); }
-                    Game.LogTrivial("YOBBINCALLOUTS: Fire Department Has Been Called");
-                    Game.DisplayNotification("~r~Fire Department~w~ is En Route!");
+                    Game.LogTrivial("YOBBINCALLOUTS: BOMB AFTER SHOOTING");
+                    SuspectVehicle.IsOnFire = true;
+                    int timetoexplode = CallHandler.RNG(0, 6500, 10000);
+                    SuspectVehicle.AlarmTimeLeft = TimeSpan.FromMilliseconds(timetoexplode);
+                    GameFiber.Wait(1500);
+                    Game.DisplaySubtitle("~g~You:~w~ Why did the alarm start sounding?! ~r~Everyone get away from the van!!", 3000);
+                    GameFiber.Wait(timetoexplode);
+                    SuspectVehicle.Explode();
+                    if (Config.CallFD)
+                    {
+                        try { LSPD_First_Response.Mod.API.Functions.RequestBackup(SuspectVehicle.Position, LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.Firetruck); }
+                        catch (System.NullReferenceException) { Game.LogTrivial("YOBBINCALLOUTS: Error Spawning LSPDFR Fire Truck."); }
+                        Game.LogTrivial("YOBBINCALLOUTS: Fire Department Has Been Called");
+                        Game.DisplayNotification("~r~Fire Department~w~ is En Route!");
+                    }
+                    GameFiber.Wait(6500);                   
                 }
-                GameFiber.Wait(6500);
                 Game.DisplayHelp("Press End to ~b~Finish~w~ the Callout when done at the ~o~Scene.");
-                while (!Game.IsKeyDown(System.Windows.Forms.Keys.End)) GameFiber.Wait(0);
             }
+            //END FLOW            
+            while (!Game.IsKeyDown(System.Windows.Forms.Keys.End)) GameFiber.Wait(0);
         }
         private void SpawnVehicle(Vector3 SpawnPoint)
         {
@@ -451,10 +481,13 @@ namespace YobbinCallouts.Callouts
             //Game.LogTrivial("YOBBINCALLOUTS: SPAWNED DECOY VEHICLE.");
 
             //Suspect2 is always driver.
-            Suspect2 = SuspectVehicle.CreateRandomDriver();
-            Suspect3 = new Ped(SuspectVehicle.Position);
+            if (OrganizationName == "Vagos") { models = gangmodels; }
+            else models = armedmodels;
+            Suspect2 = new Ped(models[CallHandler.RNG(3)], SuspectVehicle.Position, 69);
+            Suspect2.WarpIntoVehicle(SuspectVehicle, -1);
+            Suspect3 = new Ped(models[CallHandler.RNG(3)], SuspectVehicle.Position, 69);
             Suspect3.WarpIntoVehicle(SuspectVehicle, -2);
-            Suspect4 = new Ped(SuspectVehicle.Position);
+            Suspect4 = new Ped(models[CallHandler.RNG(3)], SuspectVehicle.Position, 69);
             Suspect4.WarpIntoVehicle(SuspectVehicle, -2);
 
             for (int i = 0; i < 3; i++)
@@ -484,8 +517,15 @@ namespace YobbinCallouts.Callouts
                 tempsuspect.RelationshipGroup = RelationshipGroup.Gang1;
                 tempsuspect.RelationshipGroup.SetRelationshipWith(Game.LocalPlayer.Character.RelationshipGroup, Relationship.Hate);
                 tempsuspect.RelationshipGroup.SetRelationshipWith(RelationshipGroup.Cop, Relationship.Hate);
-                tempsuspect.Health = 150;
+                tempsuspect.Health = 125;
                 tempsuspect.Armor = 200;
+
+                //new combat attributes for each suspect
+                Rage.Native.NativeFunction.Natives.SET_COMBAT_FLOAT(tempsuspect, 6, 0.6f);
+                Rage.Native.NativeFunction.Natives.SET_PED_COMBAT_RANGE(tempsuspect, 1);
+                Rage.Native.NativeFunction.Natives.SET_PED_COMBAT_ATTRIBUTES(tempsuspect, 24, true);
+                Rage.Native.NativeFunction.Natives.SET_PED_COMBAT_ATTRIBUTES(tempsuspect, 35, true);
+                Rage.Native.NativeFunction.Natives.SET_PED_COMBAT_ATTRIBUTES(tempsuspect, 43, true);
 
                 System.Random r3 = new System.Random();  //Instantiate Random Weapon  generator
                 int WeaponModel = r3.Next(0, 5);    //Use Random Weapon generator
@@ -497,18 +537,6 @@ namespace YobbinCallouts.Callouts
                 else if (WeaponModel == 4) tempsuspect.Inventory.GiveNewWeapon("WEAPON_COMPACTRIFLE", -1, true);
                 //tempsuspect.Inventory.EquippedWeapon.Ammo = tempsuspect.Inventory.EquippedWeapon.MaximumAmmo;
             }
-
-            //idk if I need this loop for all peds
-
-            //Ped[] Randos = World.GetAllPeds();
-            //for (int i = 0; i < 25; i++)
-            //{
-            //    GameFiber.Yield();
-            //    if (Randos[i].Exists())
-            //    {
-            //        if (Randos[i] != player && Randos[i] != Suspect2) Suspect2.RelationshipGroup.SetRelationshipWith(Randos[i].RelationshipGroup, Relationship.Hate);
-            //    }
-            //}
         }
         public override void End()
         {

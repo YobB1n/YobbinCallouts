@@ -142,7 +142,7 @@ namespace YobbinCallouts.Callouts
 
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).RealAreaName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
-            CallHandler.locationChooser(CallHandler.StoreList);
+            CallHandler.locationChooser(CallHandler.StoreList, 800);
             if (CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; } 
             else { Game.LogTrivial("YOBBINCALLOUTS: Not near store. Aborting callout."); return false; }
 
@@ -360,6 +360,7 @@ namespace YobbinCallouts.Callouts
 
                 GameFiber.Wait(1500);
                 Witness.Tasks.ClearImmediately();
+                CallHandler.IdleAction(Witness, false);
                 WitnessBlip.Delete();
 
                 Game.DisplayHelp("Speak with the ~b~Victim.");

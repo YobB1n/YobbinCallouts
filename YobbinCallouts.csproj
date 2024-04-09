@@ -51,9 +51,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\RAGEPluginHook_1_87_1293_16189_Release\SDK\RagePluginHookSDK.dll</HintPath>
     </Reference>
-    <Reference Include="StopThePed, Version=4.9.4.1, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="StopThePed, Version=4.9.4.8, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Grand Theft Auto V\plugins\LSPDFR\StopThePed.dll</HintPath>
+      <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Grand Theft Auto V\plugins\LSPDFR\StopThePed.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -67,7 +67,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="UltimateBackup">
+    <Reference Include="UltimateBackup, Version=1.8.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Grand Theft Auto V\plugins\LSPDFR\UltimateBackup.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -109,6 +110,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="StopThePedHelper.cs" />
+    <Compile Include="UltimateBackupHelper.cs" />
     <Compile Include="Utilities\HostageExtensions.cs" />
     <Compile Include="Utilities\VehicleExtensions.cs" />
   </ItemGroup>

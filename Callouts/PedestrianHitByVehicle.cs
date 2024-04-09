@@ -34,12 +34,44 @@ namespace YobbinCallouts.Callouts
         private readonly List<string> WitnessDriverAtFault1 = new List<string>()
         {
          "~g~You:~w~ Hello, are you the caller?",
-         "~b~Witness:~w~ Yes I am, Officer. I was just walking down the street when this car hit that Pedestrian over there!.",
+         "~b~Witness:~w~ Yes I am, Officer. I was just walking down the street when this car hit that Pedestrian over there!",
          "~g~You:~w~ Did you see what happened?",
-         "~b~Witness:~w~ Yes, it was 100% the Driver's fault. They were just crossing the street!.",
+         "~b~Witness:~w~ Yes, it was 100% the Driver's fault. They were just crossing the street!",
+         "~g~You:~w~ Do you have a description of their vehicle?",
+        };
+        private readonly List<string> WitnessDriverAtFault2 = new List<string>()
+        {
+         "~g~You:~w~ Hello, did you call us?",
+         "~b~Witness:~w~ Yes I did, Officer. I was walking down the street when a car struck that Pedestrian!",
+         "~g~You:~w~ Did you get what happened?",
+         "~b~Witness:~w~ Yes, it was the Driver's fault for sure. They were just crossing the street!",
+         "~g~You:~w~ Do you have a description of the vehicle?",
+        };
+        private readonly List<string> WitnessDriverAtFault3 = new List<string>()
+        {
+         "~g~You:~w~ Hi, are you the caller?",
+         "~b~Witness:~w~ Yes I am, Officer. This car struck that pedestrian and just drove off like nothing happened!",
+         "~g~You:~w~ Did you see the crash?",
+         "~b~Witness:~w~ Yes, it was definitely the driver's fault. They didn't slow down at all!",
          "~g~You:~w~ Do you have a description of their vehicle?",
         };
         private readonly List<string> DriverDriverNotAtFault1 = new List<string>()
+        {
+         "~r~Driver:~w~ Officer I really hope that person will be alright! I swear I couldn't have avoided them!",
+         "~g~You:~w~ What happened?",
+         "~r~Driver:~w~ I was just going to get some groceries and they crossed into the street without looking!",
+         "~r~Driver:~w~ I tried to slam on my brakes but they locked up and I couldn't stop in time.",
+         "~g~You:~w~ Okay, hang tight here for me, I'll figure this out.",
+        };
+        private readonly List<string> DriverDriverNotAtFault2 = new List<string>()
+        {
+         "~g~You:~w~ Hello, can you tell me what happened?",
+         "~r~Driver:~w~ It all happened so fast! I think they stepped out into the street without looking and I couldn't stop in time.",
+         "~g~You:~w~ Did you try to help them?",
+         "~r~Driver:~w~ I was going to, I was just really shocked at what happened. I called 9-1-1 first thing.",
+         "~g~You:~w~ Okay, hang tight here for me, I'll sort this out.",
+        };
+        private readonly List<string> DriverDriverNotAtFault3 = new List<string>()
         {
          "~g~You:~w~ Hello, Are you all right?",
          "~r~Driver:~w~ Yeah I'm fine. Hopefully they will be too! It's not my fault Officer, trust me!",
@@ -241,11 +273,19 @@ namespace YobbinCallouts.Callouts
                 if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~b~Witness.");
                 Witness.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
                 if (VictimBlip.Exists()) VictimBlip.Delete();
-                if(CalloutRunning) CallHandler.Dialogue(WitnessDriverAtFault1, Witness);
+                System.Random dialogue = new System.Random();
+                int OpeningDialogue = dialogue.Next(0, 3); //change later
+                if (OpeningDialogue == 0)  CallHandler.Dialogue(WitnessDriverAtFault1, Witness);
+                else if (OpeningDialogue == 1) CallHandler.Dialogue(WitnessDriverAtFault2, Witness);
+                else CallHandler.Dialogue(WitnessDriverAtFault3, Witness);
                 if (SuspectVehicle.Exists())
                 {
-                    Victim.Tasks.PlayAnimation("missfbi3_party_d", "stand_talk_loop_a_male1", -1, AnimationFlags.Loop);
+                    Witness.Tasks.PlayAnimation("missfbi3_party_d", "stand_talk_loop_a_male1", -1, AnimationFlags.Loop);
                     Game.DisplaySubtitle("~b~Caller:~w~ The Vehicle was a ~b~" + CallHandler.GetSetVehicleColor(SuspectVehicle) + "-Colored ~r~" + SuspectVehicle.Model.Name + ".", 4000); //fix color
+                    if (Main.CalloutInterface)
+                    {
+                        CalloutInterfaceHandler.SendMessage(this, "Suspect Vehicle reported as a " + CallHandler.GetSetVehicleColor(SuspectVehicle) + "-colored " + SuspectVehicle.Model.Name + ".");
+                    }
                 }
                 else
                 {
@@ -280,11 +320,15 @@ namespace YobbinCallouts.Callouts
                     if (VictimBlip.Exists()) VictimBlip.Delete();
                     try { NativeFunction.Natives.ROLL_DOWN_WINDOW(SuspectVehicle, 0); }
                     catch { Game.LogTrivial("YOBBINCALLOUTS: Error Rolling Down Driver Window."); }
-                    if (CalloutRunning) CallHandler.Dialogue(DriverDriverNotAtFault1);
+                    System.Random dialogue = new System.Random();
+                    int OpeningDialogue = dialogue.Next(0, 3); //change later
+                    if (OpeningDialogue == 0) CallHandler.Dialogue(DriverDriverNotAtFault1);
+                    else if (OpeningDialogue == 1) CallHandler.Dialogue(DriverDriverNotAtFault2);
+                    else CallHandler.Dialogue(DriverDriverNotAtFault3);
 
                     Game.DisplayHelp("Deal With the ~r~Driver. ~w~Press ~y~" + Config.CalloutEndKey + " ~w~When Finished.");
                     while (!Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
-                    if (Suspect.Exists()) if (Suspect.IsAlive) Game.DisplayNotification("Dispatch, We Have ~b~Arrested~w~ the Suspect.");
+                    //if (Suspect.Exists()) if (Suspect.IsAlive) Game.DisplayNotification("Dispatch, We Have ~b~Arrested~w~ the Suspect.");
                 }
                 else //flees
                 {

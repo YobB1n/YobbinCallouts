@@ -409,7 +409,7 @@ namespace YobbinCallouts.Callouts
                 //while (!Game.IsKeyDown(Config.MainInteractionKey)) GameFiber.Wait(0);
                 try
                 {
-                    StopThePed.API.Functions.callTowService();  //breaks for some reason
+                    YobbinCallouts.StopThePedFunctions.callTowService();  //breaks for some reason
                 }
                 catch (Exception e)
                 {
@@ -599,6 +599,7 @@ namespace YobbinCallouts.Callouts
                     GameFiber.StartNew(delegate
                     {
                         Driver.Tasks.FollowNavigationMeshToPosition(DriverDestination, 69, 1.25f, -1).WaitForCompletion();
+                        GameFiber.Wait(500);
                         //if (Driver.Exists()) Driver.Delete();
                     });
                     GameFiber.Wait(1000);
