@@ -2,7 +2,7 @@
 # YobbinCallouts
 [![Downloads](https://img.shields.io/github/downloads/YobB1n/YobbinCallouts/total.svg)](https://github.com/YobB1n/YobbinCallouts/releases)
 
-YobbinCallouts by YobB1n copyright (c) 2020-2022 YobB1n.
+YobbinCallouts by YobB1n copyright (c) 2020-2024 YobB1n.
 This project in its entirety is open-source. Please provide appropriate credit when portions of this code are used as references or in verbatim.
 
 ### Quick Links: <br/>
@@ -12,7 +12,7 @@ This project in its entirety is open-source. Please provide appropriate credit w
 
 ## Introduction
 
-YobbinCallouts is a project I started in the summer of 2020 to provide a wide range of unique callouts all around the map, that has never been done before. The project started with just two callouts with extremely poor code efficiency and style, to now including over a dozen callouts that have improved greatly as my coding skills have improved. Of course, it is well known that I am a pretty bad programmer (lmao), so please excuse my poor style or code efficiency.
+YobbinCallouts is a project I started in the summer of 2020 to provide a wide range of unique callouts all around the map, that have never been done before. The project started with just two callouts with extremely poor code efficiency and style, to now including over a dozen callouts that have improved greatly as my coding skills have improved. Of course, it is well known that I am a pretty bad programmer (lmao), so please excuse my poor style or code efficiency.
 
 As of July 29, 2022, the project is now entirely open-source to help others with their own LSPDFR plugins, as well as for interested (and lovely) people to contribute to the project. If you'd like to contribute, please continue reading! Thanks!
 
@@ -36,6 +36,8 @@ Creates a list of all the Vector3 locations within `mindistance` and `maxdistanc
 **`void Dialogue(List<string> dialogue, Ped animped = null, String animdict = "missfbi3_party_d", String animname = "stand_talk_loop_a_male1", float animspeed = -1, AnimationFlags animflag = AnimationFlags.Loop)`**<br/>
 Plays a dialogue in `List<string>` form. Optionally, specify a Ped and animation to play while the dialogue is progressing. The dialogue will progress when the player presses the `MainInteractionKey` key in the `Config.ini` file.
 
+There are also several ArrayLists of relevant loations around the map, including a variety of random houses, police stations, hospitals, and convenience stores. Feel free to use them in your own plugins when selecting locations!
+
 ### PedBackground
 
-This class was made for the Hospital Emergency callout. It was made to keep the code clean inside the actual callout file. This class gives a detailed medical report about the suspect that ran away from the hospital. The suspect could be either a wanted criminal or a person with a mental health condition which this class takes into account. Method explanation coming soon.
+This class was made for the Hospital Emergency callout. It was made to keep the code clean inside the actual callout file. This class gives a detailed medical report about the suspect that ran away from the hospital. The suspect could be either a wanted criminal or a person with a mental health condition which this class takes into account. Hopefully more implementations of this method coming soon, credit to Roheat for helping with this!
