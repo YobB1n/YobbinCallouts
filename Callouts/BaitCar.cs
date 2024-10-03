@@ -12,7 +12,7 @@ using CalloutInterfaceAPI;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInterface("Bait Car", CalloutProbability.Medium, "")]
+    [CalloutInterface("[YC] Bait Car", CalloutProbability.Medium, "")]
 
     public class BaitCar : Callout
     {
