@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Bar Fight", CalloutProbability.High)]
+    [CalloutInfo("[YC] Bar Fight", CalloutProbability.High)]
     public class BarFight : Callout
     {
         private Vector3 MainSpawnPoint;
