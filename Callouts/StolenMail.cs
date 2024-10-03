@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Stolen Mail", CalloutProbability.Medium)]
+    [CalloutInfo("[YC] Stolen Mail", CalloutProbability.Medium)]
     public class StolenMail : Callout
     {
         private Vector3 MainSpawnPoint;
