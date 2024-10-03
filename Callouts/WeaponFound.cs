@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Weapon Found", CalloutProbability.High)]
+    [CalloutInfo("[YC] Weapon Found", CalloutProbability.High)]
     class WeaponFound : Callout
     {
         public Vector3 MainSpawnPoint;
