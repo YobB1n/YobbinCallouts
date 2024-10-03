@@ -9,7 +9,7 @@ using System;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Sovereign Citizen", CalloutProbability.High)] //Change later
+    [CalloutInfo("[YC] Sovereign Citizen", CalloutProbability.High)] //Change later
     public class SovereignCitizen : Callout
     {
         private Vector3 MainSpawnPoint;
