@@ -227,9 +227,9 @@ namespace YobbinCallouts
             "zion", "zion2", "baller", "baller2", "baller3", "cavalcade", "fq2", "granger", "gresley", "habanero", "huntley", "mesa", "radi", "rebla", "rocoto", "seminole", "serrano", "xls", "asea", "asterope",
             "emporor", "fugitive", "ingot", "intruder", "premier", "primo", "primo2", "regina", "stanier", "stratum", "surge", "tailgater", "washington", "bestiagts", "blista2", "buffalo", "schafter2", "euros",
             "sadler", "bison", "bison2", "bison3", "burrito", "burrito2", "minivan", "minivan2", "paradise", "pony"};
-            int model = monke.Next(0, VehicleModels.Length);
-            Game.LogTrivial("YOBBINCALLOUTS: VEHICLESPAWNER: Vehicle Model is " + VehicleModels[model]);
-            var veh = new Vehicle(VehicleModels[model], SpawnPoint, Heading);
+            string model = VehicleModels[monke.Next(0, VehicleModels.Length)];
+            Game.LogTrivial("YOBBINCALLOUTS: VEHICLESPAWNER: Vehicle Model is " + model);
+            var veh = new Vehicle(model, SpawnPoint, Heading);
             if (persistent) veh.IsPersistent = true; //vehicle is marked as persistent by default
             return veh;
         }

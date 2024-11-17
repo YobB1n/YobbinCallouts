@@ -281,7 +281,7 @@ namespace YobbinCallouts.Callouts
             Game.DisplayHelp("Search the ~r~Suspect.");
             if (Suspect.Exists()) //test this with STP too!
             {
-                while (player.DistanceTo(Suspect) >= 2.5f) GameFiber.Wait(0);
+                while (player.DistanceTo(Suspect) >= 2.5f) GameFiber.Wait(0); //crush STP
             }
             GameFiber.Wait(1500);
             Game.DisplaySubtitle("~g~You: ~w~Hm, what's this piece of paper here?", 2000);
@@ -330,7 +330,7 @@ namespace YobbinCallouts.Callouts
                 AreaBlip.Color = System.Drawing.Color.Red; AreaBlip.Alpha = 0.69f; AreaBlip.IsRouteEnabled = true; AreaBlip.Name = "Planned Attack Location";
                 Game.DisplayHelp("Get to the ~r~Attack Location~w~ as soon as possible!");
                 if (SuspectBlip.Exists()) SuspectBlip.StopFlashing();
-                if (SuspectBlip.Exists()) SuspectBlip.Delete();    
+                if (SuspectBlip.Exists()) SuspectBlip.Delete();
 
                 //this calls backup to original attack location not terrorist location so disabling it for now...
                 //if (Main.UB)
@@ -340,9 +340,15 @@ namespace YobbinCallouts.Callouts
                 //}
                 //else
                 //{
+                try
+                {
                     LSPD_First_Response.Mod.API.Functions.RequestBackup(World.GetNextPositionOnStreet(AttackLocation.Around(15)), LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.SwatTeam);
                     LSPD_First_Response.Mod.API.Functions.RequestBackup(World.GetNextPositionOnStreet(AttackLocation.Around(15)), LSPD_First_Response.EBackupResponseType.Code3, LSPD_First_Response.EBackupUnitType.LocalUnit);
-                //}
+                }catch(Exception e)
+                {
+                    Game.LogTrivial("YOBBINCALLOUTS: Failed to spawn backup units. Likely invalid LSPDFR data files. " + e.ToString());
+                }
+                    //}
 
                 while (player.DistanceTo(AttackLocation) >= 125f) GameFiber.Wait(0);
                 Game.DisplayHelp("Search the ~r~Area~w~ for any ~o~Suspicious Activity.");

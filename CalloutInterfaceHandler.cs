@@ -38,7 +38,7 @@ namespace YobbinCallouts
         {
             try
             {
-                Functions.SendMessage(sender, message);
+                CalloutInterfaceAPI.Functions.SendMessage(sender, message);
             }
             catch (System.Exception e)
             {

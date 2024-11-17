@@ -15,7 +15,7 @@ namespace YobbinCallouts
     public class Main : Plugin
     {
         public static Version NewVersion = new Version();
-        public static Version curVersion = new Version("1.7.1");
+        public static Version curVersion = new Version("1.7.2");
         public static bool STP; //if STP is installed by the user
         public static bool UB; //if UB is installed by the user
         public static bool CalloutInterface; //if Callout Interface is installed by the user
