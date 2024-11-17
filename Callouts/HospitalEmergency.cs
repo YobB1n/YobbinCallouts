@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Hospital Emergency", CalloutProbability.High)]
+    [CalloutInfo("[YC] Hospital Emergency", CalloutProbability.High)]
     class HospitalEmergency : Callout
     {
         private Vector3 MainSpawnPoint;

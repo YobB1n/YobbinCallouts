@@ -11,7 +11,7 @@ using System;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Citizen's Arrest", CalloutProbability.High)]
+    [CalloutInfo("[YC] Citizen Arrest", CalloutProbability.High)]
     public class CitizenArrest : Callout
     {
         private Vector3 MainSpawnPoint;

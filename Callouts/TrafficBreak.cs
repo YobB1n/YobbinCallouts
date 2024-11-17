@@ -8,7 +8,7 @@ using System;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Traffic Break", CalloutProbability.Medium)] //Change later
+    [CalloutInfo("[YC] Traffic Break", CalloutProbability.Medium)] //Change later
     public class TrafficBreak : Callout
     {
         private Vector3 MainSpawnPoint;

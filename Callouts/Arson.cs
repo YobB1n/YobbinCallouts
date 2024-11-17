@@ -10,7 +10,7 @@ using YobbinCallouts.Utilities;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Arson", CalloutProbability.High)]
+    [CalloutInfo("[YC] Arson", CalloutProbability.High)]
 
     public class Arson : Callout
     {

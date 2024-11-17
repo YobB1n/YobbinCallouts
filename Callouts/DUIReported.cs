@@ -11,7 +11,7 @@ using System.Drawing;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("DUI Reported", CalloutProbability.High)]
+    [CalloutInfo("[YC] DUI Reported", CalloutProbability.High)]
     class DUIReported : Callout
     {
         private Vector3 MainSpawnPoint;

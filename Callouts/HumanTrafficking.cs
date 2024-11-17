@@ -9,7 +9,7 @@ using System;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Human Trafficking", CalloutProbability.Medium)]
+    [CalloutInfo("[YC] Human Trafficking", CalloutProbability.Medium)]
     public class HumanTrafficking : Callout
     {
         private Vector3 MainSpawnPoint;

@@ -9,7 +9,7 @@ using System;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Property Checkup", CalloutProbability.High)]
+    [CalloutInfo("[YC] Property Checkup", CalloutProbability.High)]
 
     public class PropertyCheck : Callout
     {
