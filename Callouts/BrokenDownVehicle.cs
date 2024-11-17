@@ -23,7 +23,7 @@ using YobbinCallouts.Utilities;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Broken Down Vehicle", CalloutProbability.High)]
+    [CalloutInfo("[YC] Broken Down Vehicle", CalloutProbability.High)]
 
     public class BrokenDownVehicle : Callout
     {

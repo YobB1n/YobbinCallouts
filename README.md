@@ -2,8 +2,8 @@
 # YobbinCallouts
 [![Downloads](https://img.shields.io/github/downloads/YobB1n/YobbinCallouts/total.svg)](https://github.com/YobB1n/YobbinCallouts/releases)
 
-YobbinCallouts by YobB1n copyright (c) 2020-2022 YobB1n.
-This project in its entirety is open-source. Please provide appropriate credit when portions of this code are used as reference or in verbatim.
+YobbinCallouts by YobB1n copyright (c) 2020-2024 YobB1n.
+This project in its entirety is open-source. Please provide appropriate credit when portions of this code are used as references or in verbatim.
 
 ### Quick Links: <br/>
 **Download the callouts:** https://www.lcpdfr.com/downloads/gta5mods/scripts/29467-yobbin-callouts/ <br/>
@@ -12,7 +12,7 @@ This project in its entirety is open-source. Please provide appropriate credit w
 
 ## Introduction
 
-YobbinCallouts is a project I started in summer of 2020 to provide a wide range of unique callouts all around the map, that have never been done before. The project started with just two callouts with extremely poor code efficiency and style, to now including over a dozen callouts that have improved greatly as my coding skills have improved. Of course, it is well known that I am a pretty bad programmer (lmao), so please excuse poor style or code efficiency.
+YobbinCallouts is a project I started in the summer of 2020 to provide a wide range of unique callouts all around the map, that have never been done before. The project started with just two callouts with extremely poor code efficiency and style, to now including over a dozen callouts that have improved greatly as my coding skills have improved. Of course, it is well known that I am a pretty bad programmer (lmao), so please excuse my poor style or code efficiency.
 
 As of July 29, 2022, the project is now entirely open-source to help others with their own LSPDFR plugins, as well as for interested (and lovely) people to contribute to the project. If you'd like to contribute, please continue reading! Thanks!
 
@@ -25,18 +25,19 @@ This is the EntryPoint for the LSPDFR plugin. Not very interesting, there is an 
 ### CallHandler
 
 This class is probably the most interesting if you're looking through my code to use for your own. The class contains a variety of
-useful helper functions that you can easily incorporate into your own LSPDFR/RPH plugins by simply copy/pasting. Functions include:
+useful helper functions that you can easily incorporate into your own LSPDFR/RPH plugins by simply copy-pasting. Functions include:
 
 **`void IdleAction(Ped ped, bool iscop)`**<br/>
-Plays an Idle Animation for `ped`. If `iscop = true`, the animation will be a cop idle animation. Different animations available for male/female cops and citizens, specified in the relevant two-dimensional arrays at the start of the class.
+Plays an Idle Animation for `ped`. If `iscop = true`, the animation will be a cop idle animation. Different animations are available for male/female cops and citizens, specified in the relevant two-dimensional arrays at the start of the class.
 
 **`void locationChooser(ArrayList list, float maxdistance = 600f, float mindistance = 25f)`**<br/>
-Creates a list of all the Vector3 locations within `mindistance` and `maxdistance` contained in `list`. Returns `locationReturned = false` if no corresponding locations are found in `list`, and a random corresponding location if a location is found.
+Creates a list of all the Vector3 locations within `mindistance` and `maxdistance` contained in `list`. Returns `locationReturned = false` if no corresponding locations are found in the `list`, and a random corresponding location if a location is found.
 
 **`void Dialogue(List<string> dialogue, Ped animped = null, String animdict = "missfbi3_party_d", String animname = "stand_talk_loop_a_male1", float animspeed = -1, AnimationFlags animflag = AnimationFlags.Loop)`**<br/>
-Plays a dialogue in `List<string>` form. Optionally, specify a Ped and animation to play while the dialogue is progressing. The dialgoue will be progress when the player presses the `MainInteractionKey` key in the `Config.ini` file.
+Plays a dialogue in `List<string>` form. Optionally, specify a Ped and animation to play while the dialogue is progressing. The dialogue will progress when the player presses the `MainInteractionKey` key in the `Config.ini` file.
+
+There are also several ArrayLists of relevant loations around the map, including a variety of random houses, police stations, hospitals, and convenience stores. Feel free to use them in your own plugins when selecting locations!
 
 ### PedBackground
 
-This class was made for the HospitalEmergency callout. It was made in order to keep the code clean inside the actual callout file. This class gives a detailed medical report about the suspect that ran away from the hospital. The suspect could be either a wanted criminal or a person with a mental health condition which this class takes into account. Method explanation coming soon.
-
+This class was made for the Hospital Emergency callout. It was made to keep the code clean inside the actual callout file. This class gives a detailed medical report about the suspect that ran away from the hospital. The suspect could be either a wanted criminal or a person with a mental health condition which this class takes into account. Hopefully more implementations of this method coming soon, credit to Roheat for helping with this!

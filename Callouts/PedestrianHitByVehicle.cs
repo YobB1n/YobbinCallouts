@@ -8,7 +8,7 @@ using System;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Pedestrian Hit By Vehicle", CalloutProbability.High)]
+    [CalloutInfo("[YC] Pedestrian Hit By Vehicle", CalloutProbability.High)]
 
     class PedestrianHitByVehicle : Callout
     {

@@ -9,7 +9,7 @@ using System;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Photography of Private Property", CalloutProbability.High)]
+    [CalloutInfo("[YC] Photography of Private Property", CalloutProbability.High)]
 
     public class PhotographyOfPrivateProperty : Callout
     {

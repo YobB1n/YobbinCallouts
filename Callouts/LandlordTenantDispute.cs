@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Landlord-Tenant Dispute", CalloutProbability.High)]
+    [CalloutInfo("[YC] Landlord-Tenant Dispute", CalloutProbability.High)]
     class LandlordTenantDispute : Callout
     {
         private Vector3 MainSpawnPoint;

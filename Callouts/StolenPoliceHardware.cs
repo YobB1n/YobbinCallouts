@@ -9,7 +9,7 @@ using YobbinCallouts.Utilities;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Stolen Police Hardware", CalloutProbability.High)]
+    [CalloutInfo("[YC] Stolen Police Hardware", CalloutProbability.High)]
     class StolenPoliceHardware : Callout
     {
         private Vector3 MainSpawnPoint;

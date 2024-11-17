@@ -8,7 +8,7 @@ using Rage.Native;
 namespace YobbinCallouts.Callouts
 {
     // [CalloutInterface("Active Shooter", CalloutProbability.Medium, "Active Shooter", "Code 99")] //test to see if this works without calloutinterface installed!!
-    [CalloutInfo("Active Shooter", CalloutProbability.High)]
+    [CalloutInfo("[YC] Active Shooter", CalloutProbability.High)]
     public class ActiveShooter : Callout
     {
         private Vector3 MainSpawnPoint;

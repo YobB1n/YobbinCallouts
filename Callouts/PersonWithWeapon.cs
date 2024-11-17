@@ -8,7 +8,7 @@
 
 //namespace YobbinCallouts.Callouts
 //{
-//    [CalloutInfo("Person With a Weapon", CalloutProbability.High)]
+//    [CalloutInfo("[YC] Person With a Weapon", CalloutProbability.High)]
 
 //    class PersonWithWeapon : Callout
 //    {

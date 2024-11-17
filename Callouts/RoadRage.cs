@@ -9,7 +9,7 @@ using System;
 
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Road Rage", CalloutProbability.High)] //Change later
+    [CalloutInfo("[YC] Road Rage", CalloutProbability.High)] //Change later
     public class RoadRage : Callout
     {
         private Vector3 MainSpawnPoint;

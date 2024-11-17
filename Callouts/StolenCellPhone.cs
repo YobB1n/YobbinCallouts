@@ -10,7 +10,7 @@ using System;
 //This Callout was inspired by a LivePD Call.
 namespace YobbinCallouts.Callouts
 {
-    [CalloutInfo("Stolen Cellphone", CalloutProbability.Medium)]
+    [CalloutInfo("[YC] Stolen Cellphone", CalloutProbability.Medium)]
 
     public class StolenCellPhone : Callout
     {
