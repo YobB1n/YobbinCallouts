@@ -172,11 +172,11 @@ namespace YobbinCallouts.Callouts
             Game.LogTrivial("YOBBINCALLOUTS: Human Trafficking Callout Accepted by User.");
             if (Main.CalloutInterface)
             {
-                CalloutInterfaceHandler.SendCalloutDetails(this, "CODE 2", "");
+                CalloutInterfaceHandler.SendCalloutDetails(this, "CODE 2 High", "");
             }
             else
             {
-                Game.DisplayNotification("Respond ~b~Code 2.");
+                Game.DisplayNotification("Respond ~b~Code 2 High.");
             }
 
             if (MainScenario <= 1) //suspect not on scene
