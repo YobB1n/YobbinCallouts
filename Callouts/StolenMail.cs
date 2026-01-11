@@ -13,6 +13,8 @@ namespace YobbinCallouts.Callouts
     public class StolenMail : Callout
     {
         private Vector3 MainSpawnPoint;
+        private Vector3 OldLastVehiclePos;
+        private DateTime OldDateTime;
 
         private Citizen Suspect;
         private Ped HouseOwner;
@@ -25,15 +27,16 @@ namespace YobbinCallouts.Callouts
         private int MainScenario;
         private Rage.Object Mail;
         private bool CalloutRunning;
+        private Vehicle SuspectVehicle;
         List<string> HouseOwnerDialogue = new List<string>()
         {
-            "Home Owner: Hello Officer. Yes, I was the one who called about my mail being stolen. Thank you for coming.",
-            "You: How long has this been happening for?",
-            "Home Owner: This has been happening for a week now.",
-            "You: Why didn't you call us before?",
-            "Home Owner: I thought the mail company took a break.",
-            "You: That is an excuse for being lazy if I have ever heard of one. Anyways, do you have any description of the person?",
-            "Home Owner: No."
+            "~b~Home Owner: ~w~Hello Officer. Yes, I was the one who called about my mail being stolen. Thank you for coming.",
+            "~g~You: ~w~How long has this been happening for?",
+            "~b~Home Owner: ~w~This has been happening for a week now.",
+            "~g~You: ~w~Why didn't you call us before?",
+            "~b~Home Owner: ~w~I thought the mail company took a break.",
+            "~g~You: ~w~Uh, ok? Next time if you suspect supicious activity you have to let us know earlier!",
+            "~b~Home Owner: ~w~Sorry about that. I do have a CCTV video of the suspect. I think they were just here!"
         };
         List<string> HouseOwnerFalseAlarmDialogue = new List<string>()
         {
@@ -45,15 +48,15 @@ namespace YobbinCallouts.Callouts
         };
         List<string> SuspectDialogue = new List<string>()
         {
-            "Suspect: Watchu want",
-            "You: Hey, just want to talk to you. Whats in your hand there?",
-            "Suspect: Watchu think it is, mail. punk ass",
-            "You: Where did you get that mail from?",
-            "Suspect: Places.....",
-            "You: I am going to go straight to the point if you straight with me, aight. We got a call about someone stealing mail. You are the only one in this vicinity that is walking around with mail. Did you steal it",
-            "Suspect: fine man, you got me...good job sherlock",
-            "You: Do you got any weapons on you?",
-            "Suspect: nah man, who the fuck you think I am. Don't piss me off 'fore I beat yo ass up."
+            "~r~Suspect: ~w~Watchu want",
+            "~g~You: ~w~Hey, just want to talk to you. Whats in your hand there?",
+            "~r~Suspect: ~w~Watchu think it is, mail. punk ass",
+            "~g~You: ~w~Where did you get that mail from?",
+            "~r~Suspect: ~w~Places.....",
+            "~g~You: ~w~I am going to go straight to the point if you straight with me, aight. We got a call about someone stealing mail. You are the only one in this vicinity that is walking around with mail. Did you steal it",
+            "~r~Suspect: ~w~fine man, you got me...good job sherlock",
+            "~g~You: ~w~Do you got any weapons on you?",
+            "~r~Suspect: ~w~nah man, who the fuck you think I am. Don't piss me off 'fore I beat yo ass up."
         };
         private System.Windows.Forms.Keys EndKey = Config.CalloutEndKey;
         private System.Windows.Forms.Keys InteractionKey = Config.MainInteractionKey;
@@ -61,7 +64,7 @@ namespace YobbinCallouts.Callouts
 
         public override bool OnBeforeCalloutDisplayed()
         {
-            Game.LogTrivial("==========YOBBINCALLOUTS: Explosion Callout Start==========");
+            Game.LogTrivial("==========YOBBINCALLOUTS: Stolen Mail Callout Start==========");
             MainScenario = monke.Next(0, 0);
             Game.LogTrivial("YOBBINCALLOUTS: Scenario Number is " + MainScenario + "");
 
@@ -100,7 +103,7 @@ namespace YobbinCallouts.Callouts
                     Game.DisplayNotification("Respond ~b Code 2.");
 
                 }
-                HouseOwner = new Ped(MainSpawnPoint.Around(2));
+                HouseOwner = new Ped(MainSpawnPoint); //was .Around(2)
                 HouseOwner.IsPersistent = true;
                 HouseOwner.BlockPermanentEvents = true;
                 HouseOwnerBlip = CallHandler.AssignBlip(HouseOwner, Color.Blue, .69f, "Caller", true);
@@ -146,22 +149,27 @@ namespace YobbinCallouts.Callouts
                         if (Game.IsKeyDown(EndKey)) { break; }
                         CallHandler.IdleAction(HouseOwner, false);
                         while (Vector3.Distance(player.Position, HouseOwner.Position) >= 7.5f) { GameFiber.Wait(0); }
-                        Game.DisplaySubtitle("~g~You:~w~ Hello Sir. Did you call about your mail being stolen.");
+                        Game.DisplaySubtitle("~g~You:~w~ Hello. Did you call about your mail being stolen?");
                         HouseOwnerBlip.IsRouteEnabled = false;
                         HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
-                        if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to speak with the ~b~Landlord.");
+                        if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to speak with the ~b~Caller.");
                         Vector3 SuspectSpawn = World.GetNextPositionOnStreet(player.Position.Around(550f));
-                        Suspect = new Citizen(SuspectSpawn, 69);
-                        Suspect.IsPersistent = true;
-                        Suspect.BlockPermanentEvents = true;
-                        Suspect.Tasks.Wander();
+                        SuspectVehicle = CallHandler.SpawnVehicle(SuspectSpawn, 69); //specify heading if reqd
+                        SuspectVehicle.IsDeformationEnabled = true;
+                        SuspectVehicle.IsPersistent = true;
+
+                        Game.LogTrivial("YOBBINCALLOUTS: Finished Spawning Suspect.");
                         CallHandler.Dialogue(HouseOwnerDialogue, HouseOwner);
-                        Game.DisplaySubtitle("You: Really, you cannot tell me anything about the suspect? I cannot guarantee I will be able to find him, but I will try my best.");
-                        if (Config.DisplayHelp) { Game.DisplayNotification("Press " + InteractionKey + " to continue dialogue"); }
-                        while (!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
-                        Game.DisplaySubtitle("Home Owner: Umm...the person ran off....before I could remember any of that. I think the person was " + Suspect.Gender + " and was holding my mail while wandering off.");
-                        while (!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
-                        Game.DisplaySubtitle("You: Ok. Will try my best. Thank you.");
+                        GameFiber.Wait(3000);
+                        //door camera
+                        DoorCamera();
+                        //while (!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
+                        Game.DisplaySubtitle("~b~Caller: ~w~I also saw the thief's vehicle on my other security camera. It's a ~r~"+ SuspectVehicle.Model.Name + "~w~.");
+                        GameFiber.Wait(3000);
+                        Game.DisplaySubtitle("~b~You:~w~ Ok. I Will try my best to find them. If you said they were just here, they could be in the area looking for other unattended packages.");
+                        GameFiber.Wait(2000);
+                        HouseOwner.Tasks.FollowNavigationMeshToPosition(MainSpawnPoint, 0f, 2f, 2f); //test this
+                        CallHandler.IdleAction(HouseOwner, false);
                         SearchArea = new Blip(Suspect.Position.Around(15), 50);
                         FindSuspect();
                     }
@@ -195,7 +203,127 @@ namespace YobbinCallouts.Callouts
                 }
             });
         }
+        private void DoorCamera()
+        {
+            //from Albo Assorted Callouts
+            Game.LogTrivial("YOBBINCALLOUTS: Start door camera...");
+            CCTVShowing = true;
+            Game.LocalPlayer.HasControl = false;
+            Game.FadeScreenOut(1500, true);
+            NativeFunction.Natives.SET_TIMECYCLE_MODIFIER("CAMERA_BW");
+            if (Game.LocalPlayer.Character.LastVehicle.Exists())
 
+            {
+                OldLastVehiclePos = Game.LocalPlayer.Character.LastVehicle.Position;
+                Game.LocalPlayer.Character.LastVehicle.IsVisible = false;
+                Game.LocalPlayer.Character.LastVehicle.SetPositionZ(Game.LocalPlayer.Character.LastVehicle.Position.Z + 8f);
+                Game.LocalPlayer.Character.LastVehicle.IsPositionFrozen = true;
+            }
+            bool DateTimeChanged = false;
+            try
+            {
+                OldDateTime = World.DateTime;
+                World.DateTime = DateTime.Now;
+                //World.IsTimeOfDayFrozen = true;
+                DateTimeChanged = true;
+            }
+            catch (Exception e) { }
+
+
+            Game.LocalPlayer.Character.IsVisible = false;
+            HouseOwner.IsVisible = false;
+            Vector3 suspectOldPosition = SuspectVehicle.Position;
+            Rotator suspectOldRotator = SuspectVehicle.Rotation;
+            Vector3 PlayerOldPos = Game.LocalPlayer.Character.Position;
+            Vector3 HouseOwnerOldPos = HouseOwner.Position;
+            Game.LocalPlayer.Character.SetPositionZ(Game.LocalPlayer.Character.Position.Z + 8f);
+            Game.LocalPlayer.Character.IsPositionFrozen = true;
+            HouseOwner.SetPositionZ(HouseOwner.Position.Z + 8f);
+            HouseOwner.IsPositionFrozen = true;
+
+            //originally camera position based off of suspect vehicle, will see if I can change
+            //SuspectVehicle.Position = SuspectVehicleSpawnPoint;
+            Camera cam = new Camera(true);
+            //cam.Position = SuspectVehicle.GetOffsetPosition(Vector3.RelativeFront * 4.4f);
+            cam.SetPositionZ(cam.Position.Z + 3.6f);
+            //Vector3 directionFromHouseOwnerToCar = (SuspectVehicle.Position - cam.Position);
+            Vector3 directionFromHouseOwnerToCar = (MainSpawnPoint - cam.Position);
+            directionFromHouseOwnerToCar.Normalize();
+            cam.Rotation = directionFromHouseOwnerToCar.ToRotator();
+            //testing
+            SuspectVehicle.Position = directionFromHouseOwnerToCar;
+            //Suspect.Tasks.PerformDrivingManeuver(VehicleManeuver.Wait);
+            Suspect = new Citizen(MainSpawnPoint);
+            Suspect.IsPersistent = true;
+            Suspect.BlockPermanentEvents = true;
+            Suspect.ClearBlood();
+            //Suspect.Tasks.FollowNavigationMeshToPosition(HouseOwnerOldPos, 69, 3f, 5f, 0).WaitForCompletion();
+            //SuspectVehicle.IsPositionFrozen = false;
+
+            GameFiber.Sleep(2000);
+
+            Game.FadeScreenIn(1500, true);
+            CCTVCamNumber = CallHandler.RNG(6);
+            Game.FrameRender += DrawCCTVText;
+            GameFiber.Wait(1500);
+            Game.DisplaySubtitle("~b~Caller~s~: There they are!", 6600);
+            GameFiber.Wait(2000);
+
+            Mail = new Rage.Object("prop_cs_envolope_01", Vector3.Zero);
+            Mail.IsPersistent = true;
+            Mail.AttachTo(Suspect, Suspect.GetBoneIndex(PedBoneId.LeftHand), new Vector3(0.1490f, 0.0560f, -0.0100f), new Rotator(-17f, -142f, -151f));
+            Suspect.Tasks.FollowNavigationMeshToPosition(PlayerOldPos, 69, 3f, 5f, 0);
+            GameFiber.Wait(6500);
+            Game.FadeScreenOut(1500, true);
+            CCTVShowing = false;
+
+            //re spawn everything in
+            Game.LocalPlayer.Character.IsVisible = true;
+            if (Game.LocalPlayer.Character.LastVehicle.Exists())
+            {
+                Game.LocalPlayer.Character.LastVehicle.Position = OldLastVehiclePos;
+                Game.LocalPlayer.Character.LastVehicle.IsPositionFrozen = false;
+                Game.LocalPlayer.Character.LastVehicle.IsVisible = true;
+            }
+            //World.IsTimeOfDayFrozen = false;
+            if (DateTimeChanged) { World.DateTime = OldDateTime; }
+            HouseOwner.IsVisible = true;
+            Game.LocalPlayer.Character.IsPositionFrozen = false;
+            HouseOwner.IsPositionFrozen = false;
+            Game.LocalPlayer.Character.Position = PlayerOldPos;
+            HouseOwner.Position = HouseOwnerOldPos;
+
+            Suspect.WarpIntoVehicle(SuspectVehicle, -1);
+            SuspectVehicle.Position = suspectOldPosition;
+            SuspectVehicle.Rotation = suspectOldRotator;
+            SuspectVehicle.IsPositionFrozen = false;
+            Game.LocalPlayer.HasControl = true;
+            cam.Delete();
+            Suspect.Tasks.CruiseWithVehicle(SuspectVehicle, 17f, VehicleDrivingFlags.DriveAroundVehicles | VehicleDrivingFlags.DriveAroundObjects | VehicleDrivingFlags.DriveAroundPeds);
+            Rage.Native.NativeFunction.Natives.SET_DRIVE_TASK_DRIVING_STYLE(Suspect, 786603);
+            GameFiber.Sleep(2000);
+            NativeFunction.CallByName<uint>("CLEAR_TIMECYCLE_MODIFIER");
+            Game.FadeScreenIn(1500, true);
+
+        }
+        private bool CCTVShowing = false;
+        private int CCTVCamNumber = 3;
+        private void DrawCCTVText(System.Object sender, Rage.GraphicsEventArgs e)
+        {
+            if (CCTVShowing)
+            {
+                Rectangle drawRect = new Rectangle(0, 0, 200, 130);
+                e.Graphics.DrawRectangle(drawRect, Color.FromArgb(100, Color.Black));
+
+                e.Graphics.DrawText("CCTV #" + CCTVCamNumber.ToString("00"), "Aharoni Bold", 35.0f, new PointF(1, 6), Color.White);
+                e.Graphics.DrawText(DateTime.Now.Day.ToString("00") + "/" + DateTime.Now.Month.ToString("00") + "/" + DateTime.Now.Year.ToString(), "Aharoni Bold", 35.0f, new PointF(1, 46), Color.White, drawRect);
+                e.Graphics.DrawText(DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00"), "Aharoni Bold", 35.0f, new PointF(1, 86), Color.White, drawRect);
+            }
+            else
+            {
+                Game.FrameRender -= DrawCCTVText;
+            }
+        }
         private void FalseAlarm()
         {
             CalloutRunning = true;
@@ -209,10 +337,10 @@ namespace YobbinCallouts.Callouts
                         if (Game.IsKeyDown(EndKey)) { break; }
                         CallHandler.IdleAction(HouseOwner, false);
                         while (Vector3.Distance(player.Position, HouseOwner.Position) >= 7.5f) { GameFiber.Wait(0); }
-                        Game.DisplaySubtitle("~g~You:~w~ Hello Sir. Did you call about your mail being stolen.");
+                        Game.DisplaySubtitle("~g~You:~w~ Hello! Did you call about your mail being stolen?");
                         HouseOwnerBlip.IsRouteEnabled = false;
                         HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
-                        if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to speak with the ~b~Landlord.");
+                        if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to speak with the ~b~House Owner.");
                         CallHandler.Dialogue(HouseOwnerFalseAlarmDialogue, HouseOwner);
                         GameFiber.Wait(1500); 
                         Game.DisplayNotification("Dispatch, It was a ~g~False Alarm~w~. I will be ~g~Code 4~w~.");
@@ -268,27 +396,66 @@ namespace YobbinCallouts.Callouts
         {
             if (CalloutRunning)
             {
-                Mail = new Rage.Object("prop_cs_envolope_01", Vector3.Zero);
-                Mail.IsPersistent = true;
-                Mail.AttachTo(Suspect, Suspect.GetBoneIndex(PedBoneId.LeftHand), new Vector3(0.1490f, 0.0560f, -0.0100f), new Rotator(-17f, -142f, -151f));
+                //Mail.AttachTo(Suspect, Suspect.GetBoneIndex(PedBoneId.LeftHand), new Vector3(0.1490f, 0.0560f, -0.0100f), new Rotator(-17f, -142f, -151f));
                 while (!player.IsInAnyVehicle(false) && Vector3.Distance(player.Position, Suspect.Position) >= 10f) { GameFiber.Wait(0); }
                 if (SearchArea.Exists()) { SearchArea.Delete(); }
-                SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, .69f);
-                while (player.DistanceTo(Suspect) >= 5f) GameFiber.Wait(0);
-                Game.DisplaySubtitle("You: Hey, Could I Speak With You for a Sec?", 3000);
-                if (CallHandler.FiftyFifty()) { Cooperates(); }
+
+                Game.DisplayHelp("Start ~o~Searching~w~ for the ~r~Suspect.");
+                CallHandler.VehicleInfo(SuspectVehicle, Suspect);
+                SearchArea = new Blip(Suspect.Position, 150);
+                SearchArea.Color = Color.Orange;
+                SearchArea.Alpha = 0.4f;
+                SearchArea.IsRouteEnabled = true;
+                GameFiber.Wait(1500);
+
+                while (player.DistanceTo(Suspect) >= 150) GameFiber.Wait(0);
+                SuspectVehicle.IsDriveable = true;
+                SuspectVehicle.IsVisible = true;
+                Suspect.Tasks.CruiseWithVehicle(SuspectVehicle, 15, VehicleDrivingFlags.DriveAroundVehicles);
+                Functions.PlayScannerAudio("ATTENTION_ALL_UNITS_01");   //change
+                while (player.DistanceTo(Suspect) >= 85f) GameFiber.Wait(0);
+                GameFiber.Wait(1000);
+                if (Main.CalloutInterface)
+                {
+                    CalloutInterfaceHandler.SendMessage(this, "Caller spotted the suspect driving recklessly, updating map.");
+                }
                 else
                 {
-                    if (CallHandler.FiftyFifty()) { Runs();} else { Shoots(); }
+                    Game.DisplayNotification("~b~Update:~w~ A Caller Has ~y~Spotted~w~ the ~r~Suspect~w~ Driving Recklessly. ~g~Updating Map.");    //fix this, too hard to see suspect. maybe remind them what the car looks like.
+                }
+                GameFiber.Wait(1000);
+                if (SearchArea.Exists()) { SearchArea.Delete(); }
+                SearchArea = new Blip(Suspect.Position, 75);
+                SearchArea.Color = Color.Orange;
+                SearchArea.Alpha = 0.4f;
+                SearchArea.IsRouteEnabled = true;
+
+                while (player.DistanceTo(Suspect) >= 25f) GameFiber.Wait(0);
+                if (SearchArea.Exists()) SearchArea.Delete();
+                SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, .69f);
+                Game.DisplayHelp("Perform a Traffic Stop on the ~r~Suspect.");
+                while (!LSPD_First_Response.Mod.API.Functions.IsPlayerPerformingPullover()) GameFiber.Wait(0);
+                if (Suspect.Exists() && Suspect.IsAlive)
+                {
+                    if (CallHandler.FiftyFifty()) { Cooperates(); }
+                    else
+                    {
+                        if (CallHandler.FiftyFifty()) { Runs(); } else { Shoots(); }
+                    }
+                }
+                else
+                {
+                    WrapUp();
                 }
             }
         }
 
         private void Cooperates()
         {
+            if (Config.DisplayHelp) Game.DisplayNotification("Press ~y~" + Config.MainInteractionKey + " ~w~to speak with the ~r~Suspect.");
             CallHandler.Dialogue(SuspectDialogue, Suspect);
             DetachAndSetBlip();  
-            if (Config.DisplayHelp) { Game.DisplayNotification("Arrest the suspect"); }
+            if (Config.DisplayHelp) { Game.DisplayNotification("Arrest the ~r~suspect"); }
             while(Suspect.Exists() && !Suspect.IsCuffed) { GameFiber.Wait(0); }
             WrapUp();
         }
@@ -341,10 +508,10 @@ namespace YobbinCallouts.Callouts
         {
             if (CalloutRunning)
             {
-                Game.LogTrivial("Starting Wrap Up Method");
-                if (Config.DisplayHelp) { Game.DisplayNotification("Retrieve the mail"); }
+                Game.LogTrivial("YOBBINCALLOUTS: Starting Wrap Up Method");
+                if (Config.DisplayHelp) { Game.DisplayHelp("Retrieve the ~b~mail"); }
                 while(Vector3.Distance(player.Position, DroppedMail) >= 5f) { GameFiber.Wait(0); }
-                if (Config.DisplayHelp) { Game.DisplayNotification("Press " + InteractionKey + " in order to retrieve the mail"); }
+                if (Config.DisplayHelp) { Game.DisplayHelp("Press ~y~" + InteractionKey + " ~w~to retrieve the ~b~mail"); }
                 while (!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
                 player.Tasks.PlayAnimation("amb@medic@standing@kneel@idle_a", "idle_b", 1f, AnimationFlags.Loop);
                 GameFiber.Wait(1000);
@@ -352,22 +519,37 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(1000);
                 player.Tasks.Clear();
                 GameFiber.Wait(1000);
-                if (Config.DisplayHelp) { Game.DisplayNotification("Go return mail to home owner."); }
+                if (Config.DisplayHelp) { Game.DisplayHelp("Return the mail to the ~b~home owner."); }
                 HouseOwnerBlip.IsRouteEnabled = true;
+                Mail.Detach();
+                if (Mail.Exists()) Mail.IsVisible = false;
                 while (Vector3.Distance(player.Position, HouseOwner.Position) >= 7.5f) { GameFiber.Wait(0); }
                 HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
-                Game.DisplaySubtitle("You: I have retrieved your mail sir.");
-                if(Config.DisplayHelp) { Game.DisplayNotification("Press + " + InteractionKey + " to return mail."); }
+                Game.DisplaySubtitle("~g~You: ~w~I have retrieved your mail!");
+                if(Config.DisplayHelp) { Game.DisplayHelp("Press + " + InteractionKey + " to return mail."); }
                 while(!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
+                Mail.AttachTo(player, player.GetBoneIndex(PedBoneId.LeftHand), new Vector3(0.1490f, 0.0560f, -0.0100f), new Rotator(-17f, -142f, -151f));
+                Mail.IsVisible = true;
                 player.Tasks.PlayAnimation("mp_common", "givetake1_b", 1f, AnimationFlags.Loop);
                 GameFiber.Wait(1000);
                 Mail.AttachTo(HouseOwner, HouseOwner.GetBoneIndex(PedBoneId.LeftHand), new Vector3(0.1490f, 0.0560f, -0.0100f), new Rotator(-17f, -142f, -151f));
                 GameFiber.Wait(1000);
                 player.Tasks.Clear();
                 GameFiber.Wait(1000);
-                Game.DisplaySubtitle("Home Owner: Thank you so much officer.");
+                Game.DisplaySubtitle("~b~Home Owner: ~w~Thank you so much officer.");
+                HouseOwner.PlayAmbientSpeech("generic_thanks");
                 GameFiber.Wait(2000);
-                Game.DisplaySubtitle("You: No worries");
+                Game.DisplaySubtitle("~g~You: ~w~No worries!");
+                GameFiber.Wait(2000);
+
+                //test this:
+                GameFiber.StartNew(delegate
+                {
+                    HouseOwner.Tasks.FollowNavigationMeshToPosition(MainSpawnPoint, 69, 1.25f, -1).WaitForCompletion();
+                    GameFiber.Wait(500);
+                    //if (Driver.Exists()) Driver.Delete();
+                });
+
                 End();
 
             }
@@ -388,6 +570,8 @@ namespace YobbinCallouts.Callouts
             if (HouseOwner.Exists()) { HouseOwner.Dismiss(); }
             if (SearchArea.Exists()) { SearchArea.Delete(); }
             if (DroppedMailBlip.Exists()) { DroppedMailBlip.Delete(); }
+            NativeFunction.CallByName<uint>("CLEAR_TIMECYCLE_MODIFIER");
+            Game.LocalPlayer.HasControl = true;
             Game.LogTrivial("YOBBINCALLOUTS: Stolen Mail Callout Finished Cleaning Up.");
         }
 

@@ -140,7 +140,7 @@ namespace YobbinCallouts.Callouts
                     Game.LogTrivial("YOBBINCALLOUTS: Traffic Break Scenario 0 Chosen");
 
                     NativeFunction.Natives.GetClosestVehicleNodeWithHeading(Accident, out Vector3 nodePosition, out float heading, 1, 3.0f, 0); //for heading
-                    CallHandler.SpawnVehicle(Accident, heading);
+                    AccidentVehicle = CallHandler.SpawnVehicle(Accident, heading);
                     AccidentVehicle.IsPersistent = true;
                     AccidentVehicle.EngineHealth = 0;
                     AccidentVehicle.IsDeformationEnabled = true;
@@ -196,7 +196,7 @@ namespace YobbinCallouts.Callouts
                             if (Game.IsKeyDown(Config.CalloutEndKey)) { EndCalloutHandler.CalloutForcedEnd = true; break; }
 
                             Game.LogTrivial("YOBBINCALLOUTS: Player is On Scene.");
-                            Game.DisplaySubtitle("Press " + Config.MainInteractionKey + " to ~g~Start~w~ the Traffic Break.", 2000);
+                            Game.DisplayHelp("Press " + Config.MainInteractionKey + " to ~g~Start~w~ the Traffic Break.", 2000);
                             if (Config.DisplayHelp == true)
                             {
                                 CallHandler.Dialogue(Instructions);

@@ -44,6 +44,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\CODES\Every Day Callouts\LSPDFR-EveryDay-Callouts-master\EveryDayCallouts\EveryDayCallouts\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
     </Reference>
+    <Reference Include="PolicingRedefined">
+      <HintPath>..\..\..\..\LSPDFR\SCRIPTS\PolicingRedefined V1.0.0.2\PolicingRedefined V1.0.0.2\! GTAV MAIN DIRECTORY\plugins\LSPDFR\PolicingRedefined.dll</HintPath>
+    </Reference>
     <Reference Include="RagePluginHook, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\..\LSPDFR_049_7874_Manual_Install\RAGEPluginHook.exe</HintPath>
     </Reference>
@@ -87,6 +90,7 @@
     <Compile Include="Callouts\LandlordTenantDispute.cs" />
     <Compile Include="Callouts\PedestrianHitByVehicle.cs" />
     <Compile Include="Callouts\PersonWithWeapon.cs" />
+    <Compile Include="Callouts\Protest.cs" />
     <Compile Include="Callouts\Sovereign Citizen.cs" />
     <Compile Include="Callouts\StolenCellPhone.cs" />
     <Compile Include="Callouts\PropertyCheck.cs" />
@@ -104,6 +108,7 @@
     <Compile Include="EUPHelper.cs" />
     <Compile Include="InvestigationHandler.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="PolicingRedefinedHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

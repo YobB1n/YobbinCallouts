@@ -113,7 +113,7 @@ namespace YobbinCallouts.Callouts
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: DUI Reported Callout Start==========");
             System.Random r = new System.Random();
-            int Scenario = r.Next(1, 2); //scenario 0 - suspect gone. scenario 1 - suspect still there CHANGE LATER!!
+            int Scenario = r.Next(0, 2); //scenario 0 - suspect gone. scenario 1 - suspect still there CHANGE LATER!!
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario value is: " + MainScenario);
 
@@ -152,17 +152,33 @@ namespace YobbinCallouts.Callouts
                 {
                     try //vehicle spawning on the side of the road beside MainSpawnPoint
                     {
-                        NativeFunction.Natives.GetClosestVehicleNodeWithHeading(MainSpawnPoint, out Vector3 nodePosition, out float heading, 1, 3.0f, 0);
-                        bool success = NativeFunction.Natives.xA0F8A7517A273C05<bool>(MainSpawnPoint, heading, out Vector3 outPosition);
-                        if (success)
-                        {
-                            SuspectVehicle = CallHandler.SpawnVehicle(outPosition, heading);
+                        if (MainScenario == 0) {
+                            NativeFunction.Natives.GetClosestVehicleNodeWithHeading(World.GetNextPositionOnStreet(MainSpawnPoint.Around(300f)), out Vector3 nodePosition, out float heading, 1, 3.0f, 0);
+                            bool success = NativeFunction.Natives.xA0F8A7517A273C05<bool>(World.GetNextPositionOnStreet(MainSpawnPoint.Around(300f)), heading, out Vector3 outPosition);
+                            if (success)
+                            {
+                                SuspectVehicle = CallHandler.SpawnVehicle(outPosition, heading);
+                            }
+                            else
+                            {
+                                Game.LogTrivial("YOBBINCALLOUTS: Could Not Find Spawnpoint. Aborting Callout.");
+                                return false;
+                            }
                         }
-                        else
-                        {
-                            Game.LogTrivial("YOBBINCALLOUTS: Could Not Find Spawnpoint. Aborting Callout.");
-                            return false;
+                        else {
+                            NativeFunction.Natives.GetClosestVehicleNodeWithHeading(MainSpawnPoint, out Vector3 nodePosition, out float heading, 1, 3.0f, 0);
+                            bool success = NativeFunction.Natives.xA0F8A7517A273C05<bool>(MainSpawnPoint, heading, out Vector3 outPosition);
+                            if (success)
+                            {
+                                SuspectVehicle = CallHandler.SpawnVehicle(outPosition, heading);
+                            }
+                            else
+                            {
+                                Game.LogTrivial("YOBBINCALLOUTS: Could Not Find Spawnpoint. Aborting Callout.");
+                                return false;
+                            }
                         }
+                        
                     }
                     catch (Exception)
                     {
@@ -173,9 +189,14 @@ namespace YobbinCallouts.Callouts
                     Suspect = new Citizen(MainSpawnPoint);
                     Suspect.IsPersistent = true;
                     Suspect.BlockPermanentEvents = true;
-                    //MAKE SUSPECT DRUNK WITH NATIVES
+                    //MAKE SUSPECT DRUNK
                     NativeFunction.Natives.SET_​PED_​IS_​DRUNK(Suspect, true);
-
+                    if (Main.PR)
+                    {
+                        PolicingRedefinedFunctions.SetPedDrunk(Suspect, 0.15f);
+                        Game.LogTrivial("YOBBINCALLOUTS: PR ped BAC is " + PolicingRedefinedFunctions.GetPedBAC(Suspect).ToString());
+                        Game.LogTrivial("YOBBINCALLOUTS: Ped is drunk: " + PolicingRedefinedFunctions.IsPedDrunk(Suspect));
+                    }
                     if (MainScenario == 0) Witness = new Ped(MainSpawnPoint);
                     else Witness = new Ped(MainSpawnPoint.Around(2));
                     Witness.IsPersistent = true;
@@ -226,14 +247,13 @@ namespace YobbinCallouts.Callouts
                 {
                     while (CalloutRunning)
                     {
-                        System.Random r = new System.Random();
-                        int TriggerDistance = r.Next(25, 45);
-                        Game.LogTrivial("YOBBINCALLOUTS: Callout will trigger when player is " + TriggerDistance + " Away.");
-                        while (player.DistanceTo(Suspect) >= TriggerDistance && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
-                        if (Game.IsKeyDown(Config.CalloutEndKey)) break;
+                        
 
                         if (MainScenario == 0) //not on scene
                         {
+                            while (player.DistanceTo(Witness) >= 5f && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
+                            if (Game.IsKeyDown(Config.CalloutEndKey)) break;
+
                             System.Random twboop = new System.Random();
                             int dialoguechosen = twboop.Next(0, 3);
                             if (dialoguechosen == 0) CallHandler.Dialogue(WitnessOpening1, Witness);
@@ -246,11 +266,17 @@ namespace YobbinCallouts.Callouts
                             //...
                         }
                         else //on scene
-                        {                          
+                        {
+                            System.Random r = new System.Random();
+                            int TriggerDistance = r.Next(25, 45);
+                            Game.LogTrivial("YOBBINCALLOUTS: Callout will trigger when player is " + TriggerDistance + " Away.");
+                            while (player.DistanceTo(Suspect) >= TriggerDistance && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
+                            if (Game.IsKeyDown(Config.CalloutEndKey)) break;
+
                             if (Config.DisplayHelp) Game.DisplayHelp("~b~Investigate~w~ the Situation.");
                             if (Suspect.IsMale) Game.DisplaySubtitle("~b~Caller:~w~ You can't drive bro! I won't let you get in that car!", 2500);
                             else Game.DisplaySubtitle("~b~Caller:~w~ You can't drive miss! I won't let you get in that car!", 2500);
-                            GameFiber.Wait(2500);
+                            GameFiber.Wait(1000);
                             System.Random monke = new System.Random();
                             int speechtowait = monke.Next(1, 5);
 
@@ -273,11 +299,15 @@ namespace YobbinCallouts.Callouts
                                     GameFiber.Wait(2500);
                                     break;
                             }
+
+                            //Suspect.Tasks.EnterVehicle(SuspectVehicle, -1);
+                            //while (!Functions.IsPedStoppedByPlayer(Suspect) && !Functions.IsPedArrested(Suspect) && !Suspect.IsInAnyVehicle(false)) GameFiber.Wait(0);
+                            //Suspect.Tasks.CruiseWithVehicle(25f, VehicleDrivingFlags.AllowWrongWay|VehicleDrivingFlags.DriveAroundVehicles|VehicleDrivingFlags.Emergency);
+
                             //change logic to after
                             //=========THIS IS WHAT I NEED TO WORK ON BUT TOO LAZY RN===========
                             if (Functions.IsPedStoppedByPlayer(Suspect) || Functions.IsPedArrested(Suspect))  //test this
                             {
-
                                 //dialogue
                                 System.Random twboop = new System.Random();
                                 int dialoguechosen = twboop.Next(0, 3);
@@ -305,7 +335,7 @@ namespace YobbinCallouts.Callouts
                             Suspect.Tasks.EnterVehicle(SuspectVehicle, -1).WaitForCompletion();
                             Suspect.Tasks.CruiseWithVehicle(SuspectVehicle, 20f, VehicleDrivingFlags.AllowWrongWay | VehicleDrivingFlags.DriveAroundVehicles);
                             Game.DisplayHelp("Stop the ~r~Suspect.");
-                            while (!Functions.IsPlayerPerformingPullover()) GameFiber.Wait(0);                           
+                            while (!Functions.IsPlayerPerformingPullover() && !Functions.IsPedArrested(Suspect) && Suspect.IsAlive) GameFiber.Wait(0);                           
                             Pursuit();
                             CallHandler.SuspectWait(Suspect);
                         }
@@ -367,6 +397,7 @@ namespace YobbinCallouts.Callouts
             System.Random twboop = new System.Random();
             int dialoguechosen = twboop.Next(0, dialogue.Count);
             SpeechCounter++;
+            Game.DisplaySubtitle(dialogue[dialoguechosen]);
             return dialogue[dialoguechosen];
         }
         private void Pursuit()
@@ -391,17 +422,17 @@ namespace YobbinCallouts.Callouts
             if (Config.DisplayHelp) Game.DisplayHelp("Search for the ~r~Suspect~w~.");
 
             Suspect.Tasks.CruiseWithVehicle(20f, VehicleDrivingFlags.AllowWrongWay | VehicleDrivingFlags.DriveAroundVehicles);
-            SuspectBlip = new Blip(Suspect.Position.Around(15), 200);
+            SuspectBlip = new Blip(Suspect.Position.Around(15), 125);
             SuspectBlip.IsRouteEnabled = true;
             SuspectBlip.Color = Color.Orange;
             SuspectBlip.Alpha = 0.69f;
 
             while (player.DistanceTo(Suspect) >= 50) GameFiber.Wait(0);
-            Game.DisplayNotification("Callers have spoted the ~r~Suspect~w~ driving ~o~Recklessly~w~. Updating Map...");
+            Game.DisplayNotification("Callers have spotted the ~r~Suspect~w~ driving ~o~Recklessly~w~. Updating Map...");
             if (SuspectBlip.Exists()) SuspectBlip.Delete();
             CallHandler.AssignBlip(Suspect, Color.Red, 1, "Suspect");
 
-            while (!Functions.IsPlayerPerformingPullover()) GameFiber.Wait(0);
+            while (!Functions.IsPlayerPerformingPullover() && !Functions.IsPedArrested(Suspect)) GameFiber.Wait(0);
             Pursuit();
             CallHandler.SuspectWait(Suspect);
         }

@@ -215,7 +215,7 @@ namespace YobbinCallouts
             }
         }
         /// <summary>
-        /// Spawns a vehicle at the position and heading.
+        /// Spawns a land vehicle at the position and heading.
         /// </summary>
         /// <param name="SpawnPoint"></param>
         /// <param name="Heading"></param>
@@ -331,7 +331,7 @@ namespace YobbinCallouts
                 GameFiber.Yield();
                 if (!Suspect.Exists() || Suspect.IsDead || Functions.IsPedArrested(Suspect)) break;
             }
-            if (Suspect.IsAlive) //test all this (STP )
+            if (Suspect.Exists() && Suspect.IsAlive) //test all this (STP )
             {
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect is alive and therefore under arrest.");
                 Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest.");
@@ -441,20 +441,22 @@ namespace YobbinCallouts
         /// <param name="ped"></param>
         /// <param name="pedstatus"></param>
         //test this later
-        public static void VehicleInfo(Vehicle vehicle, Citizen ped)
+        public static string VehicleInfo(Vehicle vehicle, Citizen ped)
         {
             if (vehicle.Exists() && ped.Exists())
             {
                 Functions.SetVehicleOwnerName(vehicle, ped.FullName);
-                var personaarray = new string[4];
+                var personaarray = new string[3];
                 personaarray[0] = "~n~~w~Registered to: ~y~" + ped.Forename;
-                personaarray[1] = "~n~~w~Ped Info: ~y~" + ped.WantedInformation;
-                personaarray[2] = "~n~~w~Plate: ~y~" + vehicle.LicensePlate;
-                personaarray[3] = "~n~~w~Color: ~y~" + vehicle.PrimaryColor.Name;
+                //personaarray[1] = "~n~~w~Ped Info: ~y~" + ped.WantedInformation.ToString(); //doesn't seem to work anymore idk
+                personaarray[1] = "~n~~w~Plate: ~y~" + vehicle.LicensePlate;
+                personaarray[2] = "~n~~w~Color: ~y~" + GetSetVehicleColor(vehicle);
                 var persona = string.Concat(personaarray);
                 //test icon later
                 Game.DisplayNotification("mpcarhud", "leaderboard_car_colour_icon", "~g~Vehicle Description", "~b~" + vehicle.Model.Name, persona);
+                return "Vehicle info: " + personaarray;
             }
+            else return null;
         }
 
         /// <summary>
@@ -537,7 +539,7 @@ namespace YobbinCallouts
         }
         //this function is stupid
         /// <summary>
-        /// Gets a random vehicle colour, and sets the specified vehicle to that color. Very stupid function, make sure the vehicle is not within eyesight of the player lmao
+        /// Gets a random vehicle colour, and sets the specified vehicle to that color. Returns string name of color. Very stupid function, make sure the vehicle is not within eyesight of the player lmao
         /// </summary>
         public static string GetSetVehicleColor(Vehicle vehicle)
         {

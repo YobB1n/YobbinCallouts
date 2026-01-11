@@ -19,6 +19,7 @@ namespace YobbinCallouts
         public static bool STP; //if STP is installed by the user
         public static bool UB; //if UB is installed by the user
         public static bool CalloutInterface; //if Callout Interface is installed by the user
+        public static bool PR; //if Policing Redefined is installed by the user
         public static bool UpToDate; //if the Plugin is updated.
         public static bool Beta = false;
 
@@ -113,6 +114,7 @@ namespace YobbinCallouts
             if (Config.INIFile.Exists()) Game.LogTrivial("YobbinCallouts Config is Installed by User.");
             else Game.LogTrivial("YobbinCallouts Config is NOT Installed by User.");
 
+            //STP Check
             if (Functions.GetAllUserPlugins().ToList().Any(a => a != null && a.FullName.Contains("StopThePed")) == true)
             {
                 Game.LogTrivial("StopThePed is Installed by User.");
@@ -124,6 +126,7 @@ namespace YobbinCallouts
                 STP = false;
             }
 
+            //UB Check
             if (Functions.GetAllUserPlugins().ToList().Any(a => a != null && a.FullName.Contains("UltimateBackup")) == true)
             {
                 Game.LogTrivial("UltimateBackup is Installed by User.");
@@ -135,6 +138,7 @@ namespace YobbinCallouts
                 UB = false;
             }
 
+            //CR Check
             if (Functions.GetAllUserPlugins().ToList().Any(a => a != null && a.FullName.Contains("CalloutInterface")) == true)
             {
                 Game.LogTrivial("CalloutInterface is Installed by User.");
@@ -145,6 +149,19 @@ namespace YobbinCallouts
                 Game.LogTrivial("CalloutInterface is NOT Installed by User.");
                 CalloutInterface = false;
             }
+
+            //PR Check
+            if (Functions.GetAllUserPlugins().ToList().Any(a => a != null && a.FullName.Contains("PolicingRedefined")) == true)
+            {
+                Game.LogTrivial("PolicingRedefined is Installed by User.");
+                PR = true;
+            }
+            else
+            {
+                Game.LogTrivial("PolicingRedefined is NOT Installed by User.");
+                PR = false;
+            }
+
             //CALLOUTS
             Game.LogTrivial("Started Registering Callouts.");
             if (Config.BrokenDownVehicle || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.BrokenDownVehicle));
@@ -164,16 +181,17 @@ namespace YobbinCallouts
             if (Config.WeaponFound || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.WeaponFound));
             if (Config.HospitalEmergency || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.HospitalEmergency));
             if (Config.LandlordTenantDispute || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.LandlordTenantDispute));
+            if (Config.CitizenArrest || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.CitizenArrest));
+            if (Config.DUIReported || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.DUIReported));
+            if (Config.StolenMail || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.StolenMail));
+            if (Config.PedestrianHitByVehicle || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.PedestrianHitByVehicle));
             Game.LogTrivial("Finished Registering Callouts.");
 
             //BETA CALLOUTS
             //if (Beta)
             //{
             Game.LogTrivial("Started Registering Beta Callouts.");
-            if (Config.CitizenArrest || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.CitizenArrest));
-            //if (Config.DUIReported || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.DUIReported));
-            //if (Config.StolenMail || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.StolenMail));
-            if (Config.PedestrianHitByVehicle || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.PedestrianHitByVehicle));
+            //if (Config.Protest || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.Protest));
             //if (Config.PersonWithWeapon || !Config.INIFile.Exists()) Functions.RegisterCallout(typeof(Callouts.PersonWithWeapon));
             Game.LogTrivial("Finished Registering Beta Callouts.");
             //}
