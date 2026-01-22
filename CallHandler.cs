@@ -325,7 +325,7 @@ namespace YobbinCallouts
         /// wait the active GameFiber until the suspect no longer exists, is killed, or is arrested.
         /// </summary>
         /// <param name="Suspect"></param>
-        public static void SuspectWait(Ped Suspect) //test this
+        public static void SuspectWait(Ped Suspect, bool Dispatchmessage = true) //test this
         {
             Game.LogTrivial("YOBBINCALLOUTS: Waiting the active GameFiber until the suspect is killed or arrested.");
             while (Suspect.Exists())
@@ -341,16 +341,19 @@ namespace YobbinCallouts
             else if (Suspect.Exists() && Functions.IsPedArrested(Suspect))
             {
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect is alive and therefore under arrest.");
-                Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest.");
+                if (Dispatchmessage) Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest.");
             }
             else
             {
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect is dead.");
-                GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, Suspect is ~r~Dead.");
+                if (Dispatchmessage) GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, Suspect is ~r~Dead.");
             }
-            GameFiber.Wait(2000);
-            Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-            GameFiber.Wait(2000);
+            if (Dispatchmessage)
+            {
+                GameFiber.Wait(2000);
+                Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                GameFiber.Wait(2000);
+            }
         }
 
 
@@ -426,12 +429,13 @@ namespace YobbinCallouts
         }
 
         /// <summary>
-        /// Returns a random number out of options starting at 0, or a random number between min and max if specified. Specifiy 0 in options to use RNG for min and max.
+        /// Returns a random number between 0 and min, or a random number between min and max if both are specified. Specifiy 0 in options to use RNG for min and max.
         /// </summary>
-        public static int RNG(int options = 0, int min = 0, int max = 0)
+        public static int RNG(int min = 0, int max = 0)
         {
-            if (min == 0 && max == 0) max = options;
-            Game.LogTrivial("YOBBINCALLOUTS: choosing random number between " + min + " and " + max);
+            int originalmin = min;
+            if (min != 0 && max == 0) max = min; min = 0; //if only one number input for total amount of options, set (0, options)
+            Game.LogTrivial("YOBBINCALLOUTS: choosing random number between " + originalmin + " and " + max);
             Random coconut = new Random();
             int num = coconut.Next(min, max);
             Game.LogTrivial("YOBBINCALLOUTS: RNG value is " + num);
@@ -477,7 +481,7 @@ namespace YobbinCallouts
 
                 foreach (Ped Suspect in suspects)
                 {
-                    if(Suspect.Exists()) Functions.AddPedToPursuit(pursuit, Suspect);
+                    if (Suspect.Exists()) Functions.AddPedToPursuit(pursuit, Suspect);
                 }
                 Game.LogTrivial("YOBBINCALLOUTS: PURSUITHANDLER: Started Pursuit with " + suspects.Length + " Suspects.");
 

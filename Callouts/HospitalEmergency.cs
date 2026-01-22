@@ -109,7 +109,7 @@ namespace YobbinCallouts.Callouts
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario value is: " + MainScenario);
             CallHandler.locationChooser(CallHandler.HospitalList, maxdistance: 1000f);
-            if(CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; }
+            if (CallHandler.locationReturned) { MainSpawnPoint = CallHandler.SpawnPoint; }
             else { Game.LogTrivial("No Hospital location found within range. Aborting Callout."); return false; }
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 25f);
             AddMinimumDistanceCheck(60f, MainSpawnPoint);
@@ -149,7 +149,7 @@ namespace YobbinCallouts.Callouts
                     var GuardSpawnPoint = World.GetNextPositionOnStreet(Nurse.Position);
                     NativeFunction.Natives.xA0F8A7517A273C05<bool>(GuardSpawnPoint, 0, out Vector3 outPosition);
 
-                    if(CallHandler.FiftyFifty()) Guard = new Ped("s_m_m_security_01", outPosition, Nurse.Heading - 15); //offset position
+                    if (CallHandler.FiftyFifty()) Guard = new Ped("s_m_m_security_01", outPosition, Nurse.Heading - 15); //offset position
                     else Guard = new Ped("s_m_m_security_01", outPosition, Nurse.Heading + 15); //offset position
                     Guard.IsPersistent = true;
                     Guard.BlockPermanentEvents = true;
@@ -389,7 +389,7 @@ namespace YobbinCallouts.Callouts
                                         int WaitTime = CallHandler.RNG(2000, 5000); //in ms
                                         GameFiber.Wait(WaitTime);
                                         Hostage.Detach();
-                                        
+
                                         if (Suspect.IsDead) break;
                                         Game.DisplaySubtitle("~r~Patient:~w~ Okay Officer, If you say so! Just don't let them hurt me!!");
                                         GameFiber.Wait(500);
@@ -410,7 +410,7 @@ namespace YobbinCallouts.Callouts
                                             Suspect.Tasks.ClearImmediately(); //test to unstuck
                                             Suspect.Tasks.PutHandsUp(-1, player);
                                         }
-                                        CallHandler.SuspectWait(Suspect);
+                                        CallHandler.SuspectWait(Suspect, false);
                                         if (HostageBlip.Exists()) HostageBlip.Delete();
                                         break;
                                     }
@@ -441,8 +441,8 @@ namespace YobbinCallouts.Callouts
                                             Suspect.Tasks.ClearImmediately(); //test to unstuck
                                             Suspect.Tasks.FireWeaponAt(Game.LocalPlayer.Character, -1, FiringPattern.SingleShot);
                                         }
-                                        CallHandler.SuspectWait(Suspect);
-                                        if (HostageBlip.Exists()) HostageBlip.Delete();                                       
+                                        CallHandler.SuspectWait(Suspect, false);
+                                        if (HostageBlip.Exists()) HostageBlip.Delete();
                                         break;
                                     }
                             }
@@ -460,8 +460,8 @@ namespace YobbinCallouts.Callouts
                                 DriveBack();
                             }
                             else //Game.DisplayNotification("Dispatch, Suspect has been ~r~Killed.");
-                            
-                            GameFiber.Wait(1500);
+
+                                GameFiber.Wait(1500);
                         }
                         else
                         {
@@ -574,7 +574,7 @@ namespace YobbinCallouts.Callouts
                 if (Suspect.Tasks.CurrentTaskStatus == TaskStatus.Interrupted) Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop_mrk", 1f, AnimationFlags.Loop); //test this (does it override STP surrender?)
                 if (Suspect.IsDead || (Functions.IsPedArrested(Suspect)) || Hostage.IsDead)
                 {
-                    if (Suspect.Exists() && Suspect.IsDead && Hostage.Exists() && Hostage.IsAlive) Hostage.BlockPermanentEvents = false; Hostage.Detach();  Hostage.Tasks.ClearImmediately(); Hostage.Tasks.ReactAndFlee(player);
+                    if (Suspect.Exists() && Suspect.IsDead && Hostage.Exists() && Hostage.IsAlive) Hostage.BlockPermanentEvents = false; Hostage.Detach(); Hostage.Tasks.ClearImmediately(); Hostage.Tasks.ReactAndFlee(player);
                     break;
                 }
                 if (Game.IsKeyDown(Config.MainInteractionKey)) break;
@@ -583,7 +583,7 @@ namespace YobbinCallouts.Callouts
         //this helper returns a certain dialogue for the specific point in the callout as indicated by dialogue.
         //see the various String lists containing the dialogue for each point in the hostage situation.
         private string DialogueAdvance(List<string> dialogue)
-        {           
+        {
             int dialoguechosen = CallHandler.RNG(0, dialogue.Count);
             return dialogue[dialoguechosen];
         }

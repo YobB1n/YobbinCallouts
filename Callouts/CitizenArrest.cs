@@ -314,7 +314,7 @@ namespace YobbinCallouts.Callouts
                 else //late shoot
                 {
                     Game.LogTrivial("YOBBINCALLOUTS: LATE SHOOT");
-                    GameFiber.Wait(CallHandler.RNG(0, 2500, 6900));
+                    GameFiber.Wait(CallHandler.RNG(2500, 6900));
                     if (Suspect.Exists() && Suspect.IsAlive) Suspect.Tasks.FightAgainstClosestHatedTarget(-1);
                     CallHandler.SuspectWait(Suspect);
                 }

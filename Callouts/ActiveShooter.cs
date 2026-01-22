@@ -423,12 +423,12 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(2500);
                 LSPD_First_Response.Mod.API.Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
 
-                GameFiber.Wait(CallHandler.RNG(0, 7000, 12000));
+                GameFiber.Wait(CallHandler.RNG(7000, 12000));
                 if (CallHandler.FiftyFifty() && SuspectVehicle.Exists()) //bomb
                 {
                     Game.LogTrivial("YOBBINCALLOUTS: BOMB AFTER SHOOTING");
                     SuspectVehicle.IsOnFire = true;
-                    int timetoexplode = CallHandler.RNG(0, 6500, 10000);
+                    int timetoexplode = CallHandler.RNG(6500, 10000);
                     SuspectVehicle.AlarmTimeLeft = TimeSpan.FromMilliseconds(timetoexplode);
                     GameFiber.Wait(1500);
                     Game.DisplaySubtitle("~g~You:~w~ Why did the alarm start sounding?! ~r~Everyone get away from the van!!", 3000);

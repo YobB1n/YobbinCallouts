@@ -399,7 +399,7 @@ namespace YobbinCallouts.Callouts
                 {
                     Game.LogTrivial("YOBBINCALLOUTS: Pursuit scenario activated.");
                     Game.DisplaySubtitle("~r~Suspect:~w~ I Will Not Follow Unlawful Commands Officer!", 3000);
-                    GameFiber.Wait(CallHandler.RNG(0, 3000, 8000));
+                    GameFiber.Wait(CallHandler.RNG(3000, 8000));
 
                     if(Suspect.Exists() && !Functions.IsPedArrested(Suspect))
                     {
