@@ -35,37 +35,55 @@ namespace YobbinCallouts.Callouts
             "~b~Home Owner: ~w~This has been happening for a week now.",
             "~g~You: ~w~Why didn't you call us before?",
             "~b~Home Owner: ~w~I thought the mail company took a break.",
-            "~g~You: ~w~Uh, ok? Next time if you suspect supicious activity you have to let us know earlier!",
+            "~g~You: ~w~A break? Next time if you suspect supicious activity you have to let us know earlier!",
+            "~b~Home Owner: ~w~Sorry about that. I do have a CCTV video of the suspect. I think they were just here!"
+        };
+        List<string> HouseOwnerDialogue2 = new List<string>()
+        {
+            "~b~Home Owner: ~w~Hello Officer. Yes, I was the one who called about my deliveries being stolen.",
+            "~g~You: ~w~How long has this been happening for?",
+            "~b~Home Owner: ~w~On and off for the last couple months. Damn porch pirates.",
+            "~g~You: ~w~Why didn't you call us before?",
+            "~b~Home Owner: ~w~I honestly didn't think y'all would care about some stolen mail. But I'm glad you're here now.",
+            "~g~You: ~w~Next time if you suspect supicious activity you have to let us know earlier! I'm sure others have ben affected too.",
             "~b~Home Owner: ~w~Sorry about that. I do have a CCTV video of the suspect. I think they were just here!"
         };
         List<string> HouseOwnerFalseAlarmDialogue = new List<string>()
         {
-            "Home Owner: Hello Officer. Sorry for the trouble. My mail was just put on hold for a week longer than it should have by the mail company because our vacation was cut short.",
-            "You: So you are getting your mail?",
-            "Home Owner: Yes. It was a false alarm. Sorry about that.",
-            "You: No worries. Please make sure you contact 911 only for emergencies.",
-            "Home Owner: Sorry about that. Will do. Stay safe"
+            "~b~Home Owner: ~w~Hello Officer. Sorry for the trouble. My mail was just put on hold for a week longer than it should have by the mail company because our vacation was cut short.",
+            "~g~You: ~w~So you are getting your mail?",
+            "~b~Home Owner: ~w~Yes. It was a false alarm. Sorry about that.",
+            "~g~You: ~w~No worries. Please make sure you contact 911 only for emergencies.",
+            "~b~Home Owner: ~w~Sorry about that. Will do. Stay safe!"
         };
-        List<string> SuspectDialogue = new List<string>()
+        List<string> SuspectDialogue = new List<string>() //hilarious dialogue by Roheat
         {
             "~r~Suspect: ~w~Watchu want",
             "~g~You: ~w~Hey, just want to talk to you. Whats in your hand there?",
-            "~r~Suspect: ~w~Watchu think it is, mail. punk ass",
+            "~r~Suspect: ~w~Watchu think it is? punk ass",
             "~g~You: ~w~Where did you get that mail from?",
             "~r~Suspect: ~w~Places.....",
-            "~g~You: ~w~I am going to go straight to the point if you straight with me, aight. We got a call about someone stealing mail. You are the only one in this vicinity that is walking around with mail. Did you steal it",
-            "~r~Suspect: ~w~fine man, you got me...good job sherlock",
+            "~g~You: ~w~I am going to go straight to the point if you straight with me, aight. We got a call about someone stealing mail. You are the only one in this vicinity that is walking around with mail. Did you steal it?",
+            "~r~Suspect: ~w~Fine man, you got me...good job sherlock.",
             "~g~You: ~w~Do you got any weapons on you?",
-            "~r~Suspect: ~w~nah man, who the fuck you think I am. Don't piss me off 'fore I beat yo ass up."
+            "~r~Suspect: ~w~Nah man, who the fuck you think I am. Don't piss me off 'fore I beat yo ass up."
+        };
+        List<string> SuspectDialogue2 = new List<string>()
+        {
+            "~g~You: ~w~Hey, take it easy and stop right there. Where did you get that mail from?",
+            "~r~Suspect: ~w~Uh - the mail store - I mean mail office - I mean post office...",
+            "~g~You: ~w~So if I were to look at the address, it would match your ID?",
+            "~r~Suspect: ~w~Uh... Well not exactly like... Not fully?",
+            "~g~You: ~w~Just be honest with me - I know your vehicle matches the description of a porch pirate provided by a resident with security cameras.",
+            "~r~Suspect: ~w~Okay Okay, just take the mail alright! Can you please let me off with a warning? It won't happen again.",
         };
         private System.Windows.Forms.Keys EndKey = Config.CalloutEndKey;
         private System.Windows.Forms.Keys InteractionKey = Config.MainInteractionKey;
-        Random monke = new Random();
 
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Stolen Mail Callout Start==========");
-            MainScenario = monke.Next(0, 0);
+            MainScenario = CallHandler.RNG(0, 0);
             Game.LogTrivial("YOBBINCALLOUTS: Scenario Number is " + MainScenario + "");
 
             Game.LogTrivial("Getting Location");
@@ -77,7 +95,7 @@ namespace YobbinCallouts.Callouts
 
             CalloutMessage = "Stolen Mail";
             CalloutPosition = MainSpawnPoint;
-            CalloutAdvisory = "RP states that he has not gotten mail in several days. He thinks that his mail is being stolen.";
+            CalloutAdvisory = "Caller states that they have not gotten mail in several days. They think their mail is being stolen.";
 
             return base.OnBeforeCalloutDisplayed();
         }
@@ -122,13 +140,15 @@ namespace YobbinCallouts.Callouts
                 Game.LogTrivial("If You Believe this is a Bug, Please Report it on my Discord Server. Thanks!");
                 Game.LogTrivial("==========YOBBINCALLOUTS: ERROR CAUGHT ON CALLOUT INTIALIZATION==========");
             }
-            int num = monke.Next(0, 101);
+            int num = CallHandler.RNG(100);
             if(num <= 10)
             {
+                Game.LogTrivial("YOBBINCALLOUTS: False alarm scenario, RNG value " + num);
                 FalseAlarm();
             }
             else
             {
+                Game.LogTrivial("YOBBINCALLOUTS: Bona fide scenario, RNG value " + num);
                 Callout();
             }
 
@@ -153,13 +173,15 @@ namespace YobbinCallouts.Callouts
                         HouseOwnerBlip.IsRouteEnabled = false;
                         HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
                         if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to speak with the ~b~Caller.");
-                        Vector3 SuspectSpawn = World.GetNextPositionOnStreet(player.Position.Around(550f));
+                        Vector3 SuspectSpawn = World.GetNextPositionOnStreet(player.Position.Around(350f));
                         SuspectVehicle = CallHandler.SpawnVehicle(SuspectSpawn, 69); //specify heading if reqd
                         SuspectVehicle.IsDeformationEnabled = true;
                         SuspectVehicle.IsPersistent = true;
 
                         Game.LogTrivial("YOBBINCALLOUTS: Finished Spawning Suspect.");
-                        CallHandler.Dialogue(HouseOwnerDialogue, HouseOwner);
+                        int coco = CallHandler.RNG(2);
+                        if (coco == 0) CallHandler.Dialogue(HouseOwnerDialogue, HouseOwner);
+                        else CallHandler.Dialogue(HouseOwnerDialogue2, HouseOwner);
                         GameFiber.Wait(3000);
                         //door camera
                         DoorCamera();
@@ -293,6 +315,7 @@ namespace YobbinCallouts.Callouts
             Game.LocalPlayer.Character.Position = PlayerOldPos;
             HouseOwner.Position = HouseOwnerOldPos;
 
+            if(!SuspectVehicle.Exists()) SuspectVehicle = CallHandler.SpawnVehicle(suspectOldPosition, 69); //specify heading if reqd
             Suspect.WarpIntoVehicle(SuspectVehicle, -1);
             SuspectVehicle.Position = suspectOldPosition;
             SuspectVehicle.Rotation = suspectOldRotator;
@@ -386,6 +409,7 @@ namespace YobbinCallouts.Callouts
         {
             if (Mail.Exists())
             {
+                GameFiber.Wait(1500);
                 Mail.Detach();
                 DroppedMail = Mail.Position;
                 DroppedMailBlip = CallHandler.AssignBlip(Mail, Color.Blue, .4f);
@@ -411,9 +435,10 @@ namespace YobbinCallouts.Callouts
                 while (player.DistanceTo(Suspect) >= 150) GameFiber.Wait(0);
                 SuspectVehicle.IsDriveable = true;
                 SuspectVehicle.IsVisible = true;
-                Suspect.Tasks.CruiseWithVehicle(SuspectVehicle, 15, VehicleDrivingFlags.DriveAroundVehicles);
+                //Suspect.Tasks.CruiseWithVehicle(SuspectVehicle, 15, VehicleDrivingFlags.DriveAroundVehicles);
                 Functions.PlayScannerAudio("ATTENTION_ALL_UNITS_01");   //change
                 while (player.DistanceTo(Suspect) >= 85f) GameFiber.Wait(0);
+                Suspect.Tasks.CruiseWithVehicle(SuspectVehicle, 15, VehicleDrivingFlags.DriveAroundVehicles); //moved this to make it easier
                 GameFiber.Wait(1000);
                 if (Main.CalloutInterface)
                 {
@@ -430,14 +455,14 @@ namespace YobbinCallouts.Callouts
                 SearchArea.Alpha = 0.4f;
                 SearchArea.IsRouteEnabled = true;
 
-                while (player.DistanceTo(Suspect) >= 25f) GameFiber.Wait(0);
+                while (player.DistanceTo(Suspect) >= 35f) GameFiber.Wait(0);
                 if (SearchArea.Exists()) SearchArea.Delete();
                 SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, .69f);
                 Game.DisplayHelp("Perform a Traffic Stop on the ~r~Suspect.");
                 while (!LSPD_First_Response.Mod.API.Functions.IsPlayerPerformingPullover()) GameFiber.Wait(0);
                 if (Suspect.Exists() && Suspect.IsAlive)
                 {
-                    if (CallHandler.FiftyFifty()) { Cooperates(); }
+                    if (CallHandler.FiftyFifty()) { GameFiber.Wait(3000);  Cooperates(); }
                     else
                     {
                         if (CallHandler.FiftyFifty()) { Runs(); } else { Shoots(); }
@@ -452,11 +477,16 @@ namespace YobbinCallouts.Callouts
 
         private void Cooperates()
         {
-            if (Config.DisplayHelp) Game.DisplayNotification("Press ~y~" + Config.MainInteractionKey + " ~w~to speak with the ~r~Suspect.");
-            CallHandler.Dialogue(SuspectDialogue, Suspect);
-            DetachAndSetBlip();  
-            if (Config.DisplayHelp) { Game.DisplayNotification("Arrest the ~r~suspect"); }
-            while(Suspect.Exists() && !Suspect.IsCuffed) { GameFiber.Wait(0); }
+            if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to speak with the ~r~Suspect.");
+            int coco = CallHandler.RNG(2);
+            if (coco == 0) CallHandler.Dialogue(SuspectDialogue, Suspect);
+            else CallHandler.Dialogue(SuspectDialogue2, Suspect);
+            DetachAndSetBlip();
+
+            GameFiber.Wait(2500);
+            CallHandler.IdleAction(Suspect, false);
+            if (Config.DisplayHelp) { Game.DisplayHelp("Arrest the ~r~suspect~w~ or press ~y~" + Config.MainInteractionKey + " to let them ~g~go."); }
+            while(Suspect.Exists() && !Functions.IsPedArrested(Suspect) && !Game.IsKeyDown(Config.MainInteractionKey)) { GameFiber.Wait(0); }
             WrapUp();
         }
 
@@ -465,28 +495,13 @@ namespace YobbinCallouts.Callouts
             if (CalloutRunning)
             {
                 Functions.PlayScannerAudio("CRIME_SUSPECT_ON_THE_RUN_01");
-                DetachAndSetBlip();
                 LHandle SuspectPursuit = Functions.CreatePursuit();
                 Suspect.Inventory.Weapons.Clear();  
                 Functions.SetPursuitIsActiveForPlayer(SuspectPursuit, true);
                 Functions.AddPedToPursuit(SuspectPursuit, Suspect);
                 while (Functions.IsPursuitStillRunning(SuspectPursuit)) GameFiber.Wait(0);
-                while (Suspect.Exists())
-                {
-                    GameFiber.Yield();
-                    if (!Suspect.Exists() || Suspect.IsDead || Functions.IsPedArrested(Suspect))
-                    {
-                        break;
-                    }
-                }
-                if (Suspect.Exists())
-                {
-                    if (Functions.IsPedArrested(Suspect)) { GameFiber.Wait(1000); Game.DisplayNotification("Dispatch, a Suspect is Under ~g~Arrest~w~ Following the Pursuit."); }
-                }
-                if (SuspectBlip.Exists()) { SuspectBlip.Delete(); }
-                GameFiber.Wait(2000);
-                Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
-                GameFiber.Wait(2000);
+                CallHandler.SuspectWait(Suspect);
+                
                 if (SuspectBlip.Exists()) SuspectBlip.Delete();
                 WrapUp();
             }
@@ -509,6 +524,14 @@ namespace YobbinCallouts.Callouts
             if (CalloutRunning)
             {
                 Game.LogTrivial("YOBBINCALLOUTS: Starting Wrap Up Method");
+
+                if(Suspect.Exists() && !Functions.IsPedArrested(Suspect))
+                {
+                    Game.LogTrivial("YOBBINCALLOUTS: Player did not arrest suspect, dismissing...");
+                    if (SuspectBlip.Exists()) SuspectBlip.Delete();
+                    if (Suspect.Exists()) Suspect.Dismiss();
+                }
+                DetachAndSetBlip();
                 if (Config.DisplayHelp) { Game.DisplayHelp("Retrieve the ~b~mail"); }
                 while(Vector3.Distance(player.Position, DroppedMail) >= 5f) { GameFiber.Wait(0); }
                 if (Config.DisplayHelp) { Game.DisplayHelp("Press ~y~" + InteractionKey + " ~w~to retrieve the ~b~mail"); }
@@ -526,8 +549,9 @@ namespace YobbinCallouts.Callouts
                 while (Vector3.Distance(player.Position, HouseOwner.Position) >= 7.5f) { GameFiber.Wait(0); }
                 HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
                 Game.DisplaySubtitle("~g~You: ~w~I have retrieved your mail!");
-                if(Config.DisplayHelp) { Game.DisplayHelp("Press + " + InteractionKey + " to return mail."); }
+                if(Config.DisplayHelp) { Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to return the ~b~mail."); }
                 while(!Game.IsKeyDown(InteractionKey)) { GameFiber.Wait(0); }
+                HouseOwner.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
                 Mail.AttachTo(player, player.GetBoneIndex(PedBoneId.LeftHand), new Vector3(0.1490f, 0.0560f, -0.0100f), new Rotator(-17f, -142f, -151f));
                 Mail.IsVisible = true;
                 player.Tasks.PlayAnimation("mp_common", "givetake1_b", 1f, AnimationFlags.Loop);
@@ -570,8 +594,14 @@ namespace YobbinCallouts.Callouts
             if (HouseOwner.Exists()) { HouseOwner.Dismiss(); }
             if (SearchArea.Exists()) { SearchArea.Delete(); }
             if (DroppedMailBlip.Exists()) { DroppedMailBlip.Delete(); }
-            NativeFunction.CallByName<uint>("CLEAR_TIMECYCLE_MODIFIER");
-            Game.LocalPlayer.HasControl = true;
+
+            try
+            {
+                NativeFunction.CallByName<uint>("CLEAR_TIMECYCLE_MODIFIER");
+                Game.LocalPlayer.HasControl = true;
+                if (CCTVShowing) Game.FrameRender -= DrawCCTVText;
+            }
+            catch { }
             Game.LogTrivial("YOBBINCALLOUTS: Stolen Mail Callout Finished Cleaning Up.");
         }
 

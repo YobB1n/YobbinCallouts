@@ -59,15 +59,15 @@ namespace YobbinCallouts.Callouts
          "~p~Citizen:~w~ Hello Officer, I just performed a Citizen's Arrest on this guy right here.",
          "~g~You:~w~ Can you tell me what happened?",
          "~p~Citizen:~w~ I was just walking along when I saw this guy running down the street.",
-         "~p~Citizen:~w~ The victim was yelling that he stole their wallet so I stopped and arrested him.",
+         "~p~Citizen:~w~ The victim was yelling that he stole their wallet so I stopped and arrested them.",
          "~g~You:~w~ Alright, let me go speak with the victim.",
         };
         private readonly List<string> TheftOpening2 = new List<string>() //bag
         {
          "~p~Citizen:~w~ Hey Officer, I just did a Citizen's Arrest on this guy right here.",
          "~g~You:~w~ I see that. What happened?",
-         "~p~Citizen:~w~ This guy came running around the corner with a person chasing him saying he stole their bag.",
-         "~p~Citizen:~w~ I caught up to the perp and took him down, tying his hands around his back.",
+         "~p~Citizen:~w~ This guy came running around the corner with a person chasing them saying he stole their bag.",
+         "~p~Citizen:~w~ I caught up to the perp and took them down, tying his hands around his back.",
          "~g~You:~w~ Gotcha, let me quickly talk to the victim and I'll get you on your way. Thanks for the help.",
         };
         private readonly List<string> GunPointOpening1 = new List<string>() //has CCW
@@ -85,7 +85,7 @@ namespace YobbinCallouts.Callouts
          "~p~Citizen:~w~ Thanks for the help Officer, that was really scary!",
          "~g~You:~w~ I'll say. What happened?",
          "~p~Citizen:~w~ This dude got out of his car and started walking down the street open-carrying that gun!",
-         "~p~Citizen:~w~ I kept an eye on him and held him at gunpoint when I saw him pointing the gun at cars and pedestrians.",
+         "~p~Citizen:~w~ I kept an eye on them and held them at gunpoint when I saw them pointing the gun at cars and pedestrians.",
          "~g~You:~w~ I see. Do you have a CCW?",
          "~p~Citizen:~w~I do, and I'm also an off-duty Officer which is why I carry cuffs.",
          "~g~You:~w~ Excellent. Let me check in with the victim, and then you'll be free to go. Great work here.",
@@ -94,12 +94,12 @@ namespace YobbinCallouts.Callouts
         {
          "~g~You:~w~ Hello, can you tell me what happened here?",
          "~b~Victim:~w~ This crazy dude bumped into me while I was walking down the street!",
-         "~b~Victim:~w~ I told him to watch it, and he immediately took offence and started shoving me.",
+         "~b~Victim:~w~ I told them to watch it, and he immediately took offence and started shoving me.",
          "~b~Victim:~w~ I tried to walk away to diffuse the situation, and then he started punching me.",
-         "~b~Victim:~w~ Then this person stepped in and tackled the guy to the ground and tied him up before you guys hot here.",
+         "~b~Victim:~w~ Then this person stepped in and tackled the guy to the ground and tied them up before you guys hot here.",
          "~g~You:~w~ Do you need medical attention?",
          "~b~Victim:~w~ I'm fine, just glad this guy got subdued.",
-         "~g~You:~w~ Alright, I'll process him then. You're free to go if you don't need anything else.",
+         "~g~You:~w~ Alright, I'll process them then. You're free to go if you don't need anything else.",
         };
         private readonly List<string> AssaultInvestigation2 = new List<string>()
         {
@@ -110,34 +110,33 @@ namespace YobbinCallouts.Callouts
          "~b~Victim:~w~ He kept muttering random words, and all of a sudden started punching me unprovoked.",
          "~g~You:~w~ So there was no reason for the attack?",
          "~b~Victim:~w~ No Officer, I had no idea what was heppning. Thankfully this person was able to help.",
-         "~g~You:~w~ Alright, I'll process him in then. You're free to go if you don't need anything else.",
+         "~g~You:~w~ Alright, I'll process them in then. You're free to go if you don't need anything else.",
         };
         private readonly List<string> TheftInvestigation1 = new List<string>() //wallet
         {
          "~b~Victim:~w~ Hey Officer, I hope you're gonna arrest that guy over there!",
          "~g~You:~w~ It's looking like it. What happened?",
          "~b~Victim:~w~ This guy was walking down the street, all of a sudden he reached into my pocket, grabbed my wallet and ran off!.",
-         "~b~Victim:~w~ Thankfully this kind person saw it happen and chased him, taking him down and getting my wallet back.",
+         "~b~Victim:~w~ Thankfully this kind person saw it happen and chased them, taking them down and getting my wallet back.",
          "~g~You:~w~ I see. Would you like an ambulance? Are you hurt?",
          "~b~Victim:~w~ I'm okay Officer, thanks.",
-         "~g~You:~w~ Alright, I'll process him in then. You're free to go if you don't need anything else.",
+         "~g~You:~w~ Alright, I'll process them in then. You're free to go if you don't need anything else.",
         };
         private readonly List<string> TheftInvestigation2 = new List<string>() //bag
         {
          "~g~You:~w~ Hey, are you okay? What happened?",
          "~b~Victim:~w~ I was just walking minding my own business, when this guy comes up to me and steals my bag!!",
-         "~b~Victim:~w~ I tired to wrestle it away from him but he was too strong!",
-         "~b~Victim:~w~ Then this person came and tackled him, putting his hands behind his back and getting my bag back.",
+         "~b~Victim:~w~ I tired to wrestle it away from them but he was too strong!",
+         "~b~Victim:~w~ Then this person came and tackled them, putting his hands behind his back and getting my bag back.",
          "~g~You:~w~ Gotcha. Do you need anything else? An ambulance?",
          "~b~Victim:~w~ I'm okay Officer, thanks.",
-         "~g~You:~w~ Alright, I'll take him to jail then. You're free to go! Glad you're alright.",
+         "~g~You:~w~ Alright, I'll take them to jail then. You're free to go! Glad you're alright.",
         };
 
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Citizen Arrest Callout Start==========");
-            System.Random r = new System.Random();
-            int Scenario = r.Next(0, 2); //changed to scenario 2
+            int Scenario = CallHandler.RNG(0, 2); //scenario [2] not done
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is " + MainScenario + "");
             if (MainScenario == 0) Crime = "Assault.";  //PUT PERIODS AT THE END OF THESE CRIMES.
@@ -173,17 +172,16 @@ namespace YobbinCallouts.Callouts
                 NativeFunction.Natives.GetClosestVehicleNodeWithHeading(MainSpawnPoint, out Vector3 nodePosition, out float heading, 1, 3.0f, 0);
                 NativeFunction.Natives.xA0F8A7517A273C05(nodePosition, 0, out Vector3 SuspectSpawn);
                 SuspectModels = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
-                System.Random r2 = new System.Random();
-                int SuspectModel = r2.Next(0, SuspectModels.Length);
+                int SuspectModel = CallHandler.RNG(0, SuspectModels.Length);
 
-                Suspect = new Ped(SuspectSpawn, heading); //test new spawning -> good.
+                Suspect = new Ped(CallHandler.SpawnOnSreetSide(SuspectSpawn), heading); //test new spawning -> good.
                 Suspect.IsPersistent = true;
                 Suspect.BlockPermanentEvents = true;
                 //Functions.SetPedAsArrested(Suspect, true, false);
                 //Suspect.Tasks.StandStill(-1);
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect Spawned");
 
-                Citizen = new Citizen(Suspect.GetOffsetPositionFront(2));
+                Citizen = new Citizen(CallHandler.SpawnOnSreetSide(Suspect.GetOffsetPositionFront(2)));
                 Citizen.IsPersistent = true;
                 Citizen.BlockPermanentEvents = true;
                 Citizen.Heading = Suspect.Heading - 180f;
@@ -191,7 +189,7 @@ namespace YobbinCallouts.Callouts
                 var victimspawnpoint = World.GetNextPositionOnStreet(Suspect.Position.Around(10f));
                 NativeFunction.Natives.xA0F8A7517A273C05<bool>(victimspawnpoint, 0, out Vector3 outPosition);
 
-                Victim = new Ped(outPosition);
+                Victim = new Ped(CallHandler.SpawnOnSreetSide(outPosition).Around2D(2f));
                 Victim.IsPersistent = true;
                 Victim.BlockPermanentEvents = true;
                 Victim.Tasks.Cower(-1);
@@ -211,10 +209,9 @@ namespace YobbinCallouts.Callouts
                 if (MainScenario == 2) //gunpoint scenario
                 {
                     String[] weapons = {"WEAPON_PISTOL", "WEAPON_SMG", "WEAPON_APPISTOL", "WEAPON_MICROSMG", "WEAPON_HEAVYPISTOL" };
-                    System.Random r3 = new System.Random();  //Instantiate Random Weapon generator
-                    string SuspectWeaponModel = weapons[r3.Next(0, weapons.Length)];    //Use Random Weapon generator
+                    string SuspectWeaponModel = weapons[CallHandler.RNG(0, weapons.Length)];    //Use Random Weapon generator
                     Game.LogTrivial("YOBBINCALLOUTS: Suspect Weapon Model is " + SuspectWeaponModel.Substring(7));
-                    string CtizenWeaponModel = weapons[r3.Next(0, weapons.Length)];    //Use Random Weapon generator
+                    string CtizenWeaponModel = weapons[CallHandler.RNG(0, weapons.Length)];    //Use Random Weapon generator
                     Game.LogTrivial("YOBBINCALLOUTS: Citizen Weapon Model is " + CtizenWeaponModel.Substring(7));
 
                     //I hate how the arguments for these two functions are reversed lmao
@@ -351,7 +348,7 @@ namespace YobbinCallouts.Callouts
             Functions.SetPedCuffedTask(Suspect, true); //test this workaround for above
             Suspect.Tasks.StandStill(-1); //test this also
             CallHandler.IdleAction(Citizen, true);
-            while (player.DistanceTo(Citizen) >= 5) GameFiber.Wait(0);
+            while (Game.LocalPlayer.Character.DistanceTo(Citizen) >= 5) GameFiber.Wait(0);
             if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~p~Arresting Citizen.");
 
             if (MainScenario == 0)

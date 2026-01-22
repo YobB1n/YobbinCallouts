@@ -19,7 +19,6 @@ namespace YobbinCallouts.Callouts
         private Blip SuspectBlip;
         private Blip HouseBlip;
         private Ped player = Game.LocalPlayer.Character;
-        private LHandle MainPursuit;
 
         private int MainScenario;
         private bool CalloutRunning;
@@ -136,8 +135,7 @@ namespace YobbinCallouts.Callouts
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Landlord-Tenant Dispute Callout Start==========");
-            System.Random r = new System.Random();
-            int Scenario = r.Next(0, 0); //only 1 scenario atm
+            int Scenario = CallHandler.RNG(0, 0); //only 1 scenario atm
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario value is: " + MainScenario);
 
@@ -216,8 +214,7 @@ namespace YobbinCallouts.Callouts
                         Landlord.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
                         if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to speak with the ~b~Landlord.");
 
-                        System.Random dialogue = new System.Random();
-                        int OpeningDialogue = dialogue.Next(0, 0); //change later
+                        int OpeningDialogue = CallHandler.RNG(0, 0); //change later when more dialogue added
                         if (OpeningDialogue == 0) CallHandler.Dialogue(LandlordOpening1, Landlord);
 
                         Game.DisplayHelp("~y~" + Config.Key1 + ":~b~ Okay, I'll talk to the Resident. ~y~" + Config.Key2 + ": ~b~I can't do that for you I'm afraid.");
@@ -225,8 +222,7 @@ namespace YobbinCallouts.Callouts
                         while (!Game.IsKeyDown(Config.Key1) && !Game.IsKeyDown(Config.Key2)) GameFiber.Wait(0); //might do an animation?
                         if (Game.IsKeyDown(Config.Key1)) //accept
                         {
-                            System.Random dialogue1 = new System.Random();
-                            Game.DisplaySubtitle(AcceptSpeech[dialogue1.Next(0, AcceptSpeech.Count)], 2500);
+                            Game.DisplaySubtitle(AcceptSpeech[CallHandler.RNG(0, AcceptSpeech.Count)], 2500);
                             GameFiber.Wait(3000);
 
                             Game.DisplayHelp("Knock on the ~o~Door.");
@@ -242,8 +238,7 @@ namespace YobbinCallouts.Callouts
                             if (HouseBlip.Exists()) HouseBlip.Delete();
                             GameFiber.Wait(3500);
 
-                            System.Random dialogue2 = new System.Random();
-                            int ReasonDialogue = dialogue2.Next(0, 0); //change later
+                            int ReasonDialogue = CallHandler.RNG(0, 0); //change later
                             if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to reason with the ~r~Tenant.");
                             if (MainScenario == 0) //cooperates (opens the door)
                             {
@@ -259,8 +254,7 @@ namespace YobbinCallouts.Callouts
                                 Game.FadeScreenIn(1500, true);
                                 Game.LocalPlayer.HasControl = true;
 
-                                System.Random r2 = new System.Random();
-                                int action = r2.Next(0, 4); //what happens to the tenant
+                                int action = CallHandler.RNG(0, 4); //what happens to the tenant
                                 Game.LogTrivial("YOBBINCALLOUTS: Tenant action value is "+action);
                                 if (action <= 1) //more dialogue
                                 {
@@ -300,11 +294,9 @@ namespace YobbinCallouts.Callouts
                                 else //attack
                                 {
                                     Game.LogTrivial("YOBBINCALLOUTS: Landlord attacks.");
-                                    System.Random r3 = new System.Random();
-                                    GameFiber.Wait(r3.Next(500, 3000));
-                                    System.Random dialogue3 = new System.Random();
-                                    Game.DisplaySubtitle(AttackSpeech[dialogue3.Next(0, AttackSpeech.Count)], 2000);
-                                    GameFiber.Wait(r3.Next(500, 2000));
+                                    GameFiber.Wait(CallHandler.RNG(500, 3000));
+                                    Game.DisplaySubtitle(AttackSpeech[CallHandler.RNG(0, AttackSpeech.Count)], 2000);
+                                    GameFiber.Wait(CallHandler.RNG(500, 2000));
                                     Suspect.BlockPermanentEvents = false; //test this (wasn't fighting before)
                                     Landlord.Tasks.FightAgainst(Suspect, -1);
                                     if (action == 2)
@@ -346,7 +338,7 @@ namespace YobbinCallouts.Callouts
                         }
                         else //decline
                         {
-                            int EndingDialogue = dialogue.Next(0, 3);
+                            int EndingDialogue = CallHandler.RNG(0, 3);
                             if (EndingDialogue == 0) CallHandler.Dialogue(Deny1, Landlord);
                             else if (EndingDialogue == 1) CallHandler.Dialogue(Deny2, Landlord);
                             else CallHandler.Dialogue(Deny3, Landlord);

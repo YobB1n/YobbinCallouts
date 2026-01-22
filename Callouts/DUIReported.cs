@@ -112,8 +112,7 @@ namespace YobbinCallouts.Callouts
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: DUI Reported Callout Start==========");
-            System.Random r = new System.Random();
-            int Scenario = r.Next(0, 2); //scenario 0 - suspect gone. scenario 1 - suspect still there CHANGE LATER!!
+            int Scenario = CallHandler.RNG(0, 2); //scenario 0 - suspect gone. scenario 1 - suspect still there CHANGE LATER!!
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario value is: " + MainScenario);
 
@@ -152,7 +151,8 @@ namespace YobbinCallouts.Callouts
                 {
                     try //vehicle spawning on the side of the road beside MainSpawnPoint
                     {
-                        if (MainScenario == 0) {
+                        if (MainScenario == 0)
+                        {
                             NativeFunction.Natives.GetClosestVehicleNodeWithHeading(World.GetNextPositionOnStreet(MainSpawnPoint.Around(300f)), out Vector3 nodePosition, out float heading, 1, 3.0f, 0);
                             bool success = NativeFunction.Natives.xA0F8A7517A273C05<bool>(World.GetNextPositionOnStreet(MainSpawnPoint.Around(300f)), heading, out Vector3 outPosition);
                             if (success)
@@ -165,12 +165,13 @@ namespace YobbinCallouts.Callouts
                                 return false;
                             }
                         }
-                        else {
+                        else //house
+                        {
                             NativeFunction.Natives.GetClosestVehicleNodeWithHeading(MainSpawnPoint, out Vector3 nodePosition, out float heading, 1, 3.0f, 0);
                             bool success = NativeFunction.Natives.xA0F8A7517A273C05<bool>(MainSpawnPoint, heading, out Vector3 outPosition);
                             if (success)
                             {
-                                SuspectVehicle = CallHandler.SpawnVehicle(outPosition, heading);
+                                SuspectVehicle = CallHandler.SpawnVehicle(CallHandler.SpawnOnSreetSide(MainSpawnPoint), heading);
                             }
                             else
                             {
@@ -178,7 +179,7 @@ namespace YobbinCallouts.Callouts
                                 return false;
                             }
                         }
-                        
+
                     }
                     catch (Exception)
                     {
@@ -197,11 +198,12 @@ namespace YobbinCallouts.Callouts
                         Game.LogTrivial("YOBBINCALLOUTS: PR ped BAC is " + PolicingRedefinedFunctions.GetPedBAC(Suspect).ToString());
                         Game.LogTrivial("YOBBINCALLOUTS: Ped is drunk: " + PolicingRedefinedFunctions.IsPedDrunk(Suspect));
                     }
-                    if (MainScenario == 0) Witness = new Ped(MainSpawnPoint);
-                    else Witness = new Ped(MainSpawnPoint.Around(2));
+                    if (MainScenario == 0) Witness = new Ped(MainSpawnPoint); //suspect is gone, witness is only ped on scene
+                    else Witness = new Ped(Suspect.Position.Around2D(0.4f)); //suspect AND witness on scene - Test this (don't want this ped to be stuck in a building)
+                    Witness.SetPositionZ(Suspect.Position.Z); //test this
                     Witness.IsPersistent = true;
                     Witness.BlockPermanentEvents = true;
-                    WitnessBlip = CallHandler.AssignBlip(Witness, Color.Blue, 0.69f, "Witness", true);                    
+                    WitnessBlip = CallHandler.AssignBlip(Witness, Color.Blue, 0.69f, "Witness", true);
                 }
                 if (MainScenario == 0) //suspect gone
                 {
@@ -247,15 +249,14 @@ namespace YobbinCallouts.Callouts
                 {
                     while (CalloutRunning)
                     {
-                        
+
 
                         if (MainScenario == 0) //not on scene
                         {
                             while (player.DistanceTo(Witness) >= 5f && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
                             if (Game.IsKeyDown(Config.CalloutEndKey)) break;
 
-                            System.Random twboop = new System.Random();
-                            int dialoguechosen = twboop.Next(0, 3);
+                            int dialoguechosen = CallHandler.RNG(0, 3);
                             if (dialoguechosen == 0) CallHandler.Dialogue(WitnessOpening1, Witness);
                             else if (dialoguechosen == 1) CallHandler.Dialogue(WitnessOpening2, Witness);
                             else CallHandler.Dialogue(WitnessOpening3, Witness);
@@ -267,19 +268,17 @@ namespace YobbinCallouts.Callouts
                         }
                         else //on scene
                         {
-                            System.Random r = new System.Random();
-                            int TriggerDistance = r.Next(25, 45);
+                            int TriggerDistance = CallHandler.RNG(25, 45);
                             Game.LogTrivial("YOBBINCALLOUTS: Callout will trigger when player is " + TriggerDistance + " Away.");
                             while (player.DistanceTo(Suspect) >= TriggerDistance && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
                             if (Game.IsKeyDown(Config.CalloutEndKey)) break;
 
                             if (Config.DisplayHelp) Game.DisplayHelp("~b~Investigate~w~ the Situation.");
-                            if (Suspect.IsMale) Game.DisplaySubtitle("~b~Caller:~w~ You can't drive bro! I won't let you get in that car!", 2500);
-                            else Game.DisplaySubtitle("~b~Caller:~w~ You can't drive miss! I won't let you get in that car!", 2500);
+                            Game.DisplaySubtitle("~b~Caller:~w~ You can't drive! I won't let you get in that car!", 2500);
                             GameFiber.Wait(1000);
-                            System.Random monke = new System.Random();
-                            int speechtowait = monke.Next(1, 5);
+                            int speechtowait = CallHandler.RNG(1, 5);
 
+                            Game.LogTrivial("YOBBINCALLOUTS: Argument between suspect and caller begins, dialogue options: " + speechtowait);
                             //argument between the two peds starts now. After a certain point the suspect leaves to hop in the car.
                             int useless = 0;
                             switch (useless) //swtich statement doesn't do anything
@@ -309,34 +308,80 @@ namespace YobbinCallouts.Callouts
                             if (Functions.IsPedStoppedByPlayer(Suspect) || Functions.IsPedArrested(Suspect))  //test this
                             {
                                 //dialogue
-                                System.Random twboop = new System.Random();
-                                int dialoguechosen = twboop.Next(0, 3);
+                                int dialoguechosen = CallHandler.RNG(0, 3);
                                 if (dialoguechosen == 0) CallHandler.Dialogue(Reason1, Suspect);
                                 else if (dialoguechosen == 1) CallHandler.Dialogue(Reason2, Suspect);
                                 else CallHandler.Dialogue(Reason3, Suspect);
 
-                                System.Random r2 = new System.Random();
-                                int action = r2.Next(0, 2);
-                                if(action == 0) //discretion
+                                int action = CallHandler.RNG(0, 2);
+                                if (action == 0) //discretion
                                 {
+                                    Game.LogTrivial("YOBBINCALLOUTS: player dealing with suspect at their descretion.");
                                     Game.DisplayHelp("Deal with the ~r~Suspect~w~ as you see fit. Press ~b~" + Config.CalloutEndKey + " ~w~when done.");
                                     while (!Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
                                     break;
                                 }
                                 else //late flee
                                 {
-                                    Pursuit();
-                                    CallHandler.SuspectWait(Suspect);
+                                    Game.LogTrivial("YOBBINCALLOUTS: Late flee scenario if suspect not arrested.");
+                                    if (Suspect.Exists() && !Functions.IsPedArrested(Suspect))
+                                    {
+                                        Pursuit();
+                                        CallHandler.SuspectWait(Suspect);
+                                    }
                                     break;
                                 }
                             }
 
-                            Suspect.Tasks.FollowNavigationMeshToPosition(SuspectVehicle.Position, SuspectVehicle.Heading - 90, 5f, 1f, -1).WaitForCompletion();
-                            Suspect.Tasks.EnterVehicle(SuspectVehicle, -1).WaitForCompletion();
-                            Suspect.Tasks.CruiseWithVehicle(SuspectVehicle, 20f, VehicleDrivingFlags.AllowWrongWay | VehicleDrivingFlags.DriveAroundVehicles);
-                            Game.DisplayHelp("Stop the ~r~Suspect.");
-                            while (!Functions.IsPlayerPerformingPullover() && !Functions.IsPedArrested(Suspect) && Suspect.IsAlive) GameFiber.Wait(0);                           
-                            Pursuit();
+                            //PROBLEM - if suspect is killed or arrested before task completes, callout does not continue
+                            Suspect.Tasks.FollowNavigationMeshToPosition(SuspectVehicle.Position, SuspectVehicle.Heading - 90, 4f, 1f, -1).WaitForCompletion(5000); //test 5 sec wait   
+                            while (true)
+                            {
+                                GameFiber.Yield();
+
+                                if (!Suspect.Exists() || Suspect.IsDead || Functions.IsPedArrested(Suspect) || Game.IsKeyDown(Config.CalloutEndKey))
+                                {
+                                    Game.LogTrivial("YOBBINCALLOUTS: continuing, suspect killed/arrested/end key pressed...");
+                                    break;
+                                }
+
+                                if (Suspect.Tasks.CurrentTaskStatus != TaskStatus.InProgress)
+                                {
+                                    Game.LogTrivial("YOBBINCALLOUTS: continuing, suspect task completed...");
+                                    break;
+                                }
+                            }
+                            Suspect.Tasks.EnterVehicle(SuspectVehicle, -1);
+                            while (true)
+                            {
+                                GameFiber.Yield();
+
+                                if (!Suspect.Exists() || Suspect.IsDead || Functions.IsPedArrested(Suspect) || Game.IsKeyDown(Config.CalloutEndKey))
+                                {
+                                    Game.LogTrivial("YOBBINCALLOUTS: continuing, suspect killed/arrested/end key pressed...");
+                                    break;
+                                }
+
+                                if (Suspect.Tasks.CurrentTaskStatus != TaskStatus.InProgress)
+                                {
+
+                                    if (Suspect.IsInAnyVehicle(false))
+                                    {
+                                        Game.LogTrivial("YOBBINCALLOUTS: continuing, suspect task completed...");
+                                        break;
+                                    }
+                                    else //this is if the suspect gets stuck and stops trying to enter the vehicle.
+                                    {
+                                        Suspect.Tasks.EnterVehicle(SuspectVehicle, -1);
+                                    }
+                                }
+                            }
+                            //END PROBLEM
+
+                            if(Suspect.IsInAnyVehicle(false)) Suspect.Tasks.CruiseWithVehicle(SuspectVehicle, 20f, VehicleDrivingFlags.AllowWrongWay | VehicleDrivingFlags.DriveAroundVehicles);
+                            
+                            while (!Functions.IsPlayerPerformingPullover() && !Functions.IsPedArrested(Suspect) && Suspect.IsAlive) GameFiber.Wait(0);
+                            if (Suspect.Exists() && !Functions.IsPedArrested(Suspect) && Suspect.IsAlive) Pursuit();
                             CallHandler.SuspectWait(Suspect);
                         }
                         break;
@@ -394,16 +439,16 @@ namespace YobbinCallouts.Callouts
         }
         private String DialogueAdvance(List<string> dialogue)
         {
-            System.Random twboop = new System.Random();
-            int dialoguechosen = twboop.Next(0, dialogue.Count);
+            Game.LogTrivial("YOBBINCALLOUTS: waiting for suspect to be stopped, dialogue advancing.");
+            int dialoguechosen = CallHandler.RNG(0, dialogue.Count);
             SpeechCounter++;
             Game.DisplaySubtitle(dialogue[dialoguechosen]);
             return dialogue[dialoguechosen];
         }
         private void Pursuit()
         {
-            System.Random monke2 = new System.Random();
-            int waitforpursuit = monke2.Next(2500, 6000); //add more scenarios later
+            Game.DisplayHelp("Stop the ~r~Suspect.");
+            int waitforpursuit = CallHandler.RNG(2500, 6000); //add more scenarios later
             GameFiber.Wait(waitforpursuit);
             Game.LogTrivial("YOBBINCALLOUTS: Suspect Pursuit Started");
             Functions.ForceEndCurrentPullover();
@@ -414,25 +459,26 @@ namespace YobbinCallouts.Callouts
             LSPD_First_Response.Mod.API.Functions.SetPursuitIsActiveForPlayer(MainPursuit, true);
             LSPD_First_Response.Mod.API.Functions.AddPedToPursuit(MainPursuit, Suspect);
             while (Functions.IsPursuitStillRunning(MainPursuit)) GameFiber.Wait(0);
-        }  
+        }
         private void Search()
         {
             CallHandler.VehicleInfo(SuspectVehicle, Suspect);
             GameFiber.Wait(1000);
             if (Config.DisplayHelp) Game.DisplayHelp("Search for the ~r~Suspect~w~.");
 
-            Suspect.Tasks.CruiseWithVehicle(20f, VehicleDrivingFlags.AllowWrongWay | VehicleDrivingFlags.DriveAroundVehicles);
-            SuspectBlip = new Blip(Suspect.Position.Around(15), 125);
+            //Suspect.Tasks.CruiseWithVehicle(20f, VehicleDrivingFlags.AllowWrongWay | VehicleDrivingFlags.DriveAroundVehicles);
+            SuspectBlip = new Blip(Suspect.Position.Around(15), 175);
             SuspectBlip.IsRouteEnabled = true;
             SuspectBlip.Color = Color.Orange;
             SuspectBlip.Alpha = 0.69f;
 
-            while (player.DistanceTo(Suspect) >= 50) GameFiber.Wait(0);
+            while (player.DistanceTo(Suspect) >= 85) GameFiber.Wait(0);
+            Suspect.Tasks.CruiseWithVehicle(20f, VehicleDrivingFlags.AllowWrongWay | VehicleDrivingFlags.DriveAroundVehicles); //moving here to make it easier to find suspect
             Game.DisplayNotification("Callers have spotted the ~r~Suspect~w~ driving ~o~Recklessly~w~. Updating Map...");
             if (SuspectBlip.Exists()) SuspectBlip.Delete();
-            CallHandler.AssignBlip(Suspect, Color.Red, 1, "Suspect");
+            SuspectBlip = CallHandler.AssignBlip(Suspect, Color.Red, 1, "Suspect");
 
-            while (!Functions.IsPlayerPerformingPullover() && !Functions.IsPedArrested(Suspect)) GameFiber.Wait(0);
+            while (!Functions.IsPlayerPerformingPullover() && Suspect.Exists() && !Functions.IsPedArrested(Suspect)) GameFiber.Wait(0);
             Pursuit();
             CallHandler.SuspectWait(Suspect);
         }

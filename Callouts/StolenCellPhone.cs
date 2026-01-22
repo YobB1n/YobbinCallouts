@@ -106,8 +106,7 @@ namespace YobbinCallouts.Callouts
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Stolen Cellphone Callout Start==========");
-            System.Random r = new System.Random();
-            int Scenario = r.Next(0, 5);    //change later
+            int Scenario = CallHandler.RNG(0, 5);    //change later
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is Value is " + MainScenario);
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).RealAreaName;

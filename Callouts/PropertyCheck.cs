@@ -56,8 +56,7 @@ namespace YobbinCallouts.Callouts
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Property Checkup Callout Start==========");
-            System.Random r = new System.Random();
-            int Scenario = r.Next(0, 8);    //change this
+            int Scenario = CallHandler.RNG(0, 8);    //change this
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is Value is " + MainScenario);
 
@@ -99,8 +98,7 @@ namespace YobbinCallouts.Callouts
 
             if (MainScenario == 0 || MainScenario == 1)   //Nothing, Away on Vacation
             {
-                System.Random rondom = new System.Random();
-                int Message = rondom.Next(0, 2);
+                int Message = CallHandler.RNG(0, 2);
                 if (Message == 0)
                 {
                     if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Resident away on vacation requested a checkup on their property.");
@@ -116,8 +114,7 @@ namespace YobbinCallouts.Callouts
             {
                 if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Resident reported suspicious movement in their Neighbour's property.");
                 else Game.DisplayNotification("~b~Resident ~w~Reported ~r~Suspicious Movement~w~ in their ~y~Neighbour's Property.");
-                System.Random rondom = new System.Random();
-                int AnimalChooser = rondom.Next(0, 4);
+                int AnimalChooser = CallHandler.RNG(0, 4);
                 if (AnimalChooser == 0) { Animal = new Ped("a_c_coyote", MainSpawnPoint, 0f); AnimalType = "Wild Coyote"; }
                 if (AnimalChooser == 1) { Animal = new Ped("a_c_rottweiler", MainSpawnPoint, 0f); AnimalType = "Rotweiller"; }
                 if (AnimalChooser == 2) { Animal = new Ped("a_c_boar", MainSpawnPoint, 0f); AnimalType = "Wild Boar"; }
@@ -131,8 +128,7 @@ namespace YobbinCallouts.Callouts
                 if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Resident reported suspicious movement in their Neighbour's property.");
                 else Game.DisplayNotification("~b~Resident ~w~Reported ~r~Suspicious Movement~w~ in their ~y~Neighbour's Property.");
                 string[] Suspects = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
-                System.Random r2 = new System.Random();
-                int SuspectModel = r2.Next(0, Suspects.Length);
+                int SuspectModel = CallHandler.RNG(0, Suspects.Length);
                 Suspect = new Ped(Suspects[SuspectModel], MainSpawnPoint, 69);
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect Spawned.");
                 Suspect.IsPersistent = true;
@@ -262,8 +258,7 @@ namespace YobbinCallouts.Callouts
                                 {
                                     Game.DisplayHelp("Press " + Config.MainInteractionKey + " to Advance the Conversation.");
                                 }
-                                System.Random r = new System.Random();
-                                int OpeningDialogue = r.Next(0, 2);
+                                int OpeningDialogue = CallHandler.RNG(0, 2);
                                 switch (OpeningDialogue)
                                 {
                                     case 0:

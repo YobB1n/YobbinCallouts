@@ -157,8 +157,7 @@ namespace YobbinCallouts.Callouts
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Weapon Found Callout Start==========");
-            System.Random r = new System.Random();
-            int Scenario = r.Next(0, 2); //scenario 1 is messed up, suspect invisible lol
+            int Scenario = CallHandler.RNG(0, 2); //scenario 1 is messed up, suspect invisible lol
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario value is: " + MainScenario);
             var zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).RealAreaName;
@@ -213,8 +212,7 @@ namespace YobbinCallouts.Callouts
 
                 if (MainScenario >= 0) //gun - SCENARIO 0 MUST HAVE GUN
                 {
-                    System.Random r = new System.Random();
-                    int WeaponType = r.Next(0, 4);
+                    int WeaponType = CallHandler.RNG(0, 4);
                     if (WeaponType == 0) { Weapon = new Rage.Object("w_pi_appistol", World.GetNextPositionOnStreet(Witness.Position)){ IsPersistent = true }; WeaponName = "AP Pistol"; }
                     else if (WeaponType == 1) { Weapon = new Rage.Object("w_pi_combatpistol", World.GetNextPositionOnStreet(Witness.Position)) { IsPersistent = true }; WeaponName = "Combat Pistol"; }
                     else if (WeaponType == 2) { Weapon = new Rage.Object("w_pi_heavypistol", World.GetNextPositionOnStreet(Witness.Position)) { IsPersistent = true }; WeaponName = "Heavy Pistol"; }
@@ -331,8 +329,7 @@ namespace YobbinCallouts.Callouts
             while (player.DistanceTo(Witness) >= 6f) GameFiber.Wait(0);
             Witness.Tasks.AchieveHeading(player.Heading - 180).WaitForCompletion(500);
             if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~b~Witness.");
-            System.Random r = new System.Random();
-            int Dialogue = r.Next(0, 3);
+            int Dialogue = CallHandler.RNG(0, 3);
 
             if (MainScenario == 0) //No Info
             {
@@ -347,8 +344,7 @@ namespace YobbinCallouts.Callouts
             }
             else //Suspect CLose
             {
-                System.Random r3 = new System.Random();  //Instantiate Random Weapon  generator
-                int WeaponModel = r3.Next(0, 5);    //Use Random Weapon generator
+                int WeaponModel = CallHandler.RNG(0, 5);    //Use Random Weapon generator
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect Weapon Model is " + WeaponModel);
 
                 if (WeaponModel == 0) { Suspect.Inventory.GiveNewWeapon("WEAPON_ASSAULTRIFLE", -1, true); WeaponName = "Assault Rifle"; }
@@ -397,13 +393,11 @@ namespace YobbinCallouts.Callouts
                     SuspectBlip.Scale = 0.69f;
                     while (player.DistanceTo(Suspect) >= 15) GameFiber.Wait(0);
 
-                    System.Random monke = new System.Random();
-                    int decision = monke.Next(0, 2);
+                    int decision = CallHandler.RNG(0, 2);
                     if (decision == 1) CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);
                     else
                     {
-                        System.Random yuy = new System.Random();
-                        int WaitTime = yuy.Next(1500, 6000);
+                        int WaitTime = CallHandler.RNG(1500, 6000);
                         GameFiber.Wait(WaitTime);
                         if (Suspect.Exists() && Suspect.IsAlive)
                         {
@@ -449,8 +443,7 @@ namespace YobbinCallouts.Callouts
                 if (Weapon.Exists()) Weapon.Delete();
             }
             GameFiber.Wait(2000);
-            System.Random r3 = new System.Random();
-            var WeaponSerial = r3.Next(50000000, 99999999);
+            var WeaponSerial = CallHandler.RNG(50000000, 99999999);
             Game.LogTrivial("YOBBINCALLOUTS: Checking Weapon Serial.");
             Game.DisplaySubtitle("Dispatch, Requesting Weapon Serial Check for a ~r~" + WeaponName + " ~w~with Serial Number ~b~" + WeaponSerial);
             if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Dispatch, Requesting Weapon Serial Check for a ~r~" + WeaponName + " with Serial Number ~b~" + WeaponSerial);
@@ -525,14 +518,12 @@ namespace YobbinCallouts.Callouts
                     Game.LocalPlayer.HasControl = true;
                     Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to speak with the ~o~Resident.");
                     Game.LogTrivial("YOBBINCALLOUTS: Started speaking with suspect.");
-                    System.Random dud = new System.Random();
-                    var decision = dud.Next(0, 4);
+                    var decision = CallHandler.RNG(0, 4);
                     Game.LogTrivial("YOBBINCALLOUTS: Suspect Action is " + decision);
                     if (decision == 0) //cooperates
                     {
                         Game.LogTrivial("YOBBINCALLOUTS: suspect cooperative");
-                        System.Random yud = new System.Random();
-                        var dialogue = yud.Next(0, 3);
+                        var dialogue = CallHandler.RNG(0, 3);
                         if (dialogue == 0) CallHandler.Dialogue(SuspectInnocent1, Suspect);
                         else if (dialogue == 1) CallHandler.Dialogue(SuspectInnocent2, Suspect);
                         else CallHandler.Dialogue(SuspectInnocent3, Suspect);
@@ -544,8 +535,7 @@ namespace YobbinCallouts.Callouts
                     else if (decision == 1) //not cooperative
                     {
                         Game.LogTrivial("YOBBINCALLOUTS: suspect not cooperative");
-                        System.Random yud = new System.Random();
-                        var dialogue = yud.Next(0, 2);
+                        var dialogue = CallHandler.RNG(0, 2);
                         if (dialogue == 0) CallHandler.Dialogue(SuspectGuilty1, Suspect);
                         else CallHandler.Dialogue(SuspectGuilty1, Suspect);
                         GameFiber.Wait(2000);
@@ -555,24 +545,20 @@ namespace YobbinCallouts.Callouts
                     }
                     else if (decision == 2) //late
                     {
-                        System.Random r = new System.Random();  //Instantiate Random Weapon  generator
-                        int WeaponModel = r.Next(0, 5);    //Use Random Weapon generator
+                        int WeaponModel = CallHandler.RNG(0, 5);    //Use Random Weapon generator
 
-                        System.Random yud = new System.Random();
-                        var dialogue = yud.Next(0, 2);
+                        var dialogue = CallHandler.RNG(0, 2);
                         if (dialogue == 0) CallHandler.Dialogue(SuspectGuilty1, Suspect);
                         else CallHandler.Dialogue(SuspectGuilty1, Suspect);
                         CallHandler.IdleAction(Suspect, false);
                         Game.DisplayHelp("Return to your ~p~Vehicle~w~ to conduct a ~o~Ped Check.");
-                        System.Random rondom = new System.Random();  //Instantiate Random WaitTime generator
-                        int WaitTime = rondom.Next(3000, 8000);    //Use Random WaitTime generator
+                        int WaitTime = CallHandler.RNG(3000, 8000);    //Use Random WaitTime generator
                         Game.LogTrivial("YOBBINCALLOUTS: Waiting " + WaitTime + " ms.");
                         GameFiber.Wait(WaitTime);
 
                         if (Suspect.Exists() && Suspect.IsAlive && !Functions.IsPedArrested(Suspect))
                         {
-                            System.Random dec = new System.Random();
-                            var action = dec.Next(0, 2);
+                            var action = CallHandler.RNG(0, 2);
                             if (action == 0) CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);  //flee
                             else //fight
                             {
@@ -592,13 +578,11 @@ namespace YobbinCallouts.Callouts
                     else //early
                     {
                         CallHandler.Dialogue(SuspectFlees, Suspect);
-                        System.Random dec = new System.Random();
-                        var action = dec.Next(0, 2);
+                        var action = CallHandler.RNG(0, 2);
                         if (action == 0) CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);  //flee
                         else //fight
                         {
-                            System.Random r = new System.Random();  //Instantiate Random Weapon  generator
-                            int WeaponModel = r.Next(0, 5);    //Use Random Weapon generator
+                            int WeaponModel = CallHandler.RNG(0, 5);    //Use Random Weapon generator
                             Game.LogTrivial("YOBBINCALLOUTS: Suspect Weapon Model is " + WeaponModel);
                             if (WeaponModel == 0) Suspect.Inventory.GiveNewWeapon("WEAPON_UNARMED", -1, true);
                             else if (WeaponModel == 1) Suspect.Inventory.GiveNewWeapon("WEAPON_PISTOL", -1, true);
@@ -635,8 +619,7 @@ namespace YobbinCallouts.Callouts
                 SuspectBlip.Alpha = 0.5f;
                 SuspectBlip.IsRouteEnabled = true;
 
-                System.Random r3 = new System.Random();  //Instantiate Random Weapon  generator
-                int WeaponModel = r3.Next(0, 5);    //Use Random Weapon generator
+                int WeaponModel = CallHandler.RNG(0, 5);    //Use Random Weapon generator
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect Weapon Model is " + WeaponModel);
                 if (WeaponModel == 0) Suspect.Inventory.GiveNewWeapon("WEAPON_ASSAULTRIFLE", -1, true);
                 else if (WeaponModel == 1) Suspect.Inventory.GiveNewWeapon("WEAPON_SMG", -1, true);
@@ -677,11 +660,9 @@ namespace YobbinCallouts.Callouts
         {
             Game.DisplayHelp("Perform a ~o~Traffic Stop~w~ on the ~r~Suspect.");
             while (!Functions.IsPlayerPerformingPullover() && Suspect.IsAlive) GameFiber.Wait(0);
-            System.Random yuy = new System.Random();
-            int WaitTime = yuy.Next(1500, 6000);
+            int WaitTime = CallHandler.RNG(1500, 6000);
 
-            System.Random r = new System.Random();
-            int action = r.Next(0, 4);
+            int action = CallHandler.RNG(0, 4);
             Game.LogTrivial("YOBBINCALLOUTS: SUSPECT FINAL ACTION IS..." + action);
             if (action == 0) CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);
             else if (action == 1) //Shoot

@@ -91,8 +91,7 @@ namespace YobbinCallouts.Callouts
                         IsPersistent = true
                     };
 
-                    System.Random r = new System.Random();  //Instantiate Random Weapon  generator
-                    int WeaponModel = r.Next(0, 5);    //Use Random Weapon generator
+                    int WeaponModel = CallHandler.RNG(5);   //Use Random Weapon generator
                     Game.LogTrivial("YOBBINCALLOUTS: Weapon Model is " + WeaponModel);
 
                     if (WeaponModel == 0) Suspect.Inventory.GiveNewWeapon("WEAPON_ASSAULTRIFLE", -1, true);
@@ -156,8 +155,7 @@ namespace YobbinCallouts.Callouts
                 {
                     while (CalloutRunning)
                     {
-                        System.Random rondom = new System.Random();  //Instantiate Random WaitTime generator
-                        int WaitTime = rondom.Next(200, 300);    //Use Random WaitTime generator
+                        int WaitTime = CallHandler.RNG(200, 300);    //Use Random WaitTime generator
                         Game.LogTrivial("YOBBINCALLOUTS: Suspect will fire when player is " + WaitTime + " metres away.");
                         while (player.DistanceTo(Suspect) >= WaitTime && !Game.IsKeyDown(Config.CalloutEndKey)) { GameFiber.Wait(0); }
                         if (Game.IsKeyDown(Config.CalloutEndKey)) { EndCalloutHandler.CalloutForcedEnd = true; break; }
@@ -454,8 +452,7 @@ namespace YobbinCallouts.Callouts
         {
             Game.LogTrivial("YOBBINCALLOUTS: Started spawning suspect vehicle");
             string[] Vehicles = new string[] { "SPEEDO4", "BURRITO", "BURRITO3", "BURRITO4", "YOUGA2" }; //make sure all these vehicles work with the peds, maybe add more types?
-            System.Random r = new System.Random();
-            int VictimVeh = r.Next(0, Vehicles.Length);
+            int VictimVeh = CallHandler.RNG(0, Vehicles.Length);
             Game.LogTrivial("YOBBINCALLOUTS: Suspect vehicle is " + VictimVeh);
 
             //spawn the suspects vehicle
@@ -532,9 +529,8 @@ namespace YobbinCallouts.Callouts
                 Rage.Native.NativeFunction.Natives.SET_PED_COMBAT_ATTRIBUTES(tempsuspect, 24, true);
                 Rage.Native.NativeFunction.Natives.SET_PED_COMBAT_ATTRIBUTES(tempsuspect, 35, true);
                 Rage.Native.NativeFunction.Natives.SET_PED_COMBAT_ATTRIBUTES(tempsuspect, 43, true);
-
-                System.Random r3 = new System.Random();  //Instantiate Random Weapon  generator
-                int WeaponModel = r3.Next(0, 5);    //Use Random Weapon generator
+             
+                int WeaponModel = CallHandler.RNG(0, 5);    //Use Random Weapon generator
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect" + i + " Weapon Model is " + WeaponModel);
                 if (WeaponModel == 0) tempsuspect.Inventory.GiveNewWeapon("WEAPON_ASSAULTRIFLE", -1, true);
                 else if (WeaponModel == 1) tempsuspect.Inventory.GiveNewWeapon("WEAPON_SMG", -1, true);

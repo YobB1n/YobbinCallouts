@@ -256,9 +256,8 @@ namespace YobbinCallouts.Callouts
                     Witness2.BlockPermanentEvents = true;
                     break;
             }
-
-            System.Random rYUY = new System.Random();
-            SuspectAction = rYUY.Next(0, 3);  //Change this later
+         
+            SuspectAction = CallHandler.RNG(0, 3);  //Change this later
             Game.LogTrivial("YOBBINCALLOUTS: Suspect Action Value is " + SuspectAction);
 
             if (!CalloutRunning) Callout(); CalloutRunning = true;
@@ -335,8 +334,7 @@ namespace YobbinCallouts.Callouts
                 if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~b~Victim.");
                 while (!Game.IsKeyDown(Config.MainInteractionKey)) GameFiber.Wait(0);
 
-                System.Random r = new System.Random();
-                int OpeningDialogue = r.Next(0, 3);
+                int OpeningDialogue = CallHandler.RNG(0, 3);
                 if (OpeningDialogue == 0)
                 {
                     CallHandler.Dialogue(OpeningDialogue1, Victim);
@@ -353,9 +351,8 @@ namespace YobbinCallouts.Callouts
 
                 Game.LogTrivial("YOBBINCALLOUTS: Started Suspect 1 Spawn");
                 NativeFunction.Natives.xA0F8A7517A273C05<Vector3>(World.GetNextPositionOnStreet(player.Position.Around(69)), 360, out Vector3 Suspect1Spawn);
-                Suspects = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
-                System.Random r2 = new System.Random();
-                int SuspectModel = r2.Next(0, Suspects.Length);
+                Suspects = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };               
+                int SuspectModel = CallHandler.RNG(0, Suspects.Length);
                 Suspect = new Ped(Suspects[SuspectModel], Suspect1Spawn, 69);   //nice
                 try
                 {
@@ -411,9 +408,8 @@ namespace YobbinCallouts.Callouts
                 SuspectArea.Alpha = 0.5f;
                 GameFiber.Wait(1500);
                 if (Driver.Exists()) Driver.Dismiss();
-
-                System.Random coco = new System.Random();
-                int WaitTime = coco.Next(20000, 40000); //20 - 40 seconds
+               
+                int WaitTime = CallHandler.RNG(20000, 40000); //20 - 40 seconds
                 Game.LogTrivial("YOBBINCALLOUTS: Waiting " + WaitTime + " Seconds.");
                 GameFiber.Wait(WaitTime);
 
@@ -450,8 +446,7 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(1500);
                 Driver.Dismiss();
 
-                System.Random coco = new System.Random();
-                int WaitTime = coco.Next(35000, 69000); //35-69 seconds
+                int WaitTime = CallHandler.RNG(35000, 69000); //35-69 seconds
                 Game.LogTrivial("YOBBINCALLOUTS: Waiting " + WaitTime + " Seconds.");
                 GameFiber.Wait(WaitTime);
 

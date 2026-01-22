@@ -44,9 +44,8 @@ namespace YobbinCallouts.Callouts
 
         public override bool OnBeforeCalloutDisplayed()
         {
-            Game.LogTrivial("==========YOBBINCALLOUTS: Bar Fight Callout Start==========");
-            System.Random r = new System.Random();
-            int Scenario = r.Next(0, 2);    //change
+            Game.LogTrivial("==========YOBBINCALLOUTS: Bar Fight Callout Start==========");            
+            int Scenario = CallHandler.RNG(0, 2); 
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is " + MainScenario + "");
             CallHandler.locationChooser(list);
@@ -73,8 +72,7 @@ namespace YobbinCallouts.Callouts
             }
 
             Peds = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
-            System.Random r2 = new System.Random();
-            int SuspectModel = r2.Next(1, Peds.Length); //KEEP THIS ARRAY INDEXER LIKE THIS
+            int SuspectModel = CallHandler.RNG(1, Peds.Length); //KEEP THIS ARRAY INDEXER LIKE THIS
 
             NativeFunction.Natives.GetClosestVehicleNodeWithHeading(MainSpawnPoint, out Vector3 nodePosition, out float heading, 1, 3.0f, 0);
             Suspect = new Ped(Peds[SuspectModel], MainSpawnPoint, heading);

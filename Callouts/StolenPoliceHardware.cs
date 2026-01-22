@@ -33,8 +33,7 @@ namespace YobbinCallouts.Callouts
             Game.LogTrivial("==========YOBBINCALLOUTS: Stolen Police Hardware Callout Start==========");
             MainSpawnPoint = World.GetNextPositionOnStreet(Game.LocalPlayer.Character.Position.Around(450f));
 
-            System.Random r2 = new System.Random();
-            int Scenario = r2.Next(0, 4);   //change to (0, 4) later
+            int Scenario = CallHandler.RNG(0, 4);
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario " + MainScenario + " Chosen.");
             ShowCalloutAreaBlipBeforeAccepting(MainSpawnPoint, 20f);
@@ -62,8 +61,7 @@ namespace YobbinCallouts.Callouts
 
             //Suspect Spawning
             Peds = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
-            System.Random r2 = new System.Random();
-            int SuspectModel = r2.Next(0, Peds.Length);
+            int SuspectModel = CallHandler.RNG(0, Peds.Length);
             Suspect = new Ped(Peds[SuspectModel], MainSpawnPoint, 69);
             Suspect.WarpIntoVehicle(SuspectVehicle, -1);
             Suspect.BlockPermanentEvents = true;
@@ -223,8 +221,7 @@ namespace YobbinCallouts.Callouts
                         Game.LocalPlayer.Character.Tasks.GoStraightToPosition(SuspectVehicle.GetOffsetPositionRight(1.5f), 1f, SuspectVehicle.Heading - 90, 1f, -1).WaitForCompletion(500);
                         Game.LocalPlayer.Character.Tasks.PlayAnimation("mini@repair", "fixing_a_ped", -1, AnimationFlags.Loop).WaitForCompletion(4000);
                         Game.LocalPlayer.Character.Tasks.Clear();
-                        System.Random r2 = new System.Random();
-                        int EvidenceFound = r2.Next(0, 3);
+                        int EvidenceFound = CallHandler.RNG(0, 3);
                         switch (EvidenceFound)
                         {
                             case 0:
@@ -257,8 +254,7 @@ namespace YobbinCallouts.Callouts
                 }
                 else  //if STP is installed
                 {
-                    System.Random r2 = new System.Random();
-                    int EvidenceFound = r2.Next(0, 3);
+                    int EvidenceFound = CallHandler.RNG(0, 3);
                     switch (EvidenceFound)
                     {
                         case 0:
@@ -303,8 +299,7 @@ namespace YobbinCallouts.Callouts
                 }
                 if (MainScenario == 2)
                 {
-                    System.Random Runaway = new System.Random();
-                    int ShouldRunaway = Runaway.Next(0, 2);
+                    int ShouldRunaway = CallHandler.RNG(0, 2);
                     if (ShouldRunaway == 1 && Suspect.Exists())  //suspect runs away after search
                     {
                         Game.LogTrivial("YOBBINCALLOUTS: Suspect will attempt to flee after search.");

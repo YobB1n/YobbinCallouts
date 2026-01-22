@@ -116,7 +116,7 @@ namespace YobbinCallouts.Callouts
          "~g~You:~w~ Absolutely, this could have ended much worse. Thanks for your help, is there anything else I can help you with?",
          "~b~Victim:~w~ I think I'm ok. Thanks for the help officer.",
         };
-        private readonly List<string> VictimEnding2 = new List<string>()
+        private readonly List<string> VictimEnding2 = new List<string>() //drive to home
         {
          "~g~You:~w~ Hi Ma'am, Can I Speak With You? You Don't Need to Worry, Everything is Okay Now.",
          "~g~You:~w~ Do you need medical attention?",
@@ -132,11 +132,25 @@ namespace YobbinCallouts.Callouts
          "~g~You:~w~ Absolutely, this could have ended much worse. Thanks for your help, is there anything else I can help you with?",
          "~b~Victim:~w~ If it's not too much to ask, could I get a lift to my sister's place? I could probably stay there for a bit.",
         };
+        private readonly List<string> VictimEnding3 = new List<string>() //drive to hospital
+        {
+         "~g~You:~w~ Hi Ma'am, Can I Speak With You? You Don't Need to Worry, Everything is Okay Now.",
+         "~g~You:~w~ Do you mind if I ask you a few questions?",
+         "~b~Victim:~w~ Uh, Sure. I don't have anything to hide Officer.",
+         "~g~You:~w~ All right. Can you tell me what happened?",
+         "~b~Victim:~w~ Uh, yeah. There's a large network of people who look for women in vulnerable situations.",
+         "~b~Victim:~w~ They then trick them into working for them, before holding them against their will.",
+         "~g~You:~w~ I see - I'm really sorry you had to go through this. Do you have any details on who might be in charge of this sort of operation?",
+         "~b~Victim:~w~ No I don't. They never let me see anyone except a few people, including the guy who just tried to kidnap me.",
+         "~b~Victim:~w~ I'm just glad I got out alive. I've heard terrible things about what they've done to others.",
+         "~g~You:~w~ Absolutely, this could have ended much worse. The man who tried to kidnap you won't be able to do any more harm now.",
+         "~g~You:~w~ Is there anything else I can do for you? Do need medical attetion?",
+         "~b~Victim:~w~ Yeah, I have some bruises and don't feel too well in the head. Going to the hospital is probably a good idea.",
+        };
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Human Trafficking Callout Start==========");
-            System.Random r = new System.Random();
-            int Scenario = r.Next(0, 4);    //change
+            int Scenario = CallHandler.RNG(0, 4);
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is " + MainScenario + "");
 
@@ -188,10 +202,9 @@ namespace YobbinCallouts.Callouts
 
                 //spawning of victim
                 VictimModels = new string[8] { "a_f_y_bevhills_01", "a_f_y_bevhills_02", "a_f_y_bevhills_03", "a_f_y_bevhills_04", "a_f_y_business_01", "a_f_y_business_02", "a_f_y_vinewood_01", "a_f_y_vinewood_04" };
-                System.Random lewis = new System.Random();
-                int VictimModel = lewis.Next(0, VictimModels.Length);
-                NativeFunction.Natives.xA0F8A7517A273C05<bool>(World.GetNextPositionOnStreet(Witness.Position), 0, out Vector3 outPosition);
-                Victim = new Ped(VictimModels[VictimModel], outPosition, 69);
+                int VictimModel = CallHandler.RNG(VictimModels.Length);
+                //NativeFunction.Natives.xA0F8A7517A273C05<bool>(World.GetNextPositionOnStreet(Witness.Position), 0, out Vector3 outPosition);
+                Victim = new Ped(VictimModels[VictimModel], CallHandler.SpawnOnSreetSide(Witness.Position, 1), 69);
                 Victim.IsPersistent = true;
                 Victim.BlockPermanentEvents = true;
                 NativeFunction.Natives.APPLY_PED_DAMAGE_PACK(Victim, "HOSPITAL_2", 0.0f, 0.0f); //damage, float mult?
@@ -203,8 +216,7 @@ namespace YobbinCallouts.Callouts
             else
             {
                 VictimModels = new string[8] { "a_f_y_bevhills_01", "a_f_y_bevhills_02", "a_f_y_bevhills_03", "a_f_y_bevhills_04", "a_f_y_business_01", "a_f_y_business_02", "a_f_y_vinewood_01", "a_f_y_vinewood_04" };
-                System.Random lewis = new System.Random();
-                int VictimModel = lewis.Next(0, VictimModels.Length);
+                int VictimModel = CallHandler.RNG(0, VictimModels.Length);
                 NativeFunction.Natives.xA0F8A7517A273C05<bool>(World.GetNextPositionOnStreet(MainSpawnPoint), 0, out Vector3 outPosition);
                 Victim = new Ped(VictimModels[VictimModel], outPosition, 69);
                 Victim.IsPersistent = true;
@@ -214,8 +226,7 @@ namespace YobbinCallouts.Callouts
                 Victim.Tasks.Cower(-1);
 
                 SuspectModels = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
-                System.Random r2 = new System.Random();
-                int SuspectModel = r2.Next(0, SuspectModels.Length);
+                int SuspectModel = CallHandler.RNG(0, SuspectModels.Length);
                 Suspect = new Ped(SuspectModels[SuspectModel], Victim.GetOffsetPositionFront(3), Victim.Heading - 180);
                 Suspect.IsPersistent = true;
                 Suspect.BlockPermanentEvents = true;
@@ -353,8 +364,7 @@ namespace YobbinCallouts.Callouts
                 while (player.DistanceTo(Witness) >= 5) GameFiber.Wait(0);
                 Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~p~Store Owner.");
 
-                System.Random bingchilling = new System.Random();
-                int Dialogue = bingchilling.Next(0, 2);
+                int Dialogue = CallHandler.RNG(2);
                 if (Dialogue == 0) CallHandler.Dialogue(WitnessOpening1, Witness);
                 else CallHandler.Dialogue(WitnessOpening2, Witness);
 
@@ -385,7 +395,7 @@ namespace YobbinCallouts.Callouts
                 else
                 {
                     CallHandler.Dialogue(VictimInfo2, Victim);
-                    DrivePeep();
+                    DrivePeep("house"); //house only for this scenario (suspect not on scene)
                 }
             }
             else //suspect on scene
@@ -418,7 +428,7 @@ namespace YobbinCallouts.Callouts
                     {
                         Game.LogTrivial("YOBBINCALLOUTS: Suspect Pursuit Started");
                         Game.DisplayNotification("Suspect is ~r~Evading~w~ with a ~o~Kidnapped~w~ Female!");
-                        if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Suspect is ~r~Evading~w~ with a ~o~Kidnapped~w~ Female");
+                        if (Main.CalloutInterface) CalloutInterfaceHandler.SendMessage(this, "Suspect is ~r~Evading~w~ with a ~o~Kidnapped~w~ Female!");
                         CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);                       
                     }
                 }
@@ -436,8 +446,7 @@ namespace YobbinCallouts.Callouts
 
                     //dialogue
                     if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~b~Victim.");
-                    System.Random bingchilling = new System.Random();
-                    int Dialogue = bingchilling.Next(0, 2);
+                    int Dialogue = CallHandler.RNG(3);
                     if (Dialogue == 0)
                     {
                         CallHandler.Dialogue(VictimEnding1, Victim);
@@ -449,16 +458,23 @@ namespace YobbinCallouts.Callouts
                         if (Victim.Exists()) Victim.ClearLastVehicle();
                         //Dismiss should be taken care of in End()
                     }
-                    else
+                    else if (Dialogue == 1)
                     {
                         CallHandler.Dialogue(VictimEnding2, Victim);
-                        DrivePeep();
+                        Game.LogTrivial("YOBBINCALLOUTS: Drive victim to home");
+                        DrivePeep("house");
+                    }
+                    else
+                    {
+                        CallHandler.Dialogue(VictimEnding3, Victim);
+                        Game.LogTrivial("YOBBINCALLOUTS: Drive victim to hospital");
+                        DrivePeep("hospital");
                     }
                 }
             }
         }
 
-        private void DrivePeep()
+        private void DrivePeep(string destinationtype)
         {
             Victim.Tasks.AchieveHeading(Game.LocalPlayer.Character.Heading - 180).WaitForCompletion(500);
             CallHandler.IdleAction(Victim, false);
@@ -493,23 +509,25 @@ namespace YobbinCallouts.Callouts
                     Victim.Tasks.EnterVehicle(Game.LocalPlayer.Character.CurrentVehicle, SeatIndex, EnterVehicleFlags.None).WaitForCompletion();
                 }
                 if (VictimBlip.Exists()) { VictimBlip.Delete(); }
-                CallHandler.locationChooser(CallHandler.HouseList);
+                if(destinationtype == "house") CallHandler.locationChooser(CallHandler.HouseList); //house only for this scenario
+                else CallHandler.locationChooser(CallHandler.HospitalList, 2500); //hospital could be farther away (max dist increased)
+
                 Vector3 DriverDestination = CallHandler.SpawnPoint;  //catYes
                 VictimBlip = new Blip(DriverDestination);
                 VictimBlip.Color = System.Drawing.Color.Green;
                 VictimBlip.IsRouteEnabled = true;
                 VictimBlip.Name = "Destination";
                 GameFiber.Wait(1000);
-                Game.DisplayHelp("Drive to the ~g~House~w~ Marked on the Map.");
+                Game.DisplayHelp("Drive to the ~g~location~w~ Marked on the Map.");
                 while (player.DistanceTo(DriverDestination) >= 35f && !Game.IsKeyDown(Config.CalloutEndKey)) { GameFiber.Wait(0); }
                 if (Game.IsKeyDown(Config.CalloutEndKey)) { End(); }
                 Game.DisplayHelp("Stop Your Vehicle to Let the ~b~Victim ~w~Out.");
-                while (player.CurrentVehicle.Speed > 0)
+                while (player.CurrentVehicle.Exists() && player.CurrentVehicle.Speed > 0)
                 {
                     GameFiber.Wait(0);
                 }
                 Victim.PlayAmbientSpeech("generic_thanks");    //fix this later
-                Victim.Tasks.LeaveVehicle(Game.LocalPlayer.Character.CurrentVehicle, LeaveVehicleFlags.None).WaitForCompletion();
+                if(Game.LocalPlayer.Character.CurrentVehicle.Exists()) Victim.Tasks.LeaveVehicle(Game.LocalPlayer.Character.CurrentVehicle, LeaveVehicleFlags.None).WaitForCompletion();
                 GameFiber.Wait(1000);
                 if (VictimBlip.Exists()) { VictimBlip.Delete(); }
 
@@ -535,8 +553,7 @@ namespace YobbinCallouts.Callouts
                 SuspectVehicle.IsPersistent = true;
 
                 SuspectModels = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
-                System.Random r2 = new System.Random();
-                int SuspectModel = r2.Next(0, SuspectModels.Length);
+                int SuspectModel = CallHandler.RNG(SuspectModels.Length);
 
                 Suspect = new Ped(SuspectModels[SuspectModel], SuspectVehicle.Position, 69);   //nice
                 Suspect.WarpIntoVehicle(SuspectVehicle, -1);
@@ -583,8 +600,7 @@ namespace YobbinCallouts.Callouts
         {
             if (CalloutRunning)
             {
-                System.Random r = new System.Random();
-                int SuspectAction = r.Next(0, 2);
+                int SuspectAction = CallHandler.RNG(2);
                 if (SuspectAction == 0)  //pursuit
                 {
                     CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);
@@ -594,8 +610,7 @@ namespace YobbinCallouts.Callouts
                     while (SuspectVehicle.Speed > 0) GameFiber.Wait(0);
                     Game.DisplayHelp("Speak With the ~r~Suspect.");
 
-                    System.Random monke = new System.Random();  //Instantiate Random Weapon  generator
-                    int WeaponModel = monke.Next(0, 5);    //Use Random Weapon generator
+                    int WeaponModel = CallHandler.RNG(0, 5);    //Use Random Weapon generator
                     Game.LogTrivial("YOBBINCALLOUTS: Weapon Model is " + WeaponModel);
 
                     if (WeaponModel == 0) Suspect.Inventory.GiveNewWeapon("WEAPON_ASSAULTRIFLE", -1, true);
@@ -604,8 +619,7 @@ namespace YobbinCallouts.Callouts
                     else if (WeaponModel == 3) Suspect.Inventory.GiveNewWeapon("WEAPON_SAWEDOFFSHOTGUN", -1, true);
                     else if (WeaponModel == 4) Suspect.Inventory.GiveNewWeapon("WEAPON_COMPACTRIFLE", -1, true);
 
-                    System.Random rondom = new System.Random();  //Instantiate Random WaitTime generator
-                    int WaitTime = rondom.Next(5, 15);    //Use Random WaitTime generator
+                    int WaitTime = CallHandler.RNG(5, 15);    //Use Random WaitTime generator
                     Game.LogTrivial("YOBBINCALLOUTS: Suspect will fire when player is " + WaitTime + " metres away.");
                     while (player.DistanceTo(Suspect) >= WaitTime && !Game.IsKeyDown(Config.CalloutEndKey)) { GameFiber.Wait(0); }
                     while (player.IsInAnyVehicle(false) || player.DistanceTo(Suspect) >= WaitTime) GameFiber.Wait(0);

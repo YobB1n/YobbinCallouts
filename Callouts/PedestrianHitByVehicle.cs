@@ -84,8 +84,7 @@ namespace YobbinCallouts.Callouts
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Pedestrian Hit By Vehicle Callout Start=========="); //All callout starts are logged like this
-            System.Random r = new System.Random();
-            int Scenario = r.Next(0, 2); //0 - hit and run, 1 - still on scene. Change later, just testing scenario 0 atm
+            int Scenario = CallHandler.RNG(0, 2); //0 - hit and run, 1 - still on scene.
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario value is: " + MainScenario);
 
@@ -144,7 +143,7 @@ namespace YobbinCallouts.Callouts
 
                     //Spawn Witness
                     NativeFunction.Natives.xA0F8A7517A273C05<bool>(World.GetNextPositionOnStreet(MainSpawnPoint), 0, out Vector3 outPosition);
-                    Witness = new Citizen(outPosition, 69);  //might have to specify witness model
+                    Witness = new Citizen(CallHandler.SpawnOnSreetSide(outPosition), 69);  //might have to specify witness model
                     Witness.IsPersistent = true;
                     Witness.BlockPermanentEvents = true;
 
@@ -273,8 +272,7 @@ namespace YobbinCallouts.Callouts
                 if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~b~Witness.");
                 Witness.Tasks.AchieveHeading(player.Heading - 180f).WaitForCompletion(500);
                 if (VictimBlip.Exists()) VictimBlip.Delete();
-                System.Random dialogue = new System.Random();
-                int OpeningDialogue = dialogue.Next(0, 3); //change later
+                int OpeningDialogue = CallHandler.RNG(0, 3); //change later
                 if (OpeningDialogue == 0)  CallHandler.Dialogue(WitnessDriverAtFault1, Witness);
                 else if (OpeningDialogue == 1) CallHandler.Dialogue(WitnessDriverAtFault2, Witness);
                 else CallHandler.Dialogue(WitnessDriverAtFault3, Witness);
@@ -320,8 +318,7 @@ namespace YobbinCallouts.Callouts
                     if (VictimBlip.Exists()) VictimBlip.Delete();
                     try { NativeFunction.Natives.ROLL_DOWN_WINDOW(SuspectVehicle, 0); }
                     catch { Game.LogTrivial("YOBBINCALLOUTS: Error Rolling Down Driver Window."); }
-                    System.Random dialogue = new System.Random();
-                    int OpeningDialogue = dialogue.Next(0, 3); //change later
+                    int OpeningDialogue = CallHandler.RNG(0, 3); //change later
                     if (OpeningDialogue == 0) CallHandler.Dialogue(DriverDriverNotAtFault1);
                     else if (OpeningDialogue == 1) CallHandler.Dialogue(DriverDriverNotAtFault2);
                     else CallHandler.Dialogue(DriverDriverNotAtFault3);
@@ -334,8 +331,7 @@ namespace YobbinCallouts.Callouts
                 {
                     Game.LogTrivial("YOBBINCALLOUTS: Suspect Flees.");
 
-                    System.Random chez = new System.Random();
-                    int WaitTime = chez.Next(2500, 8000);
+                    int WaitTime = CallHandler.RNG(2500, 8000);
                     GameFiber.Wait(WaitTime);
 
                     if (Suspect.Exists() && Suspect.IsAlive)
@@ -404,8 +400,7 @@ namespace YobbinCallouts.Callouts
                     else //shoots
                     {
                         Game.LogTrivial("YOBBINCALLOUTS: Suspect attacks.");
-                        System.Random r = new System.Random();
-                        int wait = r.Next(2000, 6900);
+                        int wait = CallHandler.RNG(2000, 6900);
                         GameFiber.Wait(wait);
                         Suspect.Inventory.GiveNewWeapon("WEAPON_ASSAULTRIFLE", -1, true);
                         Suspect.Tasks.ParkVehicle(SuspectVehicle, SuspectVehicle.Position, SuspectVehicle.Heading).WaitForCompletion(5000);

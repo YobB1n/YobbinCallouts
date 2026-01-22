@@ -251,8 +251,7 @@ namespace YobbinCallouts.Callouts
                 NativeFunction.Natives.TASK_TURN_PED_TO_FACE_ENTITY(Officer, player, -1);
                 while (player.DistanceTo(Officer) >= 5f) GameFiber.Wait(0);
                 Officer.Tasks.ClearImmediately();
-                Random r = new Random();
-                int Dialogue = r.Next(0, 1); //dialogue switcher I haven't got around to using yet
+                int Dialogue = CallHandler.RNG(0, 1); //dialogue switcher I haven't got around to using yet
                 if (Dialogue == 0) CallHandler.Dialogue(OpeningDialogue1, Officer);
                 BaitVehicleBlip = CallHandler.AssignBlip(BaitVehicle, Color.Green, 1, "Bait Car");
                 GameFiber.Wait(1000);
@@ -269,9 +268,8 @@ namespace YobbinCallouts.Callouts
         {
             if (CalloutRunning)
             {
-                while (!Game.IsKeyDown(Config.MainInteractionKey)) GameFiber.Wait(0);
-                Random r = new Random();
-                Peeps = r.Next(1, 4);
+                while (!Game.IsKeyDown(Config.MainInteractionKey)) GameFiber.Wait(0);               
+                Peeps = CallHandler.RNG(1, 4);
                 //if (Peeps == 0) SpawnSuspects();
                 //if (Peeps == 1) SpawnSuspects();
                 //if (Peeps == 2) SpawnSuspects();
@@ -502,7 +500,6 @@ namespace YobbinCallouts.Callouts
         private void SpawnSuspects()
         {
             var Peds = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
-            System.Random r2 = new System.Random();
             try
             {
                 // float bearing = (BaitVehicle.Heading - player.CurrentVehicle.Heading);
@@ -518,7 +515,7 @@ namespace YobbinCallouts.Callouts
                 Rando1.IsInvincible = true;
                 Rando1.Tasks.Wander();
 
-                Rando2 = new Ped(Peds[r2.Next(0, Peds.Length)], World.GetNextPositionOnStreet(Rando1.Position.Around(15)), 69);
+                Rando2 = new Ped(Peds[CallHandler.RNG(0, Peds.Length)], World.GetNextPositionOnStreet(Rando1.Position.Around(15)), 69);
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect 2 spawn location: " + Rando2.Position + ", " + Rando2.Position.DistanceTo2D(player) + " away from the player.");
                 Rando2.IsPersistent = true;
                 Rando2.BlockPermanentEvents = true;
@@ -526,7 +523,7 @@ namespace YobbinCallouts.Callouts
                 Rando2.IsInvincible = true;
                 Rando2.Tasks.Wander();
 
-                Rando3 = new Ped(Peds[r2.Next(0, Peds.Length)], World.GetNextPositionOnStreet(Rando2.Position.Around(10)), 69);
+                Rando3 = new Ped(Peds[CallHandler.RNG(0, Peds.Length)], World.GetNextPositionOnStreet(Rando2.Position.Around(10)), 69);
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect 3 spawn location: " + Rando3.Position + ", " + Rando3.Position.DistanceTo2D(player) + " away from the player.");
                 Rando3.IsPersistent = true;
                 Rando3.BlockPermanentEvents = true;

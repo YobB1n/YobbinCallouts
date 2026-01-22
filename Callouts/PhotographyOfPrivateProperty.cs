@@ -252,8 +252,7 @@ namespace YobbinCallouts.Callouts
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Photography of Private Property Callout Start==========");
-            System.Random r = new System.Random();
-            int Scenario = r.Next(0, 0);
+            int Scenario = CallHandler.RNG(0, 0);
             Scenario = MainScenario;
 
             //HOUSE CHOOSER FOR 1ST SCENARIO
@@ -294,34 +293,33 @@ namespace YobbinCallouts.Callouts
                 Victim.BlockPermanentEvents = true;
                 Game.LogTrivial("YOBBINCALLOUTS: Victim Spawned.");
 
-                SuspectSpawnPoint = World.GetNextPositionOnStreet(MainSpawnPoint);
-                NativeFunction.Natives.xA0F8A7517A273C05<bool>(SuspectSpawnPoint, 0, out Vector3 outPosition);
-                Suspect = new Ped(outPosition, 360);
+                //SuspectSpawnPoint = World.GetNextPositionOnStreet(MainSpawnPoint);
+                //NativeFunction.Natives.xA0F8A7517A273C05<bool>(SuspectSpawnPoint, 0, out Vector3 outPosition);
+                Suspect = new Ped(CallHandler.SpawnOnSreetSide(MainSpawnPoint), 360);
                 Suspect.IsPersistent = true;
                 Suspect.BlockPermanentEvents = true;
             }
             else
-            {
-                SuspectSpawnPoint = World.GetNextPositionOnStreet(MainSpawnPoint);
-                NativeFunction.Natives.xA0F8A7517A273C05<bool>(SuspectSpawnPoint, 0, out Vector3 outPosition);
-                Suspect = new Ped(outPosition, 360);
+            {                
+                Suspect = new Ped(CallHandler.SpawnOnSreetSide(MainSpawnPoint), 360);
                 Suspect.IsPersistent = true;
                 Suspect.BlockPermanentEvents = true;
                 Suspect.Position = Suspect.GetOffsetPositionRight(2);
                 //ADD SUSPECT PHOTOGRAPHY ANIMATION
 
-                Victim = new Ped(Suspect.GetOffsetPositionFront(-10), 360);
+                Victim = new Ped(CallHandler.SpawnOnSreetSide(Suspect.GetOffsetPositionFront(-10)), 360);
                 Victim.IsPersistent = true;
                 Victim.BlockPermanentEvents = true;
                 Game.LogTrivial("YOBBINCALLOUTS: Victim Spawned.");
             }
 
-            System.Random r = new System.Random();
-            int SuspectCamera = r.Next(0, 2);
+            int SuspectCamera = CallHandler.RNG(0, 2);
             if (SuspectCamera == 0) Camera = new Rage.Object("prop_npc_phone", Vector3.Zero);
             else Camera = new Rage.Object("prop_pap_camera_01", Vector3.Zero);
             Camera.AttachTo(Suspect, Suspect.GetBoneIndex(PedBoneId.LeftHand), new Vector3(0.1490f, 0.0560f, -0.0100f), new Rotator(-17f, -142f, -151f));
+            Camera.IsVisible = false; //because of the new papparazi scenario, there will be duplicated cameras if the camerra is visible during the scenario. It is visible again once the player talks to the suspect.
             Game.LogTrivial("YOBBINCALLOUTS: Spawned Suspect, Gave Them Camera");
+            CallHandler.FacePedTowardsPosition(Suspect, Victim.Position);
 
             House = new Blip(MainSpawnPoint, 20f);
             House.Alpha = 0.67f;
@@ -329,8 +327,7 @@ namespace YobbinCallouts.Callouts
             House.Color = System.Drawing.Color.Yellow;
             House.Name = "Callout Location";
 
-            System.Random ryuy = new System.Random();
-            SuspectAction = ryuy.Next(0, 3);
+            SuspectAction = CallHandler.RNG(0, 3);
             Game.LogTrivial("YOBBINCALLOUTS: SuspectAction Value is " + SuspectAction);
 
             if (CalloutRunning == false) Callout();
@@ -420,6 +417,7 @@ namespace YobbinCallouts.Callouts
         {
             if (CalloutRunning)
             {
+                CallHandler.StartScenario(Suspect, "WORLD_HUMAN_PAPARAZZI");
                 if (MainScenario == 0)
                 {
                     if (House.Exists()) { House.Delete(); }
@@ -432,8 +430,7 @@ namespace YobbinCallouts.Callouts
                     while (Game.LocalPlayer.Character.DistanceTo(Victim) >= 5f) { GameFiber.Wait(0); }
 
                     if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak With the ~b~Caller.");
-                    System.Random r2 = new System.Random();
-                    int ResidentOpening = r2.Next(0, 3);
+                    int ResidentOpening = CallHandler.RNG(3);
 
                     switch (ResidentOpening)
                     {
@@ -460,11 +457,11 @@ namespace YobbinCallouts.Callouts
                     SuspectBlip.Name = "Suspect";
 
                     while (Game.LocalPlayer.Character.DistanceTo(Suspect) >= 6.9f) { GameFiber.Wait(0); }
+                    if (Camera.Exists()) Camera.IsVisible = true;
                     Suspect.Tasks.AchieveHeading(Game.LocalPlayer.Character.Heading - 180).WaitForCompletion(750);
                     if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + "~w~ to Speak with the ~r~Suspect.");
 
-                    System.Random sam = new System.Random();
-                    int SuspectOpening = sam.Next(0, 3);
+                    int SuspectOpening = CallHandler.RNG(3);
                     if (SuspectAction <= 1)    //Suspect is Cooperative
                     {
                         switch (SuspectOpening)
@@ -515,8 +512,7 @@ namespace YobbinCallouts.Callouts
 
                     if (Suspect.Exists() && !Functions.IsPedArrested(Suspect)) //suspect not arrested
                     {
-                        System.Random rondom = new System.Random(); //PAGE 'O RONDOM
-                        int VictimEnding = rondom.Next(0, 3);
+                        int VictimEnding = CallHandler.RNG(3);
                         if (SuspectAction > 1)
                         {
                             switch (VictimEnding) //suspect not cooperative
@@ -563,7 +559,7 @@ namespace YobbinCallouts.Callouts
                     else { Game.DisplayNotification("Dispatch, Dispute is ~b~Resolved~w~. The Suspect ~b~Never Trespassed~w~ On Their Property."); }
                 }
                 else  //=====SCENARIO 1======
-                {
+                {                   
                     while (Game.LocalPlayer.Character.DistanceTo(Victim) >= 20f && !Game.IsKeyDown(Config.CalloutEndKey)) GameFiber.Wait(0);
                     if (Game.IsKeyDown(Config.CalloutEndKey)) End();
                     if (House.Exists()) House.Delete();
@@ -584,6 +580,7 @@ namespace YobbinCallouts.Callouts
 
                     if (Victim.Exists()) { Victim.Tasks.ClearImmediately(); }
                     if (VictimBlip.Exists()) { VictimBlip.Delete(); }
+                    CallHandler.IdleAction(Victim, false);
                     GameFiber.Wait(2000);
 
                     Game.DisplayHelp("Talk to the ~r~Suspect.");

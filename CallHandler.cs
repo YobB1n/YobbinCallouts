@@ -14,6 +14,8 @@ using System.Drawing;
 using System.Collections;
 using System.Linq;
 using Rage.Native;
+using LSPD_First_Response.Engine.Scripting.Entities;
+using System.Text.RegularExpressions;
 
 namespace YobbinCallouts
 {
@@ -424,12 +426,14 @@ namespace YobbinCallouts
         }
 
         /// <summary>
-        /// Returns a random number out of options, or a random number between min and max if specified. Specifiy 0 in options to use RNG for min and max.
+        /// Returns a random number out of options starting at 0, or a random number between min and max if specified. Specifiy 0 in options to use RNG for min and max.
         /// </summary>
         public static int RNG(int options = 0, int min = 0, int max = 0)
         {
             if (min == 0 && max == 0) max = options;
-            int num = monke.Next(min, max);
+            Game.LogTrivial("YOBBINCALLOUTS: choosing random number between " + min + " and " + max);
+            Random coconut = new Random();
+            int num = coconut.Next(min, max);
             Game.LogTrivial("YOBBINCALLOUTS: RNG value is " + num);
             return num;
         }
@@ -544,12 +548,56 @@ namespace YobbinCallouts
         public static string GetSetVehicleColor(Vehicle vehicle)
         {
             Game.LogTrivial("YOBBINCALLOUTS: GETTING NAME OF COLOR.");
-            int colorno = monke.Next(0, colors.Length);
+            int colorno = RNG(colors.Length);
             Game.LogTrivial("YOBBINCALLOUTS: VEHICLESPAWNER: Color is " + colors[colorno]);
             if (vehicle.Exists()) vehicle.PrimaryColor = colors[colorno];
             string VehicleColor = colors[colorno].Name.ToString();
 
-            return VehicleColor;
+            return Regex.Replace(VehicleColor, "(?<!^)([A-Z])", " $1"); //if two word color, adds a space between
+        }
+        public static Vector3 SpawnOnSreetSide(Vector3 position, int distance = 0)
+        {
+            try
+            {
+                // Find nearest street position
+                Vector3 streetPos = World.GetNextPositionOnStreet(position.Around(distance));
+
+                // Get road boundary using native (returns a point on the road edge)
+                NativeFunction.Natives.xA0F8A7517A273C05<Vector3>(streetPos, 360, out Vector3 roadBoundaryPos);
+
+                // Vector from street center to road boundary
+                Vector3 offsetDir = (roadBoundaryPos - streetPos);
+                offsetDir.Z = 0f; // keep flat on ground
+                offsetDir.Normalize();
+
+                // Offset 1-2 meters beyond boundary
+                Random rnd = new Random();
+                float sideOffset = 1.5f + (float)rnd.NextDouble(); // 1-2 meters
+                Vector3 finalSpawn = roadBoundaryPos + (offsetDir * sideOffset);
+
+                // Adjust Z to ground height
+                finalSpawn.Z = (float)World.GetGroundZ(finalSpawn, true, true); //this might not be necessary, remove if not
+
+                return finalSpawn;
+            }
+            catch (Exception)
+            {
+                return Game.LocalPlayer.Character.Position.Around(distance);
+            }
+        }
+        public static void StartScenario(Ped ped, string scenario)
+        {
+            NativeFunction.Natives.TASK_START_SCENARIO_IN_PLACE(ped, scenario, -1, true);
+        }
+        public static float FacePedTowardsPosition(Ped ped, Vector3 targetPosition)
+        {
+            if (!ped.Exists()) return 360;
+
+            Vector3 direction = targetPosition - ped.Position;
+            float heading = direction.ToHeading();
+
+            ped.Heading = heading;
+            return heading;
         }
     }
 }

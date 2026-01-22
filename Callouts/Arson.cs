@@ -133,9 +133,8 @@ namespace YobbinCallouts.Callouts
             }
             if (MainScenario < 3)   //suspect on scene
             {
-                Peds = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
-                System.Random r2 = new System.Random();  //Instantiate Random vehicle generator
-                int SuspectModel = r2.Next(0, Peds.Length);    //Use Random vehicle generator
+                Peds = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };                
+                int SuspectModel = CallHandler.RNG(0, Peds.Length); 
 
                 Suspect = new Ped(Peds[SuspectModel], MainSpawnPoint, SuspectHeading);
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect Spawned.");
@@ -143,8 +142,7 @@ namespace YobbinCallouts.Callouts
                 Suspect.BlockPermanentEvents = true;
                 Suspect.IsFireProof = true;
 
-                System.Random r3 = new System.Random();
-                int Weapon = r3.Next(0, 3);
+                int Weapon = CallHandler.RNG(0, 3);
                 if (Weapon == 0) Suspect.Inventory.GiveNewWeapon("weapon_molotov", -1, true);
                 else Suspect.Inventory.GiveNewWeapon("weapon_petrolcan", -1, true);
 
@@ -399,9 +397,8 @@ namespace YobbinCallouts.Callouts
 
                 if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to talk to the ~b~Victim.");
                 House.Delete();
-
-                System.Random r = new System.Random();
-                int OpeningDialogue = r.Next(0, 2);
+               
+                int OpeningDialogue = CallHandler.RNG(0, 2);
                 switch (OpeningDialogue)
                 {
                     case 0:
@@ -416,17 +413,15 @@ namespace YobbinCallouts.Callouts
                 //NativeFunction.Natives.xA0F8A7517A273C05<bool>(SuspectSpawnPoint, 360, out Vector3 outPosition);
                 try
                 {
-                    Peds = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };
-                    System.Random r2 = new System.Random();  //Instantiate Random vehicle generator
-                    int SuspectModel = r2.Next(0, Peds.Length);    //Use Random vehicle generator
+                    Peds = new string[8] { "A_M_Y_SouCent_01", "A_M_Y_StWhi_01", "A_M_Y_StBla_01", "A_M_Y_Downtown_01", "A_M_Y_BevHills_01", "G_M_Y_MexGang_01", "G_M_Y_MexGoon_01", "G_M_Y_StrPunk_01" };                    
+                    int SuspectModel = CallHandler.RNG(0, Peds.Length);    //Use Random vehicle generator
                     Suspect = new Ped(Peds[SuspectModel], outPosition, 69);
                     Game.LogTrivial("YOBBINCALLOUTS: Suspect Spawned.");
                     Suspect.IsPersistent = true;
                     Suspect.BlockPermanentEvents = true;
                     Suspect.IsFireProof = true;
-
-                    System.Random r3 = new System.Random();
-                    int Weapon = r3.Next(0, 2);
+                  
+                    int Weapon = CallHandler.RNG(0, 2);
                     if (Weapon == 0) Suspect.Inventory.GiveNewWeapon("weapon_molotov", -1, true);
                     else Suspect.Inventory.GiveNewWeapon("weapon_petrolcan", -1, true);
                     Game.LogTrivial("YOBBINCALLOUTS: Suspect Weapon Given.");

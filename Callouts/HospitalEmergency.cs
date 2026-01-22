@@ -105,8 +105,7 @@ namespace YobbinCallouts.Callouts
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Hospital Emergency Callout Start==========");
-            System.Random r = new System.Random();
-            int Scenario = r.Next(0, 0); //change later
+            int Scenario = CallHandler.RNG(0, 0); //only one scenario atm
             MainScenario = Scenario;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario value is: " + MainScenario);
             CallHandler.locationChooser(CallHandler.HospitalList, maxdistance: 1000f);
@@ -265,8 +264,8 @@ namespace YobbinCallouts.Callouts
                 while (player.DistanceTo(Nurse) >= 6f) GameFiber.Wait(0);
                 Nurse.Tasks.AchieveHeading(player.Heading - 180);
                 if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Speak with the ~b~Nurse.");
-                System.Random r = new System.Random();
-                int Dialogue = r.Next(0, 0); //change later
+
+                int Dialogue = CallHandler.RNG(0, 0); //change later when more dialogues are added
                 if (Dialogue == 0) CallHandler.Dialogue(NurseOpening1, Nurse);
                 //give the player documents
                 GameFiber.Wait(1000);
@@ -299,8 +298,7 @@ namespace YobbinCallouts.Callouts
                 Area.IsRouteEnabled = true;
 
                 Suspect.Tasks.Wander();
-                System.Random chez = new System.Random();
-                int WaitDistance = chez.Next(15, 25); //in metres
+                int WaitDistance = CallHandler.RNG(15, 25); //in metres
                 while (player.DistanceTo(Suspect) >= WaitDistance) GameFiber.Wait(0);
 
                 //set suspect movement styles
@@ -310,8 +308,7 @@ namespace YobbinCallouts.Callouts
                 //hostage
                 //pursuit
 
-                System.Random r2 = new System.Random();
-                int SuspectScenario = r2.Next(0, 0); //change later
+                int SuspectScenario = CallHandler.RNG(0, 0); //change later when more scenarios are added
                 if (SuspectScenario == 0) //hostage
                 {
                     Area.Delete();
@@ -325,27 +322,27 @@ namespace YobbinCallouts.Callouts
                         for (int i = 0; i < Peds.Length; i++)
                         {
                             GameFiber.Yield();
-                            if (Peds[i].Exists() && !Peds[i].IsPlayer && !Peds[i].IsInAnyVehicle(false))
+                            if (Peds[i].Exists() && !Peds[i].IsPlayer && !Peds[i].IsInAnyVehicle(false) && Peds[i].IsHuman)
                             {
                                 Hostage = Peds[i];
                                 break;
                             }
                         }
 
-                        if (Hostage.Exists() && Hostage.DistanceTo(Suspect) <= 20) //test distance
+                        if (Hostage.Exists() && Hostage.DistanceTo(Suspect) <= 25) //test distance (increased from 20 to 25)
                         {
                             Game.LogTrivial("YOBBINCALLOUTS: HOSTAGE SCENARIO STARTED");
                             Game.LogTrivial("YOBBINCALLOUTS: Hostage Location = " + Hostage.Position);
                             Hostage.IsPersistent = true; Hostage.BlockPermanentEvents = true;
                             //to-do: set hostage facial override (mood native)
                             // Suspect.Tasks.GoStraightToPosition(Hostage.Position, 3f, Hostage.Heading, 1f, 5000).WaitForCompletion();
-                            Suspect.Tasks.FollowNavigationMeshToPosition(Hostage.Position, Hostage.Heading, 5.5f, 1f).WaitForCompletion();
+                            Suspect.Tasks.FollowNavigationMeshToPosition(Hostage.Position, Hostage.Heading, 5.5f, 0.35f).WaitForCompletion(); //experiment with distance threshold
                             Suspect.Tasks.AchieveHeading(player.Heading - 180).WaitForCompletion(69);
                             Hostage.Tasks.AchieveHeading(player.Heading - 180).WaitForCompletion(69);
                             Suspect.Position = Hostage.Position; //test this
                             Hostage.Position = Suspect.GetOffsetPosition(new Vector3(0f, 0.14445f, 0f));
-                            System.Random rhcp = new System.Random();
-                            int WeaponModel = rhcp.Next(1, 4);
+                            Hostage.AttachTo(Suspect, 57005, new Vector3(0.25f, 0.15f, 0.0f), new Rotator(0f, 0f, 0f));
+                            int WeaponModel = CallHandler.RNG(1, 4);
                             Game.LogTrivial("YOBBINCALLOUTS: Suspect Weapon Model is " + WeaponModel);
                             if (WeaponModel == 1) Suspect.Inventory.GiveNewWeapon("WEAPON_PISTOL", -1, true);
                             else if (WeaponModel == 2) Suspect.Inventory.GiveNewWeapon("WEAPON_APPISTOL", -1, true);
@@ -379,9 +376,8 @@ namespace YobbinCallouts.Callouts
                                     HostageHold();
                                     if (Suspect.IsAlive) Game.DisplaySubtitle(DialogueAdvance(Hostage3));
                                     else break;
-                                    System.Random morsha = new System.Random();
-                                    int action = morsha.Next(0, 2);
-                                    Game.LogTrivial("YOBBINCALLOUTS: Suspect Action is " + WeaponModel);
+                                    int action = CallHandler.RNG(2);
+                                    Game.LogTrivial("YOBBINCALLOUTS: Suspect Action is " + action);
                                     if (action == 0) //release
                                     {
                                         HostageHold();
@@ -390,17 +386,31 @@ namespace YobbinCallouts.Callouts
                                         HostageHold();
                                         if (Suspect.IsAlive) Game.DisplaySubtitle(DialogueAdvance(Release2));
                                         else break;
-                                        System.Random zach = new System.Random();
-                                        int WaitTime = zach.Next(2000, 5000); //in ms
+                                        int WaitTime = CallHandler.RNG(2000, 5000); //in ms
                                         GameFiber.Wait(WaitTime);
-                                        Suspect.Tasks.PutHandsUp(-1, player);
+                                        Hostage.Detach();
+                                        
                                         if (Suspect.IsDead) break;
                                         Game.DisplaySubtitle("~r~Patient:~w~ Okay Officer, If you say so! Just don't let them hurt me!!");
                                         GameFiber.Wait(500);
-                                        Hostage.Tasks.ReactAndFlee(Suspect);
+                                        if (Hostage.Exists() && Hostage.IsAlive)
+                                        {
+                                            Hostage.Tasks.ClearImmediately(); //test to unstuck
+                                            Hostage.Tasks.ReactAndFlee(Suspect);
+                                        }
+                                        if (Suspect.Exists() && Suspect.IsAlive)
+                                        {
+                                            Suspect.Tasks.ClearImmediately(); //test to unstuck
+                                            Suspect.Tasks.PutHandsUp(-1, player);
+                                        }
                                         GameFiber.Wait(2000);
                                         Game.DisplayHelp("Take the ~o~Patient~w~ into Custody.");
-                                        while (!Functions.IsPedArrested(Suspect)) GameFiber.Wait(0);
+                                        if (Suspect.Exists() && Suspect.IsAlive) //try second time since earlier clear/surrender doesnt work
+                                        {
+                                            Suspect.Tasks.ClearImmediately(); //test to unstuck
+                                            Suspect.Tasks.PutHandsUp(-1, player);
+                                        }
+                                        CallHandler.SuspectWait(Suspect);
                                         if (HostageBlip.Exists()) HostageBlip.Delete();
                                         break;
                                     }
@@ -416,21 +426,31 @@ namespace YobbinCallouts.Callouts
                                         HostageHold();
                                         if (Suspect.IsAlive) Game.DisplaySubtitle(DialogueAdvance(Kill3));
                                         else break;
-                                        System.Random zach = new System.Random();
-                                        int WaitTime = zach.Next(1500, 5000); //in ms
+                                        int WaitTime = CallHandler.RNG(1500, 5000); //in ms
                                         GameFiber.Wait(WaitTime);
                                         if (Suspect.IsDead) break;
-                                        Suspect.Tasks.FireWeaponAt(Hostage, -1, FiringPattern.SingleShot).WaitForCompletion();
-                                        while (Suspect.Exists() && !Functions.IsPedArrested(Suspect) && Suspect.IsAlive) GameFiber.Wait(0);
-                                        if (HostageBlip.Exists()) HostageBlip.Delete();
-                                        if (Hostage.Exists() && Hostage.IsAlive) Hostage.Tasks.ReactAndFlee(Suspect);
+                                        Hostage.Detach();
+                                        Suspect.Tasks.FireWeaponAt(Hostage, -1, FiringPattern.SingleShot).WaitForCompletion(1500);
+                                        if (Hostage.Exists() && Hostage.IsAlive)
+                                        {
+                                            Hostage.Tasks.ClearImmediately(); //test to unstuck
+                                            Hostage.Tasks.ReactAndFlee(Suspect);
+                                        }
+                                        if (Suspect.Exists() && Suspect.IsAlive)
+                                        {
+                                            Suspect.Tasks.ClearImmediately(); //test to unstuck
+                                            Suspect.Tasks.FireWeaponAt(Game.LocalPlayer.Character, -1, FiringPattern.SingleShot);
+                                        }
+                                        CallHandler.SuspectWait(Suspect);
+                                        if (HostageBlip.Exists()) HostageBlip.Delete();                                       
                                         break;
                                     }
                             }
                             //test vvv
+                            Hostage.Detach();
                             if (HostageBlip.Exists()) HostageBlip.Delete();
                             if (Hostage.Exists() && Hostage.IsAlive) Hostage.Tasks.ReactAndFlee(player); //might remove
-                            Suspect.Tasks.PutHandsUp(5000, player);
+                            if (Suspect.Exists() && Suspect.IsAlive) Suspect.Tasks.PutHandsUp(5000, player);
                             if (Functions.IsPedArrested(Suspect) || Suspect.IsAlive)
                             {
                                 Game.DisplayNotification("Dispatch, we have taken the Patient into ~r~Custody.");
@@ -439,9 +459,8 @@ namespace YobbinCallouts.Callouts
                                 GameFiber.Wait(1500);
                                 DriveBack();
                             }
-                            else Game.DisplayNotification("Dispatch, Suspect has been ~r~Killed.");
-                            GameFiber.Wait(2000);
-                            Functions.PlayScannerAudio("REPORT_RESPONSE_COPY_02");
+                            else //Game.DisplayNotification("Dispatch, Suspect has been ~r~Killed.");
+                            
                             GameFiber.Wait(1500);
                         }
                         else
@@ -548,19 +567,24 @@ namespace YobbinCallouts.Callouts
             while (true)
             {
                 GameFiber.Yield();
+                Suspect.Heading = player.Heading - 180;
+                Hostage.Heading = Suspect.Heading;
 
                 //Suspect.Tasks.PlayAnimation(xyz) //causes the Ped to glitch when using STP surrender
                 if (Suspect.Tasks.CurrentTaskStatus == TaskStatus.Interrupted) Suspect.Tasks.PlayAnimation("misssagrab_inoffice", "hostage_loop_mrk", 1f, AnimationFlags.Loop); //test this (does it override STP surrender?)
-                if (Suspect.IsDead || (Functions.IsPedArrested(Suspect)) || Hostage.IsDead) break;
+                if (Suspect.IsDead || (Functions.IsPedArrested(Suspect)) || Hostage.IsDead)
+                {
+                    if (Suspect.Exists() && Suspect.IsDead && Hostage.Exists() && Hostage.IsAlive) Hostage.BlockPermanentEvents = false; Hostage.Detach();  Hostage.Tasks.ClearImmediately(); Hostage.Tasks.ReactAndFlee(player);
+                    break;
+                }
                 if (Game.IsKeyDown(Config.MainInteractionKey)) break;
             }
         }
         //this helper returns a certain dialogue for the specific point in the callout as indicated by dialogue.
         //see the various String lists containing the dialogue for each point in the hostage situation.
         private string DialogueAdvance(List<string> dialogue)
-        {
-            System.Random twboop = new System.Random();
-            int dialoguechosen = twboop.Next(0, dialogue.Count);
+        {           
+            int dialoguechosen = CallHandler.RNG(0, dialogue.Count);
             return dialogue[dialoguechosen];
         }
     }

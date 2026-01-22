@@ -67,8 +67,7 @@ namespace YobbinCallouts.Callouts
             Zone = Functions.GetZoneAtPosition(Game.LocalPlayer.Character.Position).GameName;
             Game.LogTrivial("YOBBINCALLOUTS: Zone is " + Zone);
 
-            System.Random chez = new System.Random();
-            int boom = chez.Next(0, 3);
+            int boom = CallHandler.RNG(0, 3);
             MainScenario = boom;
             Game.LogTrivial("YOBBINCALLOUTS: Scenario is " + MainScenario);
 
@@ -266,8 +265,7 @@ namespace YobbinCallouts.Callouts
                 SuspectBlip.Name = "Suspect";
 
                 //test this weapon give
-                System.Random sewil = new System.Random();
-                int WeaponChooser = sewil.Next(0, 3);
+                int WeaponChooser = CallHandler.RNG(0, 3);
                 if (WeaponChooser == 0) Suspect.Inventory.GiveNewWeapon("WEAPON_CROWBAR", -1, true);
                 if (WeaponChooser == 1) Suspect.Inventory.GiveNewWeapon("WEAPON_BAT", -1, true);
                 if (WeaponChooser == 2) Suspect.Inventory.GiveNewWeapon("WEAPON_POOLCUE", -1, true);
@@ -315,8 +313,7 @@ namespace YobbinCallouts.Callouts
 
                 SuspectVehicle = CallHandler.SpawnVehicle(SuspectSpawnPoint, 69);
                 Colours = new Color[8] { Color.White, Color.Black, Color.Gray, Color.Silver, Color.Red, Color.Blue, Color.Teal, Color.Beige };
-                System.Random r3 = new System.Random();
-                int Colour = r3.Next(0, Colours.Length);
+                int Colour = CallHandler.RNG(0, Colours.Length);
                 SuspectVehicle.PrimaryColor = Colours[Colour];
 
                 Game.LogTrivial("YOBBINCALLOUTS: Suspect Vehicle Spawned");
@@ -393,8 +390,7 @@ namespace YobbinCallouts.Callouts
         {
             if (CalloutRunning)
             {
-                System.Random r = new System.Random();
-                int SuspectAction = r.Next(0, 0);   //add more later
+                int SuspectAction = CallHandler.RNG(0, 0);   //add more later
                 if (SuspectAction == 0)  //pursuit
                 {
                     CallHandler.CreatePursuit(MainPursuit, true, true, true, Suspect);                   

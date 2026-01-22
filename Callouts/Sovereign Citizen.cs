@@ -70,7 +70,7 @@ namespace YobbinCallouts.Callouts
         private readonly List<string> CooperatesReason1 = new List<string>()
         {
          "~g~You:~w~ You committed a traffic violation, which gives us probable cause to pull you over. We haven't violated any of your rights.",
-         "~r~Suspect:~w~ I know my rights! You officers have no power to harass me and ask for my id!",
+         "~r~Suspect:~w~ I know my rights! You officers have no power to harass me and ask for my ID!",
          "~g~You:~w~ We actually do, you're operating a vehicle on a public roadway, you must surrender your license and proof of insurance to law enforcement.",
          "~r~Suspect:~w~ I'm not driving, I'm travelling you stupid cop! Stop violating my rights and wasting my time!",
          "~g~You:~w~ Listen, you're going to either cooperate, or things are going to get much worse. Your decision. Either identify yourself or go to jail.",
@@ -88,7 +88,7 @@ namespace YobbinCallouts.Callouts
         private readonly List<string> Scold1 = new List<string>()
         {
          "~g~You:~w~ Okay listen. I'm not going to waste any more time with you, understand? You are required by law to identify yourself on a traffic stop, this is your final chance.",
-         "~r~Suspect:~w~ I know my rights! You officers have no power to harass me and ask for my id!",
+         "~r~Suspect:~w~ I know my rights! You officers have no power to harass me and ask for my ID!",
          "~g~You:~w~ You act like you know every single law in the book, but unfortunately there is no cure for stupidity no matter how many laws you memorize.",
          "~g~You:~w~ I'm done with you, you've wasted enough of my time and that officer's time. Stay right here you piece of shit.",
          "~r~Suspect:~w~ I want your name and badge number officer, that is no way to talk to a taxpayer! I pay your salary!",
@@ -190,8 +190,7 @@ namespace YobbinCallouts.Callouts
             Area.Color = Color.Yellow;
             Area.IsRouteEnabled = true;
 
-            System.Random yuy = new System.Random();
-            int ScenarioChooser = yuy.Next(0, 3);
+            int ScenarioChooser = CallHandler.RNG(0, 3);
             MainScenario = ScenarioChooser;
 
             if (CalloutRunning == false) { Callout(); }
@@ -292,8 +291,7 @@ namespace YobbinCallouts.Callouts
                 {
                     Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Talk to the ~b~Officer.");
                 }
-                System.Random r = new System.Random();
-                int OpeningDialogue = r.Next(0, 2);
+                int OpeningDialogue = CallHandler.RNG(0, 2);
                 switch (OpeningDialogue)
                 {
                     case 0:
@@ -328,8 +326,7 @@ namespace YobbinCallouts.Callouts
                     catch { Game.LogTrivial("YOBBINCALLOUTS: Error Rolling Down Driver Window."); }
                     GameFiber.Wait(500);
                     if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Talk to the ~r~Suspect.");
-                    System.Random r = new System.Random();
-                    int OpeningDialogue = r.Next(0, 2);
+                    int OpeningDialogue = CallHandler.RNG(0, 2);
                     switch (OpeningDialogue)
                     {
                         case 0:
@@ -345,8 +342,7 @@ namespace YobbinCallouts.Callouts
                     if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Continue Talking to the ~r~Suspect.");
                     if (Game.IsKeyDown(Config.Key1))    //reason
                     {
-                        System.Random r2 = new System.Random();
-                        int CooperateDialogue = r2.Next(0, 2);
+                        int CooperateDialogue = CallHandler.RNG(0, 2);
                         switch (CooperateDialogue)
                         {
                             case 0:
@@ -359,8 +355,7 @@ namespace YobbinCallouts.Callouts
                     }
                     else   //scold
                     {
-                        System.Random r2 = new System.Random();
-                        int ScoldDialogue = r2.Next(0, 2);
+                        int ScoldDialogue = CallHandler.RNG(0, 2);
                         switch (ScoldDialogue)
                         {
                             case 0:
@@ -383,8 +378,7 @@ namespace YobbinCallouts.Callouts
                     Game.DisplaySubtitle("~r~Suspect:~w~ I Will Not Follow Unlawful Commands Officer!", 3000);
                     GameFiber.Wait(3500);
                     if (Config.DisplayHelp) Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Reason With the ~r~Suspect.");
-                    System.Random r2 = new System.Random();
-                    int ReasonDialogue = r2.Next(0, 2);
+                    int ReasonDialogue = CallHandler.RNG(0, 2);
                     switch (ReasonDialogue)
                     {
                         case 0:

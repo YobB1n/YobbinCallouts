@@ -254,8 +254,7 @@ namespace YobbinCallouts.Callouts
         public override bool OnBeforeCalloutDisplayed()
         {
             Game.LogTrivial("==========YOBBINCALLOUTS: Protest Callout Start==========");
-            System.Random r = new System.Random();
-            int Scenario = r.Next(0, 0);
+            int Scenario = CallHandler.RNG(0, 0);
             Scenario = MainScenario;
 
             //HOUSE CHOOSER FOR 1ST SCENARIO

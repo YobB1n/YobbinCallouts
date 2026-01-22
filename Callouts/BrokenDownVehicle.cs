@@ -231,8 +231,7 @@ namespace YobbinCallouts.Callouts
                         DriverBlip.Scale = 0.8f;
                         DriverBlip.Color = Color.Blue;
                         DriverBlip.Name = "Driver";
-                        Random r2 = new Random();  //Instantiate Random scenario generator
-                        Scenario = r2.Next(0, 2);    //Use Random scenario generator
+                        Scenario = CallHandler.RNG(0, 2);    //Use Random scenario generator
                         while (player.DistanceTo(Driver) >= 6f) GameFiber.Wait(0);
 
                         // talking to driver
@@ -243,8 +242,7 @@ namespace YobbinCallouts.Callouts
                             Game.DisplayHelp("Press ~y~" + Config.MainInteractionKey + " ~w~to Talk to the ~b~Driver.");
                         }
 
-                        Random ODC = new Random();
-                        int OpeningDialogue = ODC.Next(0, 3);
+                        int OpeningDialogue = CallHandler.RNG(0, 3);
                         if (OpeningDialogue == 0) CallHandler.Dialogue(OpeningDialogue1, Driver);
                         else if (OpeningDialogue == 1) CallHandler.Dialogue(OpeningDialogue2, Driver);
                         else CallHandler.Dialogue(OpeningDialogue3, Driver);
@@ -465,7 +463,7 @@ namespace YobbinCallouts.Callouts
                 GameFiber.Wait(2000);
                 Game.LocalPlayer.Character.Tasks.ClearImmediately();
                 GameFiber.Wait(1500);
-                if (Scenario == 0)
+                if (Scenario == 0) //car is repaired
                 {
                     DriverVehicle.Repair();
                     GameFiber.Wait(1000);
@@ -492,7 +490,7 @@ namespace YobbinCallouts.Callouts
                     if (Driver.Exists()) Driver.Dismiss();
                     //End();
                 }
-                else
+                else //car is not repaired
                 {
                     GameFiber.Wait(1000);
                     Game.DisplaySubtitle("~g~You:~w~ Damn, Looks Like I Couldn't Get it Working.", 3500);
@@ -518,8 +516,7 @@ namespace YobbinCallouts.Callouts
                 {
                     Game.DisplayHelp("Press~y~ " + Config.MainInteractionKey + " ~w~to Talk to the ~b~Driver.");
                 }
-                System.Random r = new System.Random();
-                int DriverEndingDialogue = r.Next(0, 4);    //change to (0, 4) later
+                int DriverEndingDialogue = CallHandler.RNG(0, 4);    //change to (0, 4) later
 
                 if (DriverEndingDialogue == 0) CallHandler.Dialogue(DriverEndingDialogue1, Driver);
                 else if (DriverEndingDialogue == 1) CallHandler.Dialogue(DriverEndingDialogue2, Driver);
@@ -616,8 +613,7 @@ namespace YobbinCallouts.Callouts
             {
                 Game.DisplayHelp("Press " + Config.MainInteractionKey + " to Advance the Conversation.");
             }
-            System.Random FODC = new System.Random();
-            int OpeningDialogue = FODC.Next(0, 0);
+            int OpeningDialogue = CallHandler.RNG(0, 0);
             switch (OpeningDialogue)
             {
                 case 0:

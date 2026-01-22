@@ -131,8 +131,7 @@ namespace YobbinCallouts.Callouts
             Area.IsRouteEnabled = true;
             Area.Name = "Traffic Break Start";
 
-            System.Random r = new System.Random();
-            int Scenario = r.Next(0, 0);
+            int Scenario = CallHandler.RNG(0, 0);
             switch (Scenario)   //Scenario Chooser, I don't think I'm gonna add another one for a while
             {
                 case 0:
